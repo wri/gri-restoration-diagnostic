@@ -277,4 +277,4 @@ desired_count    = 3
 ## 📄 License
 
 MIT
-# next-ecs3
+# gri-restoration-diagnostic
