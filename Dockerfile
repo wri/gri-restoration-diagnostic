@@ -20,6 +20,9 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 # Set environment to production
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -43,8 +46,8 @@ USER nextjs
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Start the application
 CMD ["node", "server.js"]
