@@ -32,10 +32,6 @@ const nextConfig = {
       },
     ];
   },
-
-  turbopack: {
-    root: path.resolve(__dirname, './'), // Set the root directory
-  },
 };
 
 module.exports = nextConfig;
