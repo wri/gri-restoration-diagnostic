@@ -77,8 +77,7 @@ A production-ready Next.js application for landscape restoration assessments wit
 │       ├── qa.backend.hcl
 │       ├── production.tfvars
 │       └── production.backend.hcl
-- Dockerfile                        # NextJS App Container 
-├── Dockerfile
+├── Dockerfile                      # NextJS App Container 
 ├── package.json
 └── README.md
 
@@ -119,14 +118,17 @@ docker-compose ps
 #### Run Database Migrations
 
 ```bash
-# Generate initial migration from entities
-npm run migration:generate
-
 # Run migrations
 npm run migration:run
 
 # Seed initial diagnostic questions (24 questions)
 npm run seed:run
+```
+
+Generate migrations if and when schema changes
+
+```bash
+npm run migration:generate
 ```
 
 #### Verify Database Setup
@@ -139,7 +141,7 @@ docker exec -it rd-postgres psql -U rduser -d restoration_diagnostic
 \dt
 
 # View diagnostic seed data
-SELECT diagnostic_id, version, language FROM diagnostic;
+SELECT id, version, language FROM diagnostic;
 
 # Exit
 \q
