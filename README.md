@@ -1,6 +1,6 @@
-# Next.js ECS Fargate Deployment
+# Restoration Diagnostic Web Application
 
-A production-ready Next.js application with CI/CD pipeline for deploying to AWS ECS Fargate using Terraform and GitHub Actions.
+A production-ready Next.js application for landscape restoration assessments with TypeORM, PostgreSQL, and AWS ECS Fargate deployment using Terraform and GitHub Actions.
 
 ## 🏗️ Architecture
 
@@ -39,11 +39,25 @@ A production-ready Next.js application with CI/CD pipeline for deploying to AWS 
 │       ├── pr-check.yml            # Pull request validation
 │       └── destroy.yml             # Infrastructure teardown
 ├── src/
+│   ├── db/                         # Database layer
+│   │   ├── schema.dbml             # Database schema (source of truth)
+│   │   ├── data-source.ts          # TypeORM configuration
+│   │   ├── entities/               # TypeORM entities
+│   │   │   ├── Lead.entity.ts
+│   │   │   ├── Region.entity.ts
+│   │   │   ├── Diagnostic.entity.ts
+│   │   │   ├── Assessment.entity.ts
+│   │   │   └── index.ts
+│   │   ├── migrations/             # Database migrations
+│   │   └── seeds/                  # Seed data
+│   │       ├── 001-initial-diagnostic.seed.ts
+│   │       └── index.ts
 │   └── app/                        # Next.js App Router
 │       ├── api/health/route.ts     # Health check endpoint
 │       ├── layout.tsx
 │       ├── page.tsx
 │       └── globals.css
+├── docker-compose.yml              # PostgreSQL container
 ├── terraform/
 │   ├── backend-setup/              # Terraform state backend
 │   │   ├── main.tf
@@ -63,12 +77,73 @@ A production-ready Next.js application with CI/CD pipeline for deploying to AWS 
 │       ├── qa.backend.hcl
 │       ├── production.tfvars
 │       └── production.backend.hcl
+- Dockerfile                        # NextJS App Container 
 ├── Dockerfile
 ├── package.json
 └── README.md
+
+### 1. Clone and Install Dependencies
+
+```bash
+git clone <repository-url>
+cd gri-restoration-diagnostic
+
+# Use correct Node.js version
+nvm use
+
+# Install dependencies
+npm install
 ```
 
-## 🚀 Getting Started
+### 2. Database Setup (Local Development)
+
+#### Configure Environment Variables
+
+```bash
+# Copy example environment file
+cp .env.example .env.local
+
+# Edit .env.local with your database credentials (defaults work for local)
+```
+
+#### Start PostgreSQL Database
+
+```bash
+# Start PostgreSQL container
+npm run db:start
+
+# Verify database is healthy
+docker-compose ps
+```
+
+#### Run Database Migrations
+
+```bash
+# Generate initial migration from entities
+npm run migration:generate
+
+# Run migrations
+npm run migration:run
+
+# Seed initial diagnostic questions (24 questions)
+npm run seed:run
+```
+
+#### Verify Database Setup
+
+```bash
+# Connect to PostgreSQL (password: rdpassword)
+docker exec -it rd-postgres psql -U rduser -d restoration_diagnostic
+
+# List tables
+\dt
+
+# View diagnostic seed data
+SELECT diagnostic_id, version, language FROM diagnostic;
+
+# Exit
+\q
+```
 
 ### Prerequisites
 
@@ -103,7 +178,7 @@ chmod +x setup.sh
 AWS_REGION=us-east-1 PROJECT_NAME=rd-app ./setup.sh
 ```
 
-### 3. Configure GitHub Repository
+### 4. Configure GitHub Repository
 
 1. Create a new GitHub repository
 2. Push this code to the repository
@@ -114,7 +189,7 @@ AWS_REGION=us-east-1 PROJECT_NAME=rd-app ./setup.sh
 4. Add GitHub variables for AWS permissions (Settings → Secrets and variables → Actions -> Variables):
    - `OIDC_ROLE` - ARN from AWS console for role GitHubActionsOIDC
 
-### 4. Required AWS IAM Permissions
+### 5. Required AWS IAM Permissions
 
 The AWS credentials need permissions for:
 - ECR (create/push images)
@@ -126,7 +201,7 @@ The AWS credentials need permissions for:
 - S3 (Terraform state)
 - DynamoDB (Terraform locks)
 
-### 5. Deploy
+### 6. Deploy
 
 Push to the appropriate branch to trigger deployment:
 
@@ -143,8 +218,8 @@ git push origin main
 ## 🔧 Local Development
 
 ```bash
-# Install dependencies
-npm install
+# Start database
+npm run db:start
 
 # Run development server
 npm run dev
@@ -157,6 +232,31 @@ npm run build
 
 # Start production server
 npm start
+```
+
+### Database Management Commands
+
+```bash
+# Start PostgreSQL
+npm run db:start
+
+# Stop PostgreSQL
+npm run db:stop
+
+# Reset database (WARNING: deletes all data)
+npm run db:reset
+
+# Generate new migration (after entity changes)
+npm run migration:generate
+
+# Run pending migrations
+npm run migration:run
+
+# Revert last migration
+npm run migration:revert
+
+# Run seed data
+npm run seed:run
 ```
 
 ### Docker Build
@@ -260,16 +360,26 @@ desired_count    = 3
 
 ### Common Issues
 
-1. **Deployment fails at ECS service stability**
+1. **Database connection fails**
+   - Ensure PostgreSQL container is running: `docker-compose ps`
+   - Check `.env.local` has correct DATABASE_URL
+   - Verify port 5432 is not in use: `lsof -i :5432`
+
+2. **Migration generation fails**
+   - Ensure entities are properly imported in `data-source.ts`
+   - Run `npm run typeorm schema:sync` to check for issues
+   - Check entity decorators and column types
+
+3. **Deployment fails at ECS service stability**
    - Check CloudWatch logs
    - Verify health check endpoint returns 200
    - Check security group rules
 
-2. **Terraform state lock error**
+4. **Terraform state lock error**
    - Wait for other deployments to complete
    - If stuck, manually release lock in DynamoDB
 
-3. **Docker build fails**
+5. **Docker build fails**
    - Ensure all dependencies are in package.json
    - Check for missing files in .dockerignore
 
