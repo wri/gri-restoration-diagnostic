@@ -21,13 +21,19 @@ async function runSeeds() {
       console.log('⚠️  Seed data already exists - skipping');
     }
 
-    await AppDataSource.destroy();
     console.log('✅ Seeding completed');
-    process.exit(0);
   } catch (error) {
     console.error('❌ Seeding failed:', error);
-    process.exit(1);
+    throw error;
+  } finally {
+    // Ensure data source is destroyed in both success and error paths
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+      console.log('🔌 Database connection closed');
+    }
   }
 }
 
-runSeeds();
+runSeeds()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

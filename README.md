@@ -81,6 +81,16 @@ A production-ready Next.js application for landscape restoration assessments wit
 ├── package.json
 └── README.md
 
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 22.x (see `.nvmrc`)
+- [Docker](https://www.docker.com/)
+- [Terraform](https://www.terraform.io/) 1.0+ (for AWS deployment)
+- [AWS CLI](https://aws.amazon.com/cli/) configured with appropriate credentials
+- [GitHub](https://github.com/) account
+
 ### 1. Clone and Install Dependencies
 
 ```bash
@@ -147,23 +157,7 @@ SELECT id, version, language FROM diagnostic;
 \q
 ```
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 20.x or later
-- [Docker](https://www.docker.com/)
-- [Terraform](https://www.terraform.io/) 1.0+
-- [AWS CLI](https://aws.amazon.com/cli/) configured with appropriate credentials
-- [GitHub](https://github.com/) account
-
-### 1. Clone and Install Dependencies
-
-```bash
-git clone <repository-url>
-cd rd-app
-npm install
-```
-
-### 2. Set Up Terraform State Backend
+### 3. Set Up Terraform State Backend
 
 Before deploying infrastructure, you need to create the S3 bucket and DynamoDB table for Terraform state:
 
