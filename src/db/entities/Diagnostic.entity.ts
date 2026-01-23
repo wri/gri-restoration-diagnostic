@@ -5,7 +5,7 @@ import { Assessment } from './Assessment.entity';
 @Index(['version', 'language'], { unique: true })
 export class Diagnostic {
   @PrimaryColumn('varchar', { length: 36 })
-  diagnostic_id!: string;
+  id!: string;
 
   @Column('text')
   questions!: string; // JSON stringified array

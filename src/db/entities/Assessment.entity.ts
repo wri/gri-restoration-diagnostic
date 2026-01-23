@@ -12,7 +12,7 @@ export enum ProjectType {
 @Entity('assessments')
 export class Assessment {
   @PrimaryColumn('varchar', { length: 36 })
-  assessment_id!: string;
+  id!: string;
 
   @Column('varchar', { length: 36 })
   @Index()

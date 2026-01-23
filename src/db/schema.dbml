@@ -9,7 +9,7 @@ Enum project_type_enum {
 }
 
 Table lead {
-  lead_id varchar [pk, note: 'UUID v4']
+  id varchar [pk, note: 'UUID v4']
   job_title varchar [null, note: 'Title: Mr/Mrs/Ms/Miss/Dr/Prof']
   name varchar [not null]
   email varchar [not null, note: 'Lowercase, validated']
@@ -23,7 +23,7 @@ Table lead {
 }
 
 Table region {
-  region_id varchar [pk, note: 'UUID v4']
+  id varchar [pk, note: 'UUID v4']
   region_name varchar [not null]
   geography_type varchar [not null, note: 'Watershed, Protected Area, etc.']
   countries text [null, note: 'Comma-separated or JSON']
@@ -35,7 +35,7 @@ Table region {
 }
 
 Table diagnostic {
-  diagnostic_id varchar [pk, note: 'UUID v4']
+  id varchar [pk, note: 'UUID v4']
   questions text [not null, note: 'JSON array of question objects']
   version varchar [not null, note: 'Semantic version: v1.0.0']
   language varchar [not null, note: 'ISO 639-1: en, es, pt, fr']
@@ -47,7 +47,7 @@ Table diagnostic {
 }
 
 Table assessments {
-  assessment_id varchar [pk, note: 'UUID v4']
+  id varchar [pk, note: 'UUID v4']
   diagnostic_id varchar [not null]
   assessment_name varchar [null, note: 'User-provided or auto-generated']
   password_encrypted text [not null, note: 'bcrypt hash']
@@ -66,9 +66,9 @@ Table assessments {
   }
 }
 
-Ref: assessments.lead_id > lead.lead_id [delete: cascade]
-Ref: assessments.region_id > region.region_id [delete: cascade]
-Ref: assessments.diagnostic_id > diagnostic.diagnostic_id [delete: restrict]
+Ref: assessments.lead_id > lead.id [delete: cascade]
+Ref: assessments.region_id > region.id [delete: cascade]
+Ref: assessments.diagnostic_id > diagnostic.id [delete: restrict]
 
 // Notes:
 // - Timestamps added for audit trail

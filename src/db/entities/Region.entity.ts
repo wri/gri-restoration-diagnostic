@@ -4,7 +4,7 @@ import { Assessment } from './Assessment.entity';
 @Entity('region')
 export class Region {
   @PrimaryColumn('varchar', { length: 36 })
-  region_id!: string;
+  id!: string;
 
   @Column('varchar')
   region_name!: string;

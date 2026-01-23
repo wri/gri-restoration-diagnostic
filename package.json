@@ -12,11 +12,11 @@
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:reset": "docker-compose down -v && docker-compose up -d",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm migration:generate -- -d src/db/data-source.ts src/db/migrations/Migration",
-    "migration:run": "npm run typeorm migration:run -- -d src/db/data-source.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d src/db/data-source.ts",
-    "seed:run": "ts-node src/db/seeds/index.ts"
+    "typeorm": "ts-node --project tsconfig.typeorm.json -r dotenv/config ./node_modules/typeorm/cli.js",
+    "migration:generate": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:generate src/db/migrations/Migration -d src/db/data-source.ts",
+    "migration:run": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:run -d src/db/data-source.ts",
+    "migration:revert": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:revert -d src/db/data-source.ts",
+    "seed:run": "DOTENV_CONFIG_PATH=.env ts-node --project tsconfig.typeorm.json -r dotenv/config src/db/seeds/index.ts"
   },
   "dependencies": {
     "@chakra-ui/charts": "^3.30.0",
@@ -24,6 +24,7 @@
     "@emotion/react": "^11.14.0",
     "@worldresources/wri-design-systems": "^2.176.0",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "next": "15.1.7",
     "pg": "^8.17.2",
     "react": "^19.0.0",
