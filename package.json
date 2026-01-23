@@ -8,7 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:ci": "jest --ci --coverage"
+    "test:ci": "jest --ci --coverage",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down",
+    "db:reset": "docker-compose down -v && docker-compose up -d",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npm run typeorm migration:generate -- -d src/db/data-source.ts src/db/migrations/Migration",
+    "migration:run": "npm run typeorm migration:run -- -d src/db/data-source.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d src/db/data-source.ts",
+    "seed:run": "ts-node src/db/seeds/index.ts"
   },
   "dependencies": {
     "@chakra-ui/charts": "^3.30.0",
@@ -22,7 +30,8 @@
     "react-dom": "^19.0.0",
     "recharts": "^3.6.0",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.28",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
