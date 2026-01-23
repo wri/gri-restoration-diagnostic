@@ -101,9 +101,9 @@ npm install
 
 ```bash
 # Copy example environment file
-cp .env.example .env.local
+cp .env.example .env
 
-# Edit .env.local with your database credentials (defaults work for local)
+# Edit .env with your database credentials (defaults work for local)
 ```
 
 #### Start PostgreSQL Database
@@ -362,7 +362,7 @@ desired_count    = 3
 
 1. **Database connection fails**
    - Ensure PostgreSQL container is running: `docker-compose ps`
-   - Check `.env.local` has correct DATABASE_URL
+   - Check `.env` has correct db credentials
    - Verify port 5432 is not in use: `lsof -i :5432`
 
 2. **Migration generation fails**

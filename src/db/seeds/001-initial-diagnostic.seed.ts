@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export const initialDiagnosticSeed = {
-  diagnostic_id: uuidv4(),
+  id: randomUUID(),
   version: 'v1.0.0',
   language: 'en',
   questions: JSON.stringify([
