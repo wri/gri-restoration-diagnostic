@@ -4,7 +4,7 @@ import { Assessment } from './Assessment.entity';
 @Entity('lead')
 export class Lead {
   @PrimaryColumn('varchar', { length: 36 })
-  lead_id!: string;
+  id!: string;
 
   @Column('varchar', { nullable: true })
   job_title?: string;
