@@ -1,12 +1,12 @@
-## RD-5: Assessment Setup 
-—
+## [RD-5: Assessment Setup](https://gfw.atlassian.net/browse/RD-2) 
+
 
 ### Tasks Overview
 
-- [ ] Database Schema Setup for Assessment Creation
+- [ ] [Database Schema Setup for Assessment Creation](https://gfw.atlassian.net/browse/RD-5)
   Description: Implement database tables and relationships required for assessment setup flow.
 
-- [ ] Setup Assessment Form UI
+- [ ] [Setup Assessment Form UI](https://gfw.atlassian.net/browse/RD-6)
   Description: Build the /setup-assessment page with two-section form layout using WRI Design System components.
 
 - [ ] Client-Side Form Validation
@@ -28,25 +28,29 @@
 
 ### Task Dependencies Diagram
 Database Schema Setup
+```
   ├─> Setup Assessment Form UI
   │     └─> Client-Side Form Validation
   │           └─> Assessment Creation API Endpoint
   │                 └─> Success Modal with Credential Display
   │                       └─> One-Time Access Token Flow
   │                             └─> Password Authentication for Assessment Access
-
+```
 
 ### Recommended Checklist for Testing
-Unit Tests:
+
+**- Unit Tests:**
 - [ ] Password generation produces 10-char alphanumeric string
 - [ ] Email validation regex accepts/rejects sample inputs
 - [ ] bcrypt hash verification works for correct/incorrect passwords
-Integration Tests:
+
+**- Integration Tests:**
 - [ ] Form submission creates all 3 database records
 - [ ] Transaction rollback on partial failure
 - [ ] Token consumption after first use
 - [ ] Session cookie persists 24 hours
-E2E Tests:
+
+**- E2E Tests:**
 - [ ] Complete flow: form fill → submit → modal → start assessment
 - [ ] Return flow: saved URL → password → access granted
 - [ ] Invalid password attempt shows error without account lock
