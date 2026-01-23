@@ -20,8 +20,8 @@ provider "aws" {
       Project          = var.project_name
       Environment      = var.environment
       ManagedBy        = "terraform"
-      "wri:project"    = "restoration-diagnostic"
-      "wri:owner"      = "kinshuk.govil@wri.org"
+      "wri:project"    = var.wri_project
+      "wri:owner"      = var.wri_owner
     }
   }
 }
