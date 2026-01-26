@@ -21,10 +21,10 @@ A production-ready Next.js application for landscape restoration assessments wit
 │  │  └─────────────────────┘    └─────────────────────────┘  │  │
 │  └──────────────────────────────────────────────────────────┘  │
 │                                                                  │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐                │
-│  │    ECR     │  │ CloudWatch │  │    S3      │                │
-│  │ Repository │  │    Logs    │  │  (TF State)│                │
-│  └────────────┘  └────────────┘  └────────────┘                │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐│
+│  │    ECR     │  │ CloudWatch │  │    RDS     │  │    S3      ││
+│  │ Repository │  │    Logs    │  │ PostgreSQL │  │  (TF State)││
+│  └────────────┘  └────────────┘  └────────────┘  └────────────┘│
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,7 +57,6 @@ A production-ready Next.js application for landscape restoration assessments wit
 │       ├── layout.tsx
 │       ├── page.tsx
 │       └── globals.css
-├── docker-compose.yml              # PostgreSQL container
 ├── terraform/
 │   ├── backend-setup/              # Terraform state backend
 │   │   ├── main.tf
@@ -104,39 +103,70 @@ nvm use
 npm install
 ```
 
-### 2. Database Setup (Local Development)
+### 2. Database Setup (AWS RDS)
+
+The application uses a shared AWS RDS PostgreSQL instance (`rd-app-db2`) across all environments. Each environment (dev, qa, production) has its own database within the same RDS instance.
 
 #### Configure Environment Variables
 
 ```bash
 # Copy example environment file
 cp .env.example .env
-
-# Edit .env with your database credentials (defaults work for local)
 ```
 
-#### Start PostgreSQL Database
+Update `.env` with RDS credentials:
 
+```env
+# Database Configuration (AWS RDS)
+DB_HOST=rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=<get-from-aws-parameter-store>
+DB_NAME=dev  # or 'qa', 'production'
+
+# TypeORM Configuration
+TYPEORM_SYNCHRONIZE=false
+TYPEORM_LOGGING=true
+
+# Application
+NODE_ENV=development
+
+# SSL Configuration (enable for production)
+DATABASE_SSL_REJECT_UNAUTHORIZED=false
+```
+
+**Getting Database Credentials:**
+- Master password is stored in [AWS Systems Manager Parameter Store](https://console.aws.amazon.com/systems-manager/parameters)
+- Navigate to Parameter Store and search for `rd-app-db2`
+
+#### Security Group Configuration
+
+The RDS instance is publicly accessible to support local development. You must add your IP to the security group:
+
+1. Go to [EC2 Security Groups](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:)
+2. Find security group `rd-app-db1-sg`
+3. Add inbound rule:
+   - **Type:** PostgreSQL
+   - **Port:** 5432
+   - **Source:** `<your-ip-address>/32`
+   - **Description:** "Local dev - [Your Name]"
+
+**Get your external IP:**
 ```bash
-# Start PostgreSQL container
-npm run db:start
-
-# Verify database is healthy
-docker-compose ps
+curl ifconfig.me
 ```
 
 #### Run Database Migrations
 
 ```bash
-# Run migrations
+# Run migrations to create tables
 npm run migration:run
 
 # Seed initial diagnostic questions (24 questions)
 npm run seed:run
 ```
 
-Generate migrations if and when schema changes
-
+**Generate migrations when schema changes:**
 ```bash
 npm run migration:generate
 ```
@@ -144,8 +174,8 @@ npm run migration:generate
 #### Verify Database Setup
 
 ```bash
-# Connect to PostgreSQL (password: rdpassword)
-docker exec -it rd-postgres psql -U rduser -d restoration_diagnostic
+# Connect to dev database
+psql -h rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com -U postgres -d dev
 
 # List tables
 \dt
@@ -156,6 +186,8 @@ SELECT id, version, language FROM diagnostic;
 # Exit
 \q
 ```
+
+**Note:** If connection times out, verify your IP is in the `rd-app-db1-sg` security group.
 
 ### 3. Set Up Terraform State Backend
 
@@ -214,9 +246,6 @@ git push origin main
 ## 🔧 Local Development
 
 ```bash
-# Start database
-npm run db:start
-
 # Run development server
 npm run dev
 
@@ -232,16 +261,8 @@ npm start
 
 ### Database Management Commands
 
+**Migrations:**
 ```bash
-# Start PostgreSQL
-npm run db:start
-
-# Stop PostgreSQL
-npm run db:stop
-
-# Reset database (WARNING: deletes all data)
-npm run db:reset
-
 # Generate new migration (after entity changes)
 npm run migration:generate
 
@@ -250,9 +271,32 @@ npm run migration:run
 
 # Revert last migration
 npm run migration:revert
+```
 
+**Seeding:**
+```bash
 # Run seed data
 npm run seed:run
+```
+
+**Direct Database Access:**
+```bash
+# Connect to dev database
+psql -h rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com -U postgres -d dev
+
+# Connect to QA database
+psql -h rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com -U postgres -d qa
+
+# Connect to production database
+psql -h rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com -U postgres -d production
+```
+
+**⚠️ Legacy Docker Commands (Deprecated):**
+```bash
+# These commands are no longer used (RDS replaced local Docker)
+# npm run db:start
+# npm run db:stop
+# npm run db:reset
 ```
 
 ### Docker Build
@@ -267,14 +311,26 @@ docker run -p 3000:3000 rd-app
 
 ## 📋 Environment Configuration
 
+### Database (Shared RDS Instance)
+- **RDS Endpoint:** `rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com`
+- **Engine:** PostgreSQL 17
+- **Databases:**
+  - `dev` - Development database
+  - `qa` - QA database
+  - `production` - Production database
+- **Access:** Publicly accessible with security group IP allowlist
+- **Credentials:** Stored in AWS Systems Manager Parameter Store
+
 ### QA Environment
 - VPC CIDR: `10.0.0.0/16`
+- Database: `qa`
 - Resources: 256 CPU / 512 MB Memory
 - Desired count: 1 task
 - Auto-scaling: 1-2 tasks
 
 ### Production Environment
 - VPC CIDR: `10.1.0.0/16`
+- Database: `production`
 - Resources: 512 CPU / 1024 MB Memory
 - Desired count: 2 tasks
 - Auto-scaling: 2-10 tasks
@@ -357,25 +413,33 @@ desired_count    = 3
 ### Common Issues
 
 1. **Database connection fails**
-   - Ensure PostgreSQL container is running: `docker-compose ps`
-   - Check `.env` has correct db credentials
-   - Verify port 5432 is not in use: `lsof -i :5432`
+   - Verify your IP is in the `rd-app-db1-sg` security group allowlist
+   - Check `.env` has correct RDS credentials from Parameter Store
+   - Test connection: `psql -h rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com -U postgres -d dev`
+   - Verify RDS instance is running in AWS Console
 
-2. **Migration generation fails**
+2. **Connection timeout to RDS**
+   - Add your external IP to security group: `curl ifconfig.me`
+   - Check VPN/firewall settings aren't blocking port 5432
+   - Verify you're using the correct database name (dev/qa/production)
+
+3. **Migration generation fails**
    - Ensure entities are properly imported in `data-source.ts`
-   - Run `npm run typeorm schema:sync` to check for issues
+   - Verify TypeORM can connect to RDS (check credentials)
    - Check entity decorators and column types
+   - Review `tsconfig.typeorm.json` for CommonJS compatibility
 
-3. **Deployment fails at ECS service stability**
+4. **Deployment fails at ECS service stability**
    - Check CloudWatch logs
    - Verify health check endpoint returns 200
    - Check security group rules
+   - Ensure ECS tasks can connect to RDS
 
-4. **Terraform state lock error**
+5. **Terraform state lock error**
    - Wait for other deployments to complete
    - If stuck, manually release lock in DynamoDB
 
-5. **Docker build fails**
+6. **Docker build fails**
    - Ensure all dependencies are in package.json
    - Check for missing files in .dockerignore
 
