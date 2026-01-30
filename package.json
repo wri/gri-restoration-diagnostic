@@ -9,13 +9,12 @@
     "lint": "next lint",
     "test": "jest",
     "test:ci": "jest --ci --coverage",
-    "db:start": "docker-compose up -d",
-    "db:stop": "docker-compose down",
-    "db:reset": "docker-compose down -v && docker-compose up -d",
+    "db:reset": "psql -h ${DB_HOST:-rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com} -U ${DB_USER:-postgres} -d ${DB_NAME:-dev} -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'",
+    "db:drop-tables": "psql -h ${DB_HOST:-rd-app-db2.c9o0i0gg61en.us-east-1.rds.amazonaws.com} -U ${DB_USER:-postgres} -d ${DB_NAME:-dev} -c 'DROP TABLE IF EXISTS migrations, assessments, lead, region, diagnostic CASCADE; DROP TYPE IF EXISTS assessments_project_type_enum CASCADE;'",
     "typeorm": "ts-node --project tsconfig.typeorm.json -r dotenv/config ./node_modules/typeorm/cli.js",
-    "migration:generate": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:generate src/db/migrations/Migration -d src/db/data-source.ts",
-    "migration:run": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:run -d src/db/data-source.ts",
-    "migration:revert": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:revert -d src/db/data-source.ts",
+    "migration:generate": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:generate src/db/migrations/Migration -d src/db/migration-data-source.ts",
+    "migration:run": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:run -d src/db/migration-data-source.ts",
+    "migration:revert": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:revert -d src/db/migration-data-source.ts",
     "seed:run": "DOTENV_CONFIG_PATH=.env ts-node --project tsconfig.typeorm.json -r dotenv/config src/db/seeds/index.ts"
   },
   "dependencies": {
