@@ -49,16 +49,17 @@ Table diagnostic {
 Table assessments {
   id varchar [pk, note: 'UUID v4']
   diagnostic_id varchar [not null]
-  assessment_name varchar [null, note: 'User-provided or auto-generated']
-  password_encrypted text [not null, note: 'bcrypt hash']
+  password text [not null, note: 'Secure access password']
   creation_date timestamp [default: `now()`]
   last_update timestamp [null]
   submission_date timestamp [null, note: 'Deferred to post-MVP']
   diagnostic_year varchar [not null, note: 'YYYY format']
   project_type project_type_enum [not null, default: 'other']
+  status varchar [not null, default: 'draft', note: 'draft, in-progress, completed, archived']
   lead_id varchar [not null]
   region_id varchar [not null]
   
+
   Indexes {
     lead_id
     region_id

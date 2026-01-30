@@ -1,9 +1,8 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Assessment } from './Assessment.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('lead')
 export class Lead {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column('varchar', { nullable: true })
@@ -18,12 +17,12 @@ export class Lead {
   @Column('varchar', { nullable: true })
   organization?: string;
 
+  @Column('varchar', { nullable: true })
+  role?: string;
+
   @CreateDateColumn()
   created_at!: Date;
 
   @UpdateDateColumn()
   updated_at!: Date;
-
-  @OneToMany(() => Assessment, assessment => assessment.lead)
-  assessments!: Assessment[];
 }

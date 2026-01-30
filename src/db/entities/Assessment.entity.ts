@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Lead } from './Lead.entity';
 import { Region } from './Region.entity';
 import { Diagnostic } from './Diagnostic.entity';
@@ -11,18 +11,15 @@ export enum ProjectType {
 
 @Entity('assessments')
 export class Assessment {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('varchar', { length: 36 })
+  @Column('uuid')
   @Index()
   diagnostic_id!: string;
 
-  @Column('varchar', { nullable: true })
-  assessment_name?: string;
-
   @Column('text')
-  password_encrypted!: string;
+  password!: string;
 
   @CreateDateColumn()
   creation_date!: Date;
@@ -43,23 +40,26 @@ export class Assessment {
   })
   project_type!: ProjectType;
 
-  @Column('varchar', { length: 36 })
+  @Column('varchar', { length: 50, default: 'draft' })
+  status!: string;
+
+  @Column('uuid')
   @Index()
   lead_id!: string;
 
-  @Column('varchar', { length: 36 })
+  @Column('uuid')
   @Index()
   region_id!: string;
 
-  @ManyToOne(() => Lead, lead => lead.assessments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Lead)
   @JoinColumn({ name: 'lead_id' })
   lead!: Lead;
 
-  @ManyToOne(() => Region, region => region.assessments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Region)
   @JoinColumn({ name: 'region_id' })
   region!: Region;
 
-  @ManyToOne(() => Diagnostic, diagnostic => diagnostic.assessments, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Diagnostic)
   @JoinColumn({ name: 'diagnostic_id' })
   diagnostic!: Diagnostic;
 }

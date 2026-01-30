@@ -1,9 +1,8 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Assessment } from './Assessment.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('region')
 export class Region {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column('varchar')
@@ -18,6 +17,9 @@ export class Region {
   @Column('varchar', { nullable: true })
   sub_region?: string;
 
+  @Column('varchar', { nullable: true })
+  scope?: string;
+
   @Column('text')
   ecosystems!: string; // JSON stringified array
 
@@ -29,7 +31,4 @@ export class Region {
 
   @UpdateDateColumn()
   updated_at!: Date;
-
-  @OneToMany(() => Assessment, assessment => assessment.region)
-  assessments!: Assessment[];
 }

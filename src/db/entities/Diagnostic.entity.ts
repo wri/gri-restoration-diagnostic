@@ -1,10 +1,9 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, Index, OneToMany } from 'typeorm';
-import { Assessment } from './Assessment.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity('diagnostic')
 @Index(['version', 'language'], { unique: true })
 export class Diagnostic {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column('text')
@@ -18,7 +17,4 @@ export class Diagnostic {
 
   @CreateDateColumn()
   creation_date!: Date;
-
-  @OneToMany(() => Assessment, assessment => assessment.diagnostic)
-  assessments!: Assessment[];
 }
