@@ -41,7 +41,7 @@ export default function AssessmentCreatedPage() {
       {/* Custom Modal mimicking WRI DS styles */}
       <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 pb-3 pt-5 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-700">
             Save your access details
           </h2>
@@ -91,7 +91,7 @@ export default function AssessmentCreatedPage() {
           </div>
 
           {/* Confirmation Checkbox - Native HTML */}
-          <label className="flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 cursor-pointer hover:border-primary-300 transition-all">
+          <label className="flex items-start gap-3 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 cursor-pointer hover:border-primary-300 transition-all">
             <input
               type="checkbox"
               checked={confirmed}
@@ -105,7 +105,7 @@ export default function AssessmentCreatedPage() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200">
+        <div className="px-6 py-3 border-t border-gray-200">
           <Button
             label="Start assessment"
             variant="primary"

@@ -141,7 +141,7 @@ export default function SetupAssessmentPage() {
         maxWidth={1440}
         fixed
       />
-      <form onSubmit={handleFormSubmit(onSubmit)}>
+      <form onSubmit={handleFormSubmit(onSubmit)} noValidate>
         <div className="max-w-[640px] py-16 w-full flex flex-col overflow-y-auto mx-auto">
           <div>
             {/* Mobile Logo & Tag */}
@@ -234,10 +234,15 @@ export default function SetupAssessmentPage() {
                           </p>
                         </div>
                         <div className="flex items-center justify-center">
-                          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer">
+                          <a
+                            href="https://files.wri.org/d8/s3fs-public/guide-restoration-opportunities-assessment-methodology.pdf"
+                            download="restoration-diagnostic-preparation-guide.pdf"
+                            target="_blank"
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
+                          >
                             <DownloadIcon className="text-neutral-700" height="18px" width="18px" />
                             <span className="text-sm font-medium">Download</span>
-                          </button>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -478,11 +483,14 @@ export default function SetupAssessmentPage() {
             <div className="m-auto bg-neutral-200 px-6 sm:bg-transparent sm:p-0 mb-16">
               {hasErrors && (
                 <div className="mb-4">
-                  <InlineMessage
-                    variant="error"
-                    label="There are errors in the form:"
-                    caption={getErrorList()}
-                  />
+                  <div className="p-4 bg-error-50 border-l-4 border-error-500 rounded">
+                    <p className="font-semibold text-error-900 text-sm mb-3">
+                      There are errors in the form:
+                    </p>
+                    <div className="space-y-1 text-sm text-error-800 whitespace-pre-line">
+                      {getErrorList()}
+                    </div>
+                  </div>
                 </div>
               )}
               <Button
@@ -490,6 +498,7 @@ export default function SetupAssessmentPage() {
                 variant="primary"
                 type="submit"
                 loading={isSubmitting}
+                disabled={isSubmitting}
               />
             </div>
           </div>
