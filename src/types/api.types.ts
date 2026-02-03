@@ -6,7 +6,9 @@ export interface ApiResponse<T = unknown> {
 
 export interface AssessmentCreatedResponse {
   success: boolean;
-  assessmentId: string;
-  password: string;
+  assessmentId?: string;
+  password?: string;
   message: string;
+  error?: string;
+  stack?: string;
 }

@@ -12,6 +12,7 @@ import {
   Checkbox,
   Navbar,
   Menu,
+  Modal,
 } from '@worldresources/wri-design-systems';
 import {
   WriLogoIcon,
@@ -44,6 +45,9 @@ export default function SetupAssessmentPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [error, setError] = useState<{ message: string; error?: string; stack?: string } | null>(null);
+  
+  const isDev = process.env.NODE_ENV === 'development';
 
   const {
     register,
@@ -70,16 +74,21 @@ export default function SetupAssessmentPage() {
 
       const result: AssessmentCreatedResponse = await response.json();
 
-      if (result.success) {
+      if (result.success && result.assessmentId && result.password) {
         // Redirect to success page with password in query param
         router.push(`/assessment/${result.assessmentId}/created?token=${encodeURIComponent(result.password)}`);
       } else {
-        console.error('Failed to create assessment:', result.message);
-        // TODO: Show error message to user
+        setError({
+          message: result.message || 'Failed to create assessment',
+          error: result.error,
+          stack: result.stack
+        });
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      // TODO: Show error message to user
+      setError({
+        message: 'Unable to connect to the server. Please check your connection and try again.',
+        error: error instanceof Error ? error.message : 'Network error'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -118,6 +127,54 @@ export default function SetupAssessmentPage() {
 
   return (
     <>
+      {/* Error Modal */}
+      {error && (
+        <Modal
+          open={true}
+          onClose={() => setError(null)}
+          size="large"
+          header="Something went wrong"
+          content={
+            <div className="space-y-4">
+              <p className="text-gray-700 leading-relaxed">
+                {error.message}
+              </p>
+              
+              {isDev && error.error && (
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-gray-700">Error details:</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto">
+                    <code className="text-xs text-red-600 font-mono">
+                      {error.error}
+                    </code>
+                  </div>
+                </div>
+              )}
+              
+              {isDev && error.stack && (
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-gray-700">Stack trace:</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto max-h-64 overflow-y-auto">
+                    <pre className="text-xs text-gray-800 font-mono whitespace-pre-wrap">
+                      {error.stack}
+                    </pre>
+                  </div>
+                </div>
+              )}
+              
+              <div className="pt-4">
+                <Button
+                  label="Close"
+                  variant="primary"
+                  size="default"
+                  onClick={() => setError(null)}
+                />
+              </div>
+            </div>
+          }
+        />
+      )}
+      
       <Navbar 
         pathname="/assessment/setup"
         linkRouter={Link}

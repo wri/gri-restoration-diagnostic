@@ -132,10 +132,19 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Failed to create assessment:', error);
+    
+    const isDev = process.env.NODE_ENV === 'development';
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+    const userMessage = 'We encountered an issue while creating your assessment. Please check your information and try again.';
+    
     return NextResponse.json(
       { 
         success: false, 
-        message: error instanceof Error ? error.message : 'Failed to create assessment' 
+        message: userMessage,
+        error: errorMessage,
+        ...(isDev && {
+          stack: error instanceof Error ? error.stack : undefined
+        })
       },
       { status: 500 }
     );
