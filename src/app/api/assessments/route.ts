@@ -12,9 +12,30 @@ function generatePassword(): string {
   return randomBytes(12).toString('base64').slice(0, 16).replace(/[+/=]/g, '-');
 }
 
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: AssessmentSetupFormData & { language: string } = await request.json();
+
+    // Normalize and validate email server-side
+    const normalizedEmail = normalizeEmail(body.email);
+    if (!isValidEmail(normalizedEmail)) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Invalid email format' 
+        },
+        { status: 400 }
+      );
+    }
 
     // Initialize database connection if not already
     if (!AppDataSource.isInitialized) {
@@ -32,13 +53,13 @@ export async function POST(request: NextRequest) {
       const diagnosticRepository = transactionalEntityManager.getRepository(Diagnostic);
 
       // 1. Create or find Lead (user information)
-      let lead = await leadRepository.findOne({ where: { email: body.email } });
+      let lead = await leadRepository.findOne({ where: { email: normalizedEmail } });
       
       if (!lead) {
         lead = leadRepository.create({
           job_title: body.title,
           name: body.fullName,
-          email: body.email,
+          email: normalizedEmail,
           organization: body.organization,
           role: body.role,
         });
