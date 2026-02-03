@@ -9,8 +9,17 @@ import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
 
 function generatePassword(): string {
-  // Generate a 16-character password
-  return randomBytes(12).toString('base64').slice(0, 16).replace(/[+/=]/g, '-');
+  // Generate a 10-character alphanumeric password (uppercase, lowercase, numbers)
+  const charset = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'; // Excludes ambiguous chars: 0, O, 1, I, l
+  const length = 10;
+  let password = '';
+  
+  const randomValues = randomBytes(length);
+  for (let i = 0; i < length; i++) {
+    password += charset[randomValues[i] % charset.length];
+  }
+  
+  return password;
 }
 
 function normalizeEmail(email: string): string {
