@@ -49,7 +49,7 @@ Table diagnostic {
 Table assessments {
   id varchar [pk, note: 'UUID v4']
   diagnostic_id varchar [not null]
-  password text [not null, note: 'Secure access password']
+  password_hash text [not null, note: 'Secure access password']
   creation_date timestamp [default: `now()`]
   last_update timestamp [null]
   submission_date timestamp [null, note: 'Deferred to post-MVP']
