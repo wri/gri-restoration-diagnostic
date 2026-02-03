@@ -19,7 +19,7 @@ export class Assessment {
   diagnostic_id!: string;
 
   @Column('text')
-  password!: string;
+  password_hash!: string;
 
   @CreateDateColumn()
   creation_date!: Date;

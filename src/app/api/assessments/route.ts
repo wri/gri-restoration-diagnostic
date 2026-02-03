@@ -6,6 +6,7 @@ import { Region } from '@/db/entities/Region.entity';
 import { Diagnostic } from '@/db/entities/Diagnostic.entity';
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types';
 import { randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 function generatePassword(): string {
   // Generate a 16-character password
@@ -91,11 +92,14 @@ export async function POST(request: NextRequest) {
       // 4. Create Assessment (linking lead, region, and diagnostic)
       const currentYear = new Date().getFullYear().toString();
       
+      // Hash the password before storing (plaintext returned only once)
+      const passwordHash = await bcrypt.hash(password, 10);
+      
       const assessment = new Assessment();
       assessment.lead_id = lead.id;
       assessment.region_id = savedRegion.id;
       assessment.diagnostic_id = diagnostic.id;
-      assessment.password = password;
+      assessment.password_hash = passwordHash;
       assessment.diagnostic_year = currentYear;
       assessment.project_type = ProjectType.OTHER;
       assessment.status = 'draft';
