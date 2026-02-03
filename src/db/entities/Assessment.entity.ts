@@ -51,15 +51,15 @@ export class Assessment {
   @Index()
   region_id!: string;
 
-  @ManyToOne(() => Lead)
+  @ManyToOne(() => Lead, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'lead_id' })
   lead!: Lead;
 
-  @ManyToOne(() => Region)
+  @ManyToOne(() => Region, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'region_id' })
   region!: Region;
 
-  @ManyToOne(() => Diagnostic)
+  @ManyToOne(() => Diagnostic, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'diagnostic_id' })
   diagnostic!: Diagnostic;
 }

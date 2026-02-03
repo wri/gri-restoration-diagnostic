@@ -13,9 +13,9 @@ export class Migration1769785640025 implements MigrationInterface {
         await queryRunner.query(`CREATE INDEX "IDX_1192f7376d5866e38700f4a4f1" ON "assessments" ("diagnostic_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_bc31e662c2b5218387bde63d10" ON "assessments" ("lead_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_ca21ccbaaeadf462078a3aec19" ON "assessments" ("region_id") `);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_bc31e662c2b5218387bde63d107" FOREIGN KEY ("lead_id") REFERENCES "lead"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_ca21ccbaaeadf462078a3aec196" FOREIGN KEY ("region_id") REFERENCES "region"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_1192f7376d5866e38700f4a4f1c" FOREIGN KEY ("diagnostic_id") REFERENCES "diagnostic"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_bc31e662c2b5218387bde63d107" FOREIGN KEY ("lead_id") REFERENCES "lead"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_ca21ccbaaeadf462078a3aec196" FOREIGN KEY ("region_id") REFERENCES "region"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD CONSTRAINT "FK_1192f7376d5866e38700f4a4f1c" FOREIGN KEY ("diagnostic_id") REFERENCES "diagnostic"("id") ON DELETE RESTRICT ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
