@@ -21,7 +21,7 @@
     "@chakra-ui/charts": "^3.30.0",
     "@chakra-ui/react": "^3.8.1",
     "@emotion/react": "^11.14.0",
-    "@worldresources/wri-design-systems": "^2.176.0",
+    "@worldresources/wri-design-systems": "^2.183.0",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",

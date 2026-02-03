@@ -1,13 +1,15 @@
 'use client';
 
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button, TextInput } from '@worldresources/wri-design-systems';
+import { Button, TextInput, Modal } from '@worldresources/wri-design-systems';
 import { CopyIcon } from '@/components/icons';
+import './styles.css';
 
 export default function AssessmentCreatedPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   
   const assessmentId = params.id as string;
   const password = searchParams.get('token') || '';
@@ -33,22 +35,18 @@ export default function AssessmentCreatedPage() {
   };
 
   const handleStartAssessment = () => {
-    window.location.href = `/assessment/${assessmentId}`;
+    router.push(`/assessment/${assessmentId}`);
   };
 
   return (
-    <div className="min-h-screen bg-black/50 flex items-center justify-center p-4">
-      {/* Custom Modal mimicking WRI DS styles */}
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full">
-        {/* Header */}
-        <div className="px-6 pb-3 pt-5 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700">
-            Save your access details
-          </h2>
-        </div>
-
-        {/* Content */}
-        <div className="px-6 py-6 space-y-6">
+    <Modal
+      open={true}
+      onClose={() => {}} // Empty function - blocking modal
+      size="xlarge"
+      header="Save your access details"
+      blocking={true}
+      content={
+        <div className="space-y-6">
           <p className="text-gray-700 leading-relaxed">
             This assessment doesn&apos;t use accounts. To keep your progress secure and return later, 
             you&apos;ll need to save both the assessment link and password.
@@ -90,7 +88,7 @@ export default function AssessmentCreatedPage() {
             />
           </div>
 
-          {/* Confirmation Checkbox - Native HTML */}
+          {/* Confirmation Checkbox */}
           <label className="flex items-start gap-3 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 cursor-pointer hover:border-primary-300 transition-all">
             <input
               type="checkbox"
@@ -102,20 +100,19 @@ export default function AssessmentCreatedPage() {
               I&apos;ve saved the link and password securely, and understand that if I lose these I will not be able to access the assessment.
             </span>
           </label>
-        </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 border-t border-gray-200">
-          <Button
-            label="Start assessment"
-            variant="primary"
-            size="default"
-            onClick={handleStartAssessment}
-            disabled={!confirmed}
-            className="w-full"
-          />
+          {/* Start Button */}
+          <div className="pt-4">
+            <Button
+              label="Start assessment"
+              variant="primary"
+              size="default"
+              onClick={handleStartAssessment}
+              disabled={!confirmed}
+            />
+          </div>
         </div>
-      </div>
-    </div>
+      }
+    />
   );
 }
