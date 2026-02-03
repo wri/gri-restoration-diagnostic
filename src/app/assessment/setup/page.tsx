@@ -238,6 +238,7 @@ export default function SetupAssessmentPage() {
                             href="https://files.wri.org/d8/s3fs-public/guide-restoration-opportunities-assessment-methodology.pdf"
                             download="restoration-diagnostic-preparation-guide.pdf"
                             target="_blank"
+                            rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
                           >
                             <DownloadIcon className="text-neutral-700" height="18px" width="18px" />
