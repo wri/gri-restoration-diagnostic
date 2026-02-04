@@ -1,28 +1,51 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm'
+import { Assessment } from './Assessment.entity'
+import { CustomTopic } from './CustomTopic.entity'
+import { Strategy } from './Strategy.entity'
+import { Contributor } from './Contributor.entity'
 
 @Entity('lead')
 export class Lead {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id!: string
 
-  @Column('varchar', { nullable: true })
-  job_title?: string;
+  @Column({ name: 'job_title', type: 'varchar', nullable: true })
+  jobTitle!: string | null
 
-  @Column('varchar')
-  name!: string;
+  @Column({ type: 'varchar' })
+  name!: string
 
-  @Column('varchar', { unique: true })
-  email!: string;
+  @Column({ type: 'varchar', unique: true })
+  email!: string
 
-  @Column('varchar', { nullable: true })
-  organization?: string;
+  @Column({ type: 'varchar', nullable: true })
+  organization!: string | null
 
-  @Column('varchar', { nullable: true })
-  role?: string;
+  @Column({ type: 'varchar', nullable: true })
+  role!: string | null
 
-  @CreateDateColumn()
-  created_at!: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date
 
-  @UpdateDateColumn()
-  updated_at!: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date
+
+  @OneToMany(() => Assessment, (assessment) => assessment.lead)
+  assessments!: Assessment[]
+
+  @OneToMany(() => CustomTopic, (customTopic) => customTopic.createdBy)
+  customTopics!: CustomTopic[]
+
+  @OneToMany(() => Strategy, (strategy) => strategy.createdBy)
+  strategies!: Strategy[]
+
+  @OneToMany(() => Contributor, (contributor) => contributor.lead)
+  contributions!: Contributor[]
 }

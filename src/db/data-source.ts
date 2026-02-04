@@ -4,6 +4,12 @@ import { Lead } from './entities/Lead.entity'
 import { Region } from './entities/Region.entity'
 import { Diagnostic } from './entities/Diagnostic.entity'
 import { Assessment } from './entities/Assessment.entity'
+import { Question } from './entities/Question.entity'
+import { Answer } from './entities/Answer.entity'
+import { Guidance } from './entities/Guidance.entity'
+import { CustomTopic } from './entities/CustomTopic.entity'
+import { Strategy } from './entities/Strategy.entity'
+import { Contributor } from './entities/Contributor.entity'
 
 const DATABASE_URL =
   process.env.DATABASE_URL ||
@@ -12,10 +18,21 @@ const DATABASE_URL =
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: DATABASE_URL,
-  synchronize: false, // Never auto-sync in production
+  synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',
-  entities: [Lead, Region, Diagnostic, Assessment],
-  migrations: [], // Migrations run separately via CLI, not in API runtime
+  entities: [
+    Lead,
+    Region,
+    Diagnostic,
+    Assessment,
+    Question,
+    Answer,
+    Guidance,
+    CustomTopic,
+    Strategy,
+    Contributor,
+  ],
+  migrations: [],
   subscribers: [],
   ssl: {
     rejectUnauthorized:
