@@ -18,8 +18,7 @@ export const AppDataSource = new DataSource({
   migrations: [], // Migrations run separately via CLI, not in API runtime
   subscribers: [],
   ssl: {
-    rejectUnauthorized:
-      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
+    rejectUnauthorized: false,
   },
 })
 
