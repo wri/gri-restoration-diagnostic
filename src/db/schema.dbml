@@ -214,4 +214,4 @@ Ref: contributor.lead_id > lead.id [delete: restrict]
 // - Unique constraint prevents duplicate answers per assessment/question
 // - Cascade deletes for answers, strategies, topics when assessment deleted
 // - Restrict delete on questions, leads (preserve historical data)
-// - Timestamps standardized to created_at/updated_at across all tables
+// - Timestamps generally use created_at and updated_at where defined; some tables only define created_at, and contributor uses added_at
