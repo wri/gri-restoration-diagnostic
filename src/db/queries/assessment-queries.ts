@@ -2,11 +2,6 @@ import { AppDataSource } from '../data-source'
 import { Question, Theme } from '../entities/Question.entity'
 import { Answer, AnswerValue } from '../entities/Answer.entity'
 import { Assessment } from '../entities/Assessment.entity'
-import { Guidance } from '../entities/Guidance.entity'
-import { CustomTopic } from '../entities/CustomTopic.entity'
-import { Strategy, StrategyScale } from '../entities/Strategy.entity'
-import { Contributor } from '../entities/Contributor.entity'
-import { Lead } from '../entities/Lead.entity'
 
 /**
  * Fetch all questions for a diagnostic, grouped by theme
@@ -157,6 +152,7 @@ export async function saveAnswer(
   assessmentId: string,
   questionId: string,
   value: AnswerValue | null,
+  rationale?: string,
   notes?: string
 ) {
   const answerRepo = AppDataSource.getRepository(Answer)
@@ -172,6 +168,9 @@ export async function saveAnswer(
   if (answer) {
     // Update existing
     answer.value = value
+    if (rationale !== undefined) {
+      answer.rationale = rationale
+    }
     if (notes !== undefined) {
       answer.notes = notes
     }
@@ -181,6 +180,7 @@ export async function saveAnswer(
       assessmentId,
       questionId,
       value,
+      rationale: rationale || null,
       notes: notes || null
     })
   }
@@ -197,6 +197,7 @@ export async function bulkSaveAnswers(
   answers: Array<{
     questionId: string
     value: AnswerValue | null
+    rationale?: string
     notes?: string
   }>
 ) {
@@ -207,6 +208,7 @@ export async function bulkSaveAnswers(
     assessmentId,
     questionId: a.questionId,
     value: a.value,
+    rationale: a.rationale || null,
     notes: a.notes || null
   }))
 
@@ -216,14 +218,13 @@ export async function bulkSaveAnswers(
 }
 
 /**
- * Get a single question with full details including guidance
+ * Get a single question with full details
  */
 export async function getQuestionById(questionId: string) {
   const questionRepo = AppDataSource.getRepository(Question)
   
   return questionRepo.findOne({
-    where: { id: questionId },
-    relations: ['guidance']
+    where: { id: questionId }
   })
 }
 
@@ -240,219 +241,9 @@ export async function getQuestionsByTheme(diagnosticId: string, theme: Theme) {
 }
 
 /**
- * Get guidance sections for a question
- */
-export async function getGuidanceForQuestion(questionId: string) {
-  const guidanceRepo = AppDataSource.getRepository(Guidance)
-  
-  return guidanceRepo.find({
-    where: { questionId },
-    order: { sortOrder: 'ASC' }
-  })
-}
-
-/**
- * Get custom topics for a question in an assessment
- */
-export async function getCustomTopicsForQuestion(
-  assessmentId: string,
-  questionId: string
-) {
-  const customTopicRepo = AppDataSource.getRepository(CustomTopic)
-  
-  return customTopicRepo.find({
-    where: { assessmentId, questionId },
-    order: { sortOrder: 'ASC' },
-    relations: ['createdBy']
-  })
-}
-
-/**
- * Add a custom topic to a question
- */
-export async function addCustomTopic(
-  assessmentId: string,
-  questionId: string,
-  topicText: string,
-  createdById: string
-) {
-  const customTopicRepo = AppDataSource.getRepository(CustomTopic)
-  
-  // Get next sort order
-  const existingTopics = await customTopicRepo.find({
-    where: { assessmentId, questionId },
-    order: { sortOrder: 'DESC' },
-    take: 1
-  })
-  
-  const sortOrder = existingTopics.length > 0 ? existingTopics[0].sortOrder + 1 : 1
-
-  const customTopic = customTopicRepo.create({
-    assessmentId,
-    questionId,
-    topicText,
-    createdById,
-    sortOrder
-  })
-
-  await customTopicRepo.save(customTopic)
-  return customTopic
-}
-
-/**
- * Delete a custom topic
- */
-export async function deleteCustomTopic(customTopicId: string) {
-  const customTopicRepo = AppDataSource.getRepository(CustomTopic)
-  await customTopicRepo.delete(customTopicId)
-}
-
-/**
- * Get strategies for an answer
- */
-export async function getStrategiesForAnswer(answerId: string) {
-  const strategyRepo = AppDataSource.getRepository(Strategy)
-  
-  return strategyRepo.find({
-    where: { answerId },
-    order: { sortOrder: 'ASC' },
-    relations: ['createdBy']
-  })
-}
-
-/**
- * Add a strategy to an answer
- */
-export async function addStrategy(
-  answerId: string,
-  action: string,
-  scale: StrategyScale,
-  createdById: string,
-  deadline?: Date,
-  responsibility?: string
-) {
-  const strategyRepo = AppDataSource.getRepository(Strategy)
-  
-  // Get next sort order
-  const existingStrategies = await strategyRepo.find({
-    where: { answerId },
-    order: { sortOrder: 'DESC' },
-    take: 1
-  })
-  
-  const sortOrder = existingStrategies.length > 0 ? existingStrategies[0].sortOrder + 1 : 1
-
-  const strategy = strategyRepo.create({
-    answerId,
-    action,
-    scale,
-    deadline: deadline || null,
-    responsibility: responsibility || null,
-    createdById,
-    sortOrder
-  })
-
-  await strategyRepo.save(strategy)
-  return strategy
-}
-
-/**
- * Update a strategy
- */
-export async function updateStrategy(
-  strategyId: string,
-  updates: {
-    action?: string
-    scale?: StrategyScale
-    deadline?: Date | null
-    responsibility?: string | null
-  }
-) {
-  const strategyRepo = AppDataSource.getRepository(Strategy)
-  
-  await strategyRepo.update(strategyId, updates)
-  
-  return strategyRepo.findOne({ where: { id: strategyId } })
-}
-
-/**
- * Delete a strategy
- */
-export async function deleteStrategy(strategyId: string) {
-  const strategyRepo = AppDataSource.getRepository(Strategy)
-  await strategyRepo.delete(strategyId)
-}
-
-/**
- * Get contributors for an assessment
- */
-export async function getAssessmentContributors(assessmentId: string) {
-  const contributorRepo = AppDataSource.getRepository(Contributor)
-  
-  return contributorRepo.find({
-    where: { assessmentId },
-    relations: ['lead'],
-    order: { addedAt: 'ASC' }
-  })
-}
-
-/**
- * Add a contributor to an assessment
- */
-export async function addContributor(
-  assessmentId: string,
-  leadId: string,
-  contributorName: string,
-  role?: string
-) {
-  const contributorRepo = AppDataSource.getRepository(Contributor)
-  
-  // Check if already exists
-  const existing = await contributorRepo.findOne({
-    where: { assessmentId, leadId }
-  })
-  
-  if (existing) {
-    return existing
-  }
-
-  const contributor = contributorRepo.create({
-    assessmentId,
-    leadId,
-    contributorName,
-    role: role || null
-  })
-
-  await contributorRepo.save(contributor)
-  return contributor
-}
-
-/**
- * Remove a contributor from an assessment
- */
-export async function removeContributor(assessmentId: string, leadId: string) {
-  const contributorRepo = AppDataSource.getRepository(Contributor)
-  
-  await contributorRepo.delete({ assessmentId, leadId })
-}
-
-/**
- * Search for leads by email or name (for adding contributors)
- */
-export async function searchLeads(query: string) {
-  const leadRepo = AppDataSource.getRepository(Lead)
-  
-  return leadRepo
-    .createQueryBuilder('lead')
-    .where('LOWER(lead.email) LIKE LOWER(:query)', { query: `%${query}%` })
-    .orWhere('LOWER(lead.name) LIKE LOWER(:query)', { query: `%${query}%` })
-    .take(10)
-    .getMany()
-}
-
-/**
- * Get complete question data with answer, guidance, custom topics, and strategies
+ * Get complete question data with answer (candidate entities removed)
  * Optimized for single question view in assessment engine
+ * Note: Guidance is now embedded in Question fields (definition, considerations, strategyExamples)
  */
 export async function getCompleteQuestionData(
   assessmentId: string,
@@ -461,29 +252,22 @@ export async function getCompleteQuestionData(
   const questionRepo = AppDataSource.getRepository(Question)
   const answerRepo = AppDataSource.getRepository(Answer)
   
-  // Get question with guidance
+  // Get question (guidance is now embedded in question fields)
   const question = await questionRepo.findOne({
-    where: { id: questionId },
-    relations: ['guidance']
+    where: { id: questionId }
   })
   
   if (!question) {
     throw new Error('Question not found')
   }
 
-  // Get answer with strategies
+  // Get answer
   const answer = await answerRepo.findOne({
-    where: { assessmentId, questionId },
-    relations: ['strategies', 'strategies.createdBy']
+    where: { assessmentId, questionId }
   })
-
-  // Get custom topics
-  const customTopics = await getCustomTopicsForQuestion(assessmentId, questionId)
 
   return {
     question,
-    answer,
-    customTopics,
-    strategies: answer?.strategies || []
+    answer
   }
 }

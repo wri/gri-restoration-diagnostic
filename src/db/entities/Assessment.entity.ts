@@ -12,8 +12,6 @@ import { Lead } from './Lead.entity'
 import { Region } from './Region.entity'
 import { Diagnostic } from './Diagnostic.entity'
 import { Answer } from './Answer.entity'
-import { CustomTopic } from './CustomTopic.entity'
-import { Contributor } from './Contributor.entity'
 
 export enum ProjectType {
   GEF_8 = 'GEF_8',
@@ -89,10 +87,4 @@ export class Assessment {
 
   @OneToMany(() => Answer, (answer) => answer.assessment)
   answers!: Answer[]
-
-  @OneToMany(() => CustomTopic, (customTopic) => customTopic.assessment)
-  customTopics!: CustomTopic[]
-
-  @OneToMany(() => Contributor, (contributor) => contributor.assessment)
-  contributors!: Contributor[]
 }

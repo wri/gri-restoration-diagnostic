@@ -7,7 +7,8 @@ export { Assessment, ProjectType, AssessmentStatus } from './Assessment.entity'
 // Assessment Engine Entities
 export { Question, Theme } from './Question.entity'
 export { Answer, AnswerValue } from './Answer.entity'
-export { Guidance } from './Guidance.entity'
-export { CustomTopic } from './CustomTopic.entity'
-export { Strategy, StrategyScale } from './Strategy.entity'
-export { Contributor } from './Contributor.entity'
+
+// Candidate Entities
+// export { CustomTopic } from './CustomTopic.entity.candidate'
+// export { Strategy, StrategyScale } from './Strategy.entity.candidate'
+// export { Contributor } from './Contributor.entity.candidate'

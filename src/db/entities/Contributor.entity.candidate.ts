@@ -1,3 +1,6 @@
+// Entity candidate for contributor table
+// On hold pending further confirmation
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -26,7 +29,8 @@ export class Contributor {
   @CreateDateColumn({ name: 'added_at' })
   addedAt!: Date
 
-  @ManyToOne(() => Assessment, (assessment) => assessment.contributors, {
+  // @ManyToOne(() => Assessment, (assessment) => assessment.contributors, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Assessment, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'assessment_id' })
@@ -36,7 +40,8 @@ export class Contributor {
   @Column({ name: 'assessment_id' })
   assessmentId!: string
 
-  @ManyToOne(() => Lead, (lead) => lead.contributions, {
+  // @ManyToOne(() => Lead, (lead) => lead.contributions, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Lead, {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'lead_id' })

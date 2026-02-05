@@ -1,3 +1,6 @@
+// Entity candidate for custom_topic table
+// On hold pending further confirmation
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -29,7 +32,8 @@ export class CustomTopic {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date
 
-  @ManyToOne(() => Assessment, (assessment) => assessment.customTopics, {
+  // @ManyToOne(() => Assessment, (assessment) => assessment.customTopics, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Assessment, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'assessment_id' })
@@ -39,7 +43,8 @@ export class CustomTopic {
   @Column({ name: 'assessment_id' })
   assessmentId!: string
 
-  @ManyToOne(() => Question, (question) => question.customTopics, {
+  // @ManyToOne(() => Question, (question) => question.customTopics, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Question, {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'question_id' })
@@ -49,7 +54,8 @@ export class CustomTopic {
   @Column({ name: 'question_id' })
   questionId!: string
 
-  @ManyToOne(() => Lead, (lead) => lead.customTopics, {
+  // @ManyToOne(() => Lead, (lead) => lead.customTopics, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Lead, {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'created_by' })

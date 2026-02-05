@@ -1,3 +1,6 @@
+// Entity candidate for strategy table
+// On hold pending further confirmation
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -44,7 +47,8 @@ export class Strategy {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date
 
-  @ManyToOne(() => Answer, (answer) => answer.strategies, {
+  // @ManyToOne(() => Answer, (answer) => answer.strategies, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Answer, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'answer_id' })
@@ -54,7 +58,8 @@ export class Strategy {
   @Column({ name: 'answer_id' })
   answerId!: string
 
-  @ManyToOne(() => Lead, (lead) => lead.strategies, {
+  // @ManyToOne(() => Lead, (lead) => lead.strategies, {  // On hold - reverse relation commented out
+  @ManyToOne(() => Lead, {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'created_by' })

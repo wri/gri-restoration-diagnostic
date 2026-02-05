@@ -11,8 +11,6 @@ import {
 } from 'typeorm'
 import { Diagnostic } from './Diagnostic.entity'
 import { Answer } from './Answer.entity'
-import { Guidance } from './Guidance.entity'
-import { CustomTopic } from './CustomTopic.entity'
 
 export enum Theme {
   MOTIVATE = 'Motivate',
@@ -33,8 +31,8 @@ export class Question {
   @Column({ type: 'enum', enum: Theme })
   theme!: Theme
 
-  @Column({ type: 'varchar' })
-  feature!: string
+  @Column({ name: 'enabling_condition', type: 'varchar' })
+  enablingCondition!: string
 
   @Column({ name: 'key_success_factor', type: 'varchar' })
   keySuccessFactor!: string
@@ -46,7 +44,7 @@ export class Question {
   questionText!: string
 
   @Column({ type: 'text', nullable: true })
-  comments!: string | null
+  considerations!: string | null
 
   @Column({ name: 'follow_up_questions', type: 'text', nullable: true })
   followUpQuestions!: string | null
@@ -72,10 +70,4 @@ export class Question {
 
   @OneToMany(() => Answer, (answer) => answer.question)
   answers!: Answer[]
-
-  @OneToMany(() => Guidance, (guidance) => guidance.question)
-  guidance!: Guidance[]
-
-  @OneToMany(() => CustomTopic, (customTopic) => customTopic.question)
-  customTopics!: CustomTopic[]
 }

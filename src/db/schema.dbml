@@ -12,6 +12,7 @@ Enum answer_value_enum {
   yes
   partly
   no
+  na
 }
 
 Enum theme_enum {
@@ -20,12 +21,8 @@ Enum theme_enum {
   Implement
 }
 
-Enum strategy_scale_enum {
-  immediate
-  short_term
-  medium_term
-  long_term
-}
+// Removed enums (candidate entities on hold):
+// strategy_scale_enum
 
 Table lead {
   id varchar [pk, note: 'UUID v4']
@@ -73,11 +70,11 @@ Table question {
   diagnostic_id varchar [not null]
   question_code varchar [not null, note: 'e.g., M1, E5, I3']
   theme theme_enum [not null, note: 'Motivate, Enable, Implement']
-  feature varchar [not null, note: 'e.g., a. Benefits, b. Awareness']
+  enabling_condition varchar [not null, note: 'e.g., a. Benefits, b. Awareness']
   key_success_factor varchar [not null, note: 'Short title of the question']
   definition text [null, note: 'Detailed explanation']
   question_text text [not null, note: 'The diagnostic question']
-  comments text [null, note: 'Additional context and guidance']
+  considerations text [null, note: 'Additional context and guidance']
   follow_up_questions text [null, note: 'JSON array of follow-up prompts']
   strategy_examples text [null, note: 'Examples of strategies to address gaps']
   sort_order int [not null, note: 'Display order within theme']
@@ -90,25 +87,13 @@ Table question {
   }
 }
 
-Table guidance {
-  id varchar [pk, note: 'UUID v4']
-  question_id varchar [not null]
-  title varchar [not null, note: 'Collapsible section title']
-  content text [not null, note: 'Rich HTML content']
-  sort_order int [not null, note: 'Display order within question']
-  created_at timestamp [default: `now()`]
-  
-  Indexes {
-    question_id
-  }
-}
-
 Table answer {
   id varchar [pk, note: 'UUID v4']
   assessment_id varchar [not null]
   question_id varchar [not null]
-  value answer_value_enum [null, note: 'yes, partly, no - null if unanswered']
-  notes text [null, note: 'User notes/comments on response']
+  value answer_value_enum [null, note: 'yes, partly, no, na - null if unanswered']
+  rationale text [null, note: 'Rich text answer explanation/justification']
+  notes text [null, note: 'Notes tab content - general notes about question']
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
   
@@ -119,99 +104,24 @@ Table answer {
   }
 }
 
-Table custom_topic {
-  id varchar [pk, note: 'UUID v4']
-  assessment_id varchar [not null]
-  question_id varchar [not null]
-  topic_text text [not null, note: 'User-added custom question/bullet point']
-  sort_order int [not null, note: 'Display order within question']
-  created_by varchar [not null, note: 'Lead ID who created the topic']
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-  
-  Indexes {
-    assessment_id
-    question_id
-    created_by
-  }
-}
-
-Table strategy {
-  id varchar [pk, note: 'UUID v4']
-  answer_id varchar [not null, note: 'Strategy belongs to an answer']
-  action text [not null, note: 'Strategy action description']
-  scale strategy_scale_enum [not null, note: 'Timeframe: immediate, short, medium, long']
-  deadline date [null, note: 'Target completion date']
-  responsibility varchar [null, note: 'Person/entity responsible']
-  sort_order int [not null, note: 'Display order within answer']
-  created_by varchar [not null, note: 'Lead ID who created the strategy']
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-  
-  Indexes {
-    answer_id
-    created_by
-  }
-}
-
-Table assessments {
-  id varchar [pk, note: 'UUID v4']
-  diagnostic_id varchar [not null]
-  password_hash text [not null, note: 'Bcrypt hashed access password']
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-  submitted_at timestamp [null, note: 'Deferred to post-MVP']
-  diagnostic_year varchar [not null, note: 'YYYY format']
-  project_type project_type_enum [not null, default: 'other']
-  status varchar [not null, default: 'draft', note: 'draft, in-progress, completed, archived']
-  lead_id varchar [not null, note: 'Primary owner/creator']
-  region_id varchar [not null]
-
-  Indexes {
-    lead_id
-    region_id
-    diagnostic_id
-  }
-}
-
-Table contributor {
-  id varchar [pk, note: 'UUID v4']
-  assessment_id varchar [not null]
-  lead_id varchar [not null, note: 'Contributor to the assessment']
-  contributor_name varchar [not null, note: 'Name of the contributor']
-  role varchar [null, note: 'Contributor role: collaborator, reviewer, etc.']
-  added_at timestamp [default: `now()`]
-  
-  Indexes {
-    assessment_id
-    lead_id
-    (assessment_id, lead_id) [unique]
-  }
-}
+// Removed tables (candidate entities on hold):
+// Table custom_topic - User-added custom questions/topics
+// Table strategy - Action plans for addressing gaps
+// Table contributor - Multi-user collaboration
 
 Ref: question.diagnostic_id > diagnostic.id [delete: cascade]
-Ref: guidance.question_id > question.id [delete: cascade]
 Ref: answer.assessment_id > assessments.id [delete: cascade]
 Ref: answer.question_id > question.id [delete: restrict]
-Ref: custom_topic.assessment_id > assessments.id [delete: cascade]
-Ref: custom_topic.question_id > question.id [delete: restrict]
-Ref: custom_topic.created_by > lead.id [delete: restrict]
-Ref: strategy.answer_id > answer.id [delete: cascade]
-Ref: strategy.created_by > lead.id [delete: restrict]
 Ref: assessments.lead_id > lead.id [delete: cascade]
 Ref: assessments.region_id > region.id [delete: cascade]
 Ref: assessments.diagnostic_id > diagnostic.id [delete: restrict]
-Ref: contributor.assessment_id > assessments.id [delete: cascade]
-Ref: contributor.lead_id > lead.id [delete: restrict]
 
 // Notes:
 // - Questions normalized out of diagnostic JSON into separate table
 // - Answers table links assessments to questions with response values
-// - Guidance provides collapsible help content for each question
-// - Custom topics enable collaborative question refinement per assessment
-// - Strategies table stores action plans for addressing gaps (linked to answers)
-// - Assessment contributors enable multi-user collaboration via many-to-many relationship
+// - Guidance content now embedded in Question fields (definition, considerations, strategyExamples)
+// - Candidate tables on hold: custom_topic, strategy, contributor
 // - Unique constraint prevents duplicate answers per assessment/question
-// - Cascade deletes for answers, strategies, topics when assessment deleted
+// - Cascade deletes for answers when assessment deleted
 // - Restrict delete on questions, leads (preserve historical data)
-// - Timestamps generally use created_at and updated_at where defined; some tables only define created_at, and contributor uses added_at
+// - Timestamps use created_at and updated_at where defined

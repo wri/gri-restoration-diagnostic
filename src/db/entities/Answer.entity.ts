@@ -5,19 +5,20 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany,
+  // OneToMany,  // On hold - was used for strategies relation
   JoinColumn,
   Index,
   Unique,
 } from 'typeorm'
 import { Assessment } from './Assessment.entity'
 import { Question } from './Question.entity'
-import { Strategy } from './Strategy.entity'
+// import { Strategy } from './Strategy.entity.candidate' // On hold
 
 export enum AnswerValue {
   YES = 'yes',
   PARTLY = 'partly',
   NO = 'no',
+  NA = 'na',
 }
 
 @Entity('answer')
@@ -28,6 +29,9 @@ export class Answer {
 
   @Column({ type: 'enum', enum: AnswerValue, nullable: true })
   value!: AnswerValue | null
+
+  @Column({ type: 'text', nullable: true })
+  rationale!: string | null
 
   @Column({ type: 'text', nullable: true })
   notes!: string | null
@@ -58,6 +62,6 @@ export class Answer {
   @Column({ name: 'question_id' })
   questionId!: string
 
-  @OneToMany(() => Strategy, (strategy) => strategy.answer)
-  strategies!: Strategy[]
+  // @OneToMany(() => Strategy, (strategy) => strategy.answer) // On hold
+  // strategies!: Strategy[]
 }

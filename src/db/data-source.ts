@@ -6,10 +6,6 @@ import { Diagnostic } from './entities/Diagnostic.entity'
 import { Assessment } from './entities/Assessment.entity'
 import { Question } from './entities/Question.entity'
 import { Answer } from './entities/Answer.entity'
-import { Guidance } from './entities/Guidance.entity'
-import { CustomTopic } from './entities/CustomTopic.entity'
-import { Strategy } from './entities/Strategy.entity'
-import { Contributor } from './entities/Contributor.entity'
 
 const DATABASE_URL =
   process.env.DATABASE_URL ||
@@ -27,10 +23,6 @@ export const AppDataSource = new DataSource({
     Assessment,
     Question,
     Answer,
-    Guidance,
-    CustomTopic,
-    Strategy,
-    Contributor,
   ],
   migrations: [],
   subscribers: [],

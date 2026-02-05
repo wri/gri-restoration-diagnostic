@@ -7,9 +7,6 @@ import {
   OneToMany,
 } from 'typeorm'
 import { Assessment } from './Assessment.entity'
-import { CustomTopic } from './CustomTopic.entity'
-import { Strategy } from './Strategy.entity'
-import { Contributor } from './Contributor.entity'
 
 @Entity('lead')
 export class Lead {
@@ -39,13 +36,4 @@ export class Lead {
 
   @OneToMany(() => Assessment, (assessment) => assessment.lead)
   assessments!: Assessment[]
-
-  @OneToMany(() => CustomTopic, (customTopic) => customTopic.createdBy)
-  customTopics!: CustomTopic[]
-
-  @OneToMany(() => Strategy, (strategy) => strategy.createdBy)
-  strategies!: Strategy[]
-
-  @OneToMany(() => Contributor, (contributor) => contributor.lead)
-  contributions!: Contributor[]
 }
