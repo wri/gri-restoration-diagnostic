@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server';
-import { POST } from './route';
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types';
 
 // Mock Next.js server
