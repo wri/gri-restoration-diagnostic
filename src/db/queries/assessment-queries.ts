@@ -212,7 +212,7 @@ export async function bulkSaveAnswers(
     notes: a.notes || null
   }))
 
-  await answerRepo.upsert(entities, ['assessmentId', 'questionId'])
+  await answerRepo.upsert(entities, ['assessment_id', 'question_id'])
 
   return entities.length
 }

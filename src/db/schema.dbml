@@ -21,6 +21,13 @@ Enum theme_enum {
   Implement
 }
 
+Enum assessment_status_enum {
+  draft
+  in_progress
+  completed
+  archived
+}
+
 // Removed enums (candidate entities on hold):
 // strategy_scale_enum
 
@@ -62,6 +69,26 @@ Table diagnostic {
   
   Indexes {
     (version, language) [unique]
+  }
+}
+
+Table assessments {
+  id varchar [pk, note: 'UUID v4']
+  password_hash text [not null, note: 'bcrypt hashed password for assessment access']
+  diagnostic_year varchar [not null, note: 'Year of diagnostic completion']
+  project_type project_type_enum [not null, default: 'other']
+  status assessment_status_enum [not null, default: 'draft']
+  lead_id varchar [not null, note: 'Foreign key to lead table']
+  region_id varchar [not null, note: 'Foreign key to region table']
+  diagnostic_id varchar [not null, note: 'Foreign key to diagnostic table']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  submitted_at timestamp [null, note: 'When assessment was submitted/completed']
+  
+  Indexes {
+    lead_id
+    region_id
+    diagnostic_id
   }
 }
 
