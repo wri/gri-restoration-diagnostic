@@ -10,8 +10,8 @@ import {
   Index,
   Unique,
 } from 'typeorm'
-import { Assessment } from './Assessment.entity'
-import { Question } from './Question.entity'
+import type { Assessment } from './Assessment.entity'
+import type { Question } from './Question.entity'
 // import { Strategy } from './Strategy.entity.candidate' // On hold
 
 export enum AnswerValue {
@@ -42,7 +42,7 @@ export class Answer {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date
 
-  @ManyToOne(() => Assessment, (assessment) => assessment.answers, {
+  @ManyToOne('Assessment', 'answers', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'assessment_id' })
@@ -52,7 +52,7 @@ export class Answer {
   @Column({ name: 'assessment_id' })
   assessmentId!: string
 
-  @ManyToOne(() => Question, (question) => question.answers, {
+  @ManyToOne('Question', 'answers', {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'question_id' })

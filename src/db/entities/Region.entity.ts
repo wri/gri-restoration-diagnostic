@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm'
-import { Assessment } from './Assessment.entity'
+import type { Assessment } from './Assessment.entity'
 
 @Entity('region')
 export class Region {
@@ -40,6 +40,6 @@ export class Region {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date
 
-  @OneToMany(() => Assessment, (assessment) => assessment.region)
+  @OneToMany('Assessment', 'region')
   assessments!: Assessment[]
 }

@@ -21,18 +21,31 @@ export class RD22Normalization1770308617097 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "creation_date"`);
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "last_update"`);
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "submission_date"`);
-        await queryRunner.query(`ALTER TABLE "diagnostic" ADD "title" character varying NOT NULL`);
+        // Add title as nullable first, set defaults for existing records, then make it NOT NULL
+        await queryRunner.query(`ALTER TABLE "diagnostic" ADD "title" character varying`);
+        await queryRunner.query(`UPDATE "diagnostic" SET "title" = CONCAT('Restoration Diagnostic v', "version") WHERE "title" IS NULL`);
+        await queryRunner.query(`ALTER TABLE "diagnostic" ALTER COLUMN "title" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "diagnostic" ADD "description" text`);
         await queryRunner.query(`ALTER TABLE "diagnostic" ADD "created_at" TIMESTAMP NOT NULL DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "assessments" ADD "created_at" TIMESTAMP NOT NULL DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "assessments" ADD "updated_at" TIMESTAMP NOT NULL DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "assessments" ADD "submitted_at" TIMESTAMP`);
+        // Handle language column similarly
         await queryRunner.query(`ALTER TABLE "diagnostic" DROP COLUMN "language"`);
-        await queryRunner.query(`ALTER TABLE "diagnostic" ADD "language" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "diagnostic" ADD "language" character varying`);
+        await queryRunner.query(`UPDATE "diagnostic" SET "language" = 'en' WHERE "language" IS NULL`);
+        await queryRunner.query(`ALTER TABLE "diagnostic" ALTER COLUMN "language" SET NOT NULL`);
+        // Handle diagnostic_year similarly
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "diagnostic_year"`);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD "diagnostic_year" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD "diagnostic_year" character varying`);
+        await queryRunner.query(`UPDATE "assessments" SET "diagnostic_year" = EXTRACT(YEAR FROM CURRENT_DATE)::varchar WHERE "diagnostic_year" IS NULL`);
+        await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "diagnostic_year" SET NOT NULL`);
+        // Handle status similarly
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "status"`);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD "status" character varying NOT NULL DEFAULT 'draft'`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD "status" character varying`);
+        await queryRunner.query(`UPDATE "assessments" SET "status" = 'draft' WHERE "status" IS NULL`);
+        await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "status" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "status" SET DEFAULT 'draft'`);
         await queryRunner.query(`ALTER TABLE "diagnostic" ADD CONSTRAINT "UQ_f685d950a3f4144ec3e30f581e6" UNIQUE ("version", "language")`);
         await queryRunner.query(`ALTER TABLE "answer" ADD CONSTRAINT "FK_065fc14c702822bdcbfd0d166f8" FOREIGN KEY ("assessment_id") REFERENCES "assessments"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "answer" ADD CONSTRAINT "FK_c3d19a89541e4f0813f2fe09194" FOREIGN KEY ("question_id") REFERENCES "question"("id") ON DELETE RESTRICT ON UPDATE NO ACTION`);

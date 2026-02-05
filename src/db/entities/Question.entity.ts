@@ -9,8 +9,8 @@ import {
   Index,
   Unique,
 } from 'typeorm'
-import { Diagnostic } from './Diagnostic.entity'
-import { Answer } from './Answer.entity'
+import type { Diagnostic } from './Diagnostic.entity'
+import type { Answer } from './Answer.entity'
 
 export enum Theme {
   MOTIVATE = 'Motivate',
@@ -58,7 +58,7 @@ export class Question {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date
 
-  @ManyToOne(() => Diagnostic, (diagnostic) => diagnostic.questions, {
+  @ManyToOne('Diagnostic', 'questions', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'diagnostic_id' })
@@ -68,6 +68,6 @@ export class Question {
   @Column({ name: 'diagnostic_id' })
   diagnosticId!: string
 
-  @OneToMany(() => Answer, (answer) => answer.question)
+  @OneToMany('Answer', 'question')
   answers!: Answer[]
 }

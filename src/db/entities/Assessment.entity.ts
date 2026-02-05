@@ -8,10 +8,10 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm'
-import { Lead } from './Lead.entity'
-import { Region } from './Region.entity'
-import { Diagnostic } from './Diagnostic.entity'
-import { Answer } from './Answer.entity'
+import type { Lead } from './Lead.entity'
+import type { Region } from './Region.entity'
+import type { Diagnostic } from './Diagnostic.entity'
+import type { Answer } from './Answer.entity'
 
 export enum ProjectType {
   GEF_8 = 'GEF_8',
@@ -60,14 +60,14 @@ export class Assessment {
   })
   status!: AssessmentStatus
 
-  @ManyToOne(() => Lead, (lead) => lead.assessments, { onDelete: 'CASCADE' })
+  @ManyToOne('Lead', 'assessments', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'lead_id' })
   lead!: Lead
 
   @Column({ name: 'lead_id' })
   leadId!: string
 
-  @ManyToOne(() => Region, (region) => region.assessments, {
+  @ManyToOne('Region', 'assessments', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'region_id' })
@@ -76,7 +76,7 @@ export class Assessment {
   @Column({ name: 'region_id' })
   regionId!: string
 
-  @ManyToOne(() => Diagnostic, (diagnostic) => diagnostic.assessments, {
+  @ManyToOne('Diagnostic', 'assessments', {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'diagnostic_id' })
@@ -85,6 +85,6 @@ export class Assessment {
   @Column({ name: 'diagnostic_id' })
   diagnosticId!: string
 
-  @OneToMany(() => Answer, (answer) => answer.assessment)
+  @OneToMany('Answer', 'assessment')
   answers!: Answer[]
 }

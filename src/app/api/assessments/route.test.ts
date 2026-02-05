@@ -115,7 +115,7 @@ const mockAssessmentRepository = {
 };
 
 const mockTransactionalEntityManager = {
-  getRepository: jest.fn((entity: any) => {
+  getRepository: jest.fn((entity: { name: string }) => {
     if (entity.name === 'Lead') return mockLeadRepository;
     if (entity.name === 'Region') return mockRegionRepository;
     if (entity.name === 'Diagnostic') return mockDiagnosticRepository;
@@ -124,16 +124,11 @@ const mockTransactionalEntityManager = {
   })
 };
 
-const mockAppDataSource = {
-  isInitialized: false,
-  initialize: jest.fn().mockResolvedValue(undefined),
-  transaction: jest.fn()
-};
-
 // Helper to create mock request
-function createMockRequest(body: any) {
+function createMockRequest(body: AssessmentSetupFormData & { language: string }) {
   return {
     json: jest.fn().mockResolvedValue(body)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
@@ -154,6 +149,7 @@ const validFormData: AssessmentSetupFormData & { language: string } = {
 };
 
 describe('POST /api/assessments', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let AppDataSource: any;
 
   beforeEach(async () => {
@@ -182,6 +178,7 @@ describe('POST /api/assessments', () => {
     mockAssessmentRepository.save.mockResolvedValue(mockAssessment);
     
     // Mock transaction to execute callback immediately
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     AppDataSource.transaction.mockImplementation(async (callback: any) => {
       return await callback(mockTransactionalEntityManager);
     });
@@ -310,6 +307,7 @@ describe('POST /api/assessments', () => {
 
   describe('Password Generation', () => {
     it('should generate a password for new assessment', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const bcrypt = require('bcrypt');
       
       const request = createMockRequest(validFormData);

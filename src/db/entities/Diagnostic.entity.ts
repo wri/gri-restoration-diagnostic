@@ -6,8 +6,8 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm'
-import { Assessment } from './Assessment.entity'
-import { Question } from './Question.entity'
+import type { Assessment } from './Assessment.entity'
+import type { Question } from './Question.entity'
 
 @Entity('diagnostic')
 @Unique(['version', 'language'])
@@ -30,9 +30,9 @@ export class Diagnostic {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date
 
-  @OneToMany(() => Assessment, (assessment) => assessment.diagnostic)
+  @OneToMany('Assessment', 'diagnostic')
   assessments!: Assessment[]
 
-  @OneToMany(() => Question, (question) => question.diagnostic)
+  @OneToMany('Question', 'diagnostic')
   questions!: Question[]
 }
