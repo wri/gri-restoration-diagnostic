@@ -9,6 +9,7 @@ export class RD22Normalization1770308617097 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX "public"."IDX_bc31e662c2b5218387bde63d10"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_ca21ccbaaeadf462078a3aec19"`);
         await queryRunner.query(`CREATE TYPE "public"."answer_value_enum" AS ENUM('yes', 'partly', 'no', 'na')`);
+        await queryRunner.query(`CREATE TYPE "public"."assessments_status_enum" AS ENUM('draft', 'in-progress', 'completed', 'archived')`);
         await queryRunner.query(`CREATE TABLE "answer" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "value" "public"."answer_value_enum", "rationale" text, "notes" text, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "assessment_id" uuid NOT NULL, "question_id" uuid NOT NULL, CONSTRAINT "UQ_626f3fbf79785b13f86f6a331e7" UNIQUE ("assessment_id", "question_id"), CONSTRAINT "PK_9232db17b63fb1e94f97e5c224f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_065fc14c702822bdcbfd0d166f" ON "answer" ("assessment_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_c3d19a89541e4f0813f2fe0919" ON "answer" ("question_id") `);
@@ -40,12 +41,9 @@ export class RD22Normalization1770308617097 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "assessments" ADD "diagnostic_year" character varying`);
         await queryRunner.query(`UPDATE "assessments" SET "diagnostic_year" = EXTRACT(YEAR FROM CURRENT_DATE)::varchar WHERE "diagnostic_year" IS NULL`);
         await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "diagnostic_year" SET NOT NULL`);
-        // Handle status similarly
+        // Handle status similarly - using enum type
         await queryRunner.query(`ALTER TABLE "assessments" DROP COLUMN "status"`);
-        await queryRunner.query(`ALTER TABLE "assessments" ADD "status" character varying`);
-        await queryRunner.query(`UPDATE "assessments" SET "status" = 'draft' WHERE "status" IS NULL`);
-        await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "status" SET NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "assessments" ALTER COLUMN "status" SET DEFAULT 'draft'`);
+        await queryRunner.query(`ALTER TABLE "assessments" ADD "status" "public"."assessments_status_enum" NOT NULL DEFAULT 'draft'`);
         await queryRunner.query(`ALTER TABLE "diagnostic" ADD CONSTRAINT "UQ_f685d950a3f4144ec3e30f581e6" UNIQUE ("version", "language")`);
         await queryRunner.query(`ALTER TABLE "answer" ADD CONSTRAINT "FK_065fc14c702822bdcbfd0d166f8" FOREIGN KEY ("assessment_id") REFERENCES "assessments"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "answer" ADD CONSTRAINT "FK_c3d19a89541e4f0813f2fe09194" FOREIGN KEY ("question_id") REFERENCES "question"("id") ON DELETE RESTRICT ON UPDATE NO ACTION`);
@@ -82,6 +80,7 @@ export class RD22Normalization1770308617097 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX "public"."IDX_065fc14c702822bdcbfd0d166f"`);
         await queryRunner.query(`DROP TABLE "answer"`);
         await queryRunner.query(`DROP TYPE "public"."answer_value_enum"`);
+        await queryRunner.query(`DROP TYPE "public"."assessments_status_enum"`);
         await queryRunner.query(`CREATE INDEX "IDX_ca21ccbaaeadf462078a3aec19" ON "assessments" ("region_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_bc31e662c2b5218387bde63d10" ON "assessments" ("lead_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_1192f7376d5866e38700f4a4f1" ON "assessments" ("diagnostic_id") `);

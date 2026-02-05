@@ -19,7 +19,7 @@ export enum Theme {
 }
 
 @Entity('question')
-@Unique(['diagnostic', 'questionCode'])
+@Unique(['diagnosticId', 'questionCode'])
 @Index(['theme'])
 export class Question {
   @PrimaryGeneratedColumn('uuid')

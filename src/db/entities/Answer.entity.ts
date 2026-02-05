@@ -22,7 +22,7 @@ export enum AnswerValue {
 }
 
 @Entity('answer')
-@Unique(['assessment', 'question'])
+@Unique(['assessmentId', 'questionId'])
 export class Answer {
   @PrimaryGeneratedColumn('uuid')
   id!: string
