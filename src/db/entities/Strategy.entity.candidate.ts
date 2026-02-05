@@ -55,7 +55,7 @@ export class Strategy {
   @Index()
   answer!: Answer
 
-  @Column({ name: 'answer_id' })
+  @Column({ name: 'answer_id', type: 'uuid' })
   answerId!: string
 
   // @ManyToOne(() => Lead, (lead) => lead.strategies, {  // On hold - reverse relation commented out
@@ -66,6 +66,6 @@ export class Strategy {
   @Index()
   createdBy!: Lead
 
-  @Column({ name: 'created_by' })
+  @Column({ name: 'created_by', type: 'uuid' })
   createdById!: string
 }

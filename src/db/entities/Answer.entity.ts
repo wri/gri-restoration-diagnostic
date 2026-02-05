@@ -49,7 +49,7 @@ export class Answer {
   @Index()
   assessment!: Assessment
 
-  @Column({ name: 'assessment_id' })
+  @Column({ name: 'assessment_id', type: 'uuid' })
   assessmentId!: string
 
   @ManyToOne('Question', 'answers', {
@@ -59,7 +59,7 @@ export class Answer {
   @Index()
   question!: Question
 
-  @Column({ name: 'question_id' })
+  @Column({ name: 'question_id', type: 'uuid' })
   questionId!: string
 
   // @OneToMany(() => Strategy, (strategy) => strategy.answer) // On hold

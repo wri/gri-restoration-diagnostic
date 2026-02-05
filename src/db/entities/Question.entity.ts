@@ -65,7 +65,7 @@ export class Question {
   @Index()
   diagnostic!: Diagnostic
 
-  @Column({ name: 'diagnostic_id' })
+  @Column({ name: 'diagnostic_id', type: 'uuid' })
   diagnosticId!: string
 
   @OneToMany('Answer', 'question')

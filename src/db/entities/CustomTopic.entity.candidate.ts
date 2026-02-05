@@ -40,7 +40,7 @@ export class CustomTopic {
   @Index()
   assessment!: Assessment
 
-  @Column({ name: 'assessment_id' })
+  @Column({ name: 'assessment_id', type: 'uuid' })
   assessmentId!: string
 
   // @ManyToOne(() => Question, (question) => question.customTopics, {  // On hold - reverse relation commented out
@@ -51,7 +51,7 @@ export class CustomTopic {
   @Index()
   question!: Question
 
-  @Column({ name: 'question_id' })
+  @Column({ name: 'question_id', type: 'uuid' })
   questionId!: string
 
   // @ManyToOne(() => Lead, (lead) => lead.customTopics, {  // On hold - reverse relation commented out
@@ -62,6 +62,6 @@ export class CustomTopic {
   @Index()
   createdBy!: Lead
 
-  @Column({ name: 'created_by' })
+  @Column({ name: 'created_by', type: 'uuid' })
   createdById!: string
 }

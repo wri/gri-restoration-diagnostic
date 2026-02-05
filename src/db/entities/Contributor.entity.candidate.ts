@@ -37,7 +37,7 @@ export class Contributor {
   @Index()
   assessment!: Assessment
 
-  @Column({ name: 'assessment_id' })
+  @Column({ name: 'assessment_id', type: 'uuid' })
   assessmentId!: string
 
   // @ManyToOne(() => Lead, (lead) => lead.contributions, {  // On hold - reverse relation commented out
@@ -48,6 +48,6 @@ export class Contributor {
   @Index()
   lead!: Lead
 
-  @Column({ name: 'lead_id' })
+  @Column({ name: 'lead_id', type: 'uuid' })
   leadId!: string
 }

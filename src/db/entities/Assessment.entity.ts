@@ -64,7 +64,7 @@ export class Assessment {
   @JoinColumn({ name: 'lead_id' })
   lead!: Lead
 
-  @Column({ name: 'lead_id' })
+  @Column({ name: 'lead_id', type: 'uuid' })
   leadId!: string
 
   @ManyToOne('Region', 'assessments', {
@@ -73,7 +73,7 @@ export class Assessment {
   @JoinColumn({ name: 'region_id' })
   region!: Region
 
-  @Column({ name: 'region_id' })
+  @Column({ name: 'region_id', type: 'uuid' })
   regionId!: string
 
   @ManyToOne('Diagnostic', 'assessments', {
@@ -82,7 +82,7 @@ export class Assessment {
   @JoinColumn({ name: 'diagnostic_id' })
   diagnostic!: Diagnostic
 
-  @Column({ name: 'diagnostic_id' })
+  @Column({ name: 'diagnostic_id', type: 'uuid' })
   diagnosticId!: string
 
   @OneToMany('Answer', 'assessment')
