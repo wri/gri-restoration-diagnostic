@@ -30,5 +30,5 @@ app_environment_variables = {
   "DB_USER" = "postgres"
   "DB_PASSWORD" = "ePim6ipwl8OTKLxTZbPa"
   "DB_NAME" = "qa"
-  "DATABASE_SSL_REJECT_UNAUTHORIZED" = false
+  "DATABASE_SSL_REJECT_UNAUTHORIZED" = "false"
 }
