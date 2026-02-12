@@ -26,7 +26,6 @@ export default function AssessmentNavbar() {
         />,
       ]}
       actionsSection={[]}
-      maxWidth={1440}
       fixed
     />
   );
