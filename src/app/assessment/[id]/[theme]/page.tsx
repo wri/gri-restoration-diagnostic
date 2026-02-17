@@ -13,17 +13,6 @@ const THEME_ORDER = [
   Theme.IMPLEMENT
 ] as const;
 
-const languages = [
-  {
-    label: 'English',
-    value: 'en',
-  },
-  {
-    label: 'Spanish',
-    value: 'es',
-  },
-]
-
 function normalizeTheme(theme: string): Theme | null {
   const normalized = theme.charAt(0).toUpperCase() + theme.slice(1).toLowerCase()
   return THEME_ORDER.includes(normalized as Theme) ? normalized as Theme : null
@@ -59,21 +48,34 @@ export default async function ThemeQuestionPage({ params }: PageProps) {
   const pathname = `/assessment/${assessmentId}/${theme.toLowerCase()}`
   
   // Serialize TypeORM entities to plain objects for client components
-  const plainQuestions = questions.map(q => ({
-    id: q.id,
-    questionCode: q.questionCode,
-    theme: q.theme,
-    enablingCondition: q.enablingCondition,
-    keySuccessFactor: q.keySuccessFactor,
-    definition: q.definition,
-    questionText: q.questionText,
-    considerations: q.considerations,
-    followUpQuestions: q.followUpQuestions,
-    strategyExamples: q.strategyExamples,
-    sortOrder: q.sortOrder,
-    diagnosticId: q.diagnosticId,
-    createdAt: q.createdAt
-  }))
+  const plainQuestions = questions.map(q => {
+    // Parse followUpQuestions from JSON string
+    console.log("🚀 ~ ThemeQuestionPage ~ q:", q)
+    let followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null = null
+    if (q.followUpQuestions) {
+      try {
+        followUpQuestions = JSON.parse(q.followUpQuestions)
+      } catch {
+        console.error('Failed to parse followUpQuestions for question', q.id)
+      }
+    }
+    
+    return {
+      id: q.id,
+      questionCode: q.questionCode,
+      theme: q.theme,
+      enablingCondition: q.enablingCondition,
+      keySuccessFactor: q.keySuccessFactor,
+      definition: q.definition,
+      questionText: q.questionText,
+      considerations: q.considerations,
+      followUpQuestions,
+      strategyExamples: q.strategyExamples,
+      sortOrder: q.sortOrder,
+      diagnosticId: q.diagnosticId,
+      createdAt: q.createdAt
+    }
+  })
   
   // Build answers map - each question has 0 or 1 answer
   const answersMap = new Map<string, Answer>()
@@ -120,7 +122,6 @@ export default async function ThemeQuestionPage({ params }: PageProps) {
   return (
     <ThemePageLayout
       assessmentId={assessmentId}
-      assessmentTitle={assessment.diagnostic?.title || 'Restoration Diagnostic'}
       theme={theme}
       pathname={pathname}
       language={language}

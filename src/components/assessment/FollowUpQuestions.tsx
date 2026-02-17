@@ -3,7 +3,7 @@
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 
 interface FollowUpQuestionsProps {
-  followUpQuestions: string | null // JSON string or plain text
+  followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null
   selectedAnswer: AnswerValue | null
 }
 
@@ -15,21 +15,15 @@ export function FollowUpQuestions({ followUpQuestions, selectedAnswer }: FollowU
   
   // Parse follow-up questions
   let questions: string[] = []
-  try {
-    const parsed = JSON.parse(followUpQuestions)
-    
-    // Show based on answer value
-    if (selectedAnswer === 'yes') {
-      questions = parsed.yes || []
-    } else if (selectedAnswer === 'no') {
-      questions = parsed.no || []
-    } else if (selectedAnswer === 'partly') {
-      // Show ALL questions for partly
-      questions = [...(parsed.yes || []), ...(parsed.no || []), ...(parsed.partly || [])]
-    }
-  } catch {
-    // If not JSON, try splitting by newline
-    questions = followUpQuestions.split('\n').filter(Boolean)
+  
+  // Show based on answer value
+  if (selectedAnswer === 'yes') {
+    questions = followUpQuestions['if yes'] || []
+  } else if (selectedAnswer === 'no') {
+    questions = followUpQuestions['if no'] || []
+  } else if (selectedAnswer === 'partly') {
+    // Show ALL questions for partly
+    questions = [...(followUpQuestions['if yes'] || []), ...(followUpQuestions['if no'] || [])]
   }
   
   if (questions.length === 0) {

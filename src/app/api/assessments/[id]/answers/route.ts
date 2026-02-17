@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // Lazy load database modules to avoid circular dependency issues
   const { saveAnswer } = await import('@/db/queries/assessment-queries')
+  
+  // Await params as required by Next.js 15
+  const { id } = await params
   
   try {
     const body = await request.json()
@@ -19,7 +22,7 @@ export async function POST(
     }
     
     const answer = await saveAnswer(
-      params.id,
+      id,
       questionId,
       value || undefined,
       rationale || undefined,
@@ -49,15 +52,18 @@ export async function POST(
 // GET endpoint for fetching answers (optional, for refresh)
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { getQuestionsWithAnswers } = await import('@/db/queries/assessment-queries')
   
+  // Await params as required by Next.js 15
+  const { id } = await params
+  
   try {
-    console.log("🚀 ~ GET ~ params:", params)
-    const answers = await getQuestionsWithAnswers(params.id)
+    console.log("🚀 ~ GET ~ params:", { id })
+    const answers = await getQuestionsWithAnswers(id)
     return NextResponse.json({ success: true, answers })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch answers' },
       { status: 500 }

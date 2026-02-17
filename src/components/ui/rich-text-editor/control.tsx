@@ -49,7 +49,7 @@ export interface BaseControlConfig {
   label: string
   icon?: React.ElementType
   isDisabled?: (editor: Editor) => boolean
-  getProps?: (editor: Editor) => Record<string, any>
+  getProps?: (editor: Editor) => Record<string, unknown>
 }
 
 export interface ButtonControlProps
@@ -97,7 +97,7 @@ export function createBooleanControl(config: BooleanControlConfig) {
       const disabled = isDisabled ? isDisabled(editor) : false
       const dynamicProps = getProps ? getProps(editor) : {}
       const variant =
-        getVariant && !getProps ? getVariant(editor) : dynamicProps.variant
+        getVariant && !getProps ? getVariant(editor) : (dynamicProps.variant as IconButtonProps['variant'])
 
       return (
         <ButtonControl
@@ -621,7 +621,7 @@ export const TextStyle = createSelectControl({
     }
   },
   renderValue: (value, option) => {
-    const textStyle: any = {
+    const textStyle: Record<string, { fontWeight?: string; fontSize: string; fontStyle?: string }> = {
       paragraph: { fontWeight: "normal", fontSize: "sm" },
       heading1: { fontWeight: "bold", fontSize: "lg" },
       heading2: { fontWeight: "semibold", fontSize: "md" },

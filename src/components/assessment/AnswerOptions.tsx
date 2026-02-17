@@ -71,7 +71,8 @@ export function AnswerOptions({ value, onChange, disabled }: AnswerOptionsProps)
                 : 'bg-white border border-slate-200 hover:border-slate-400'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
             style={{
-              borderWidth: isSelected ? '4px' : '1px'
+              borderWidth: isSelected ? '4px' : '1px',
+              borderColor: isSelected ? config.selectedColor : 'inherit'
             }}
           >
             <div style={{ color: isSelected ? config.selectedColor : config.unselectedColor }}>

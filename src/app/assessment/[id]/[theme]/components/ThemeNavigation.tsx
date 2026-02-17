@@ -51,7 +51,7 @@ function calculateStatusCounts(questions: PlainQuestion[], answers: Map<string, 
 }
 
 // Theme icon component
-function ThemeIcon({ theme }: { theme: string }) {
+function ThemeIcon() {
   return <LeadThemeIcon className="w-4 h-4 text-slate-600" />
 }
 
@@ -103,7 +103,7 @@ export function ThemeNavigation({
       {/* Theme title and navigation */}
       <div className="flex items-center justify-between p-2 border-b">
         <div className="flex items-center gap-2 font-bold capitalize text-sm text-grey-500">
-          <ThemeIcon theme={theme} />
+          <ThemeIcon />
           <span className='text-lg'>{theme}</span>
         </div>
         <div className="flex gap-1">

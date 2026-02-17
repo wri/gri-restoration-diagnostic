@@ -1,10 +1,7 @@
 'use client'
 
-import Link from 'next/link'
-import { Navbar, Footer, Menu } from '@worldresources/wri-design-systems'
 import { SubNavbar } from './SubNavbar'
 import { QuestionView } from './QuestionView'
-import { WriLogoIcon } from '@/components/icons'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { Theme } from '@/db/entities/Question.entity'
 
@@ -18,7 +15,7 @@ export interface PlainQuestion {
   definition: string | null
   questionText: string
   considerations: string | null
-  followUpQuestions: any
+  followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null
   strategyExamples: string | null
   sortOrder: number
   diagnosticId: string
@@ -38,7 +35,6 @@ export interface PlainAnswer {
 
 interface ThemePageLayoutProps {
   assessmentId: string
-  assessmentTitle: string
   theme: 'Motivate' | 'Enable' | 'Implement'
   pathname: string
   language: string
@@ -51,23 +47,9 @@ interface ThemePageLayoutProps {
   nextTheme: string | null
 }
 
-const languages = [
-  {
-    label: 'English',
-    value: 'en',
-  },
-  {
-    label: 'Spanish',
-    value: 'es',
-  },
-]
-
 export function ThemePageLayout({
   assessmentId,
-  assessmentTitle,
   theme,
-  pathname,
-  language,
   questions,
   initialAnswers,
   focusQuestionCode,
@@ -81,10 +63,7 @@ export function ThemePageLayout({
       
       {/* Sub-navbar - Custom */}
       <header className="border-b border-slate-200 sticky top-0 bg-white z-40">
-        <SubNavbar
-          assessmentTitle={assessmentTitle}
-          assessmentId={assessmentId}
-        />
+        <SubNavbar />
       </header>
       
       {/* Main content with gradient background */}

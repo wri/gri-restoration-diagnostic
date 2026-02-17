@@ -1,14 +1,16 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Footer as WriFooter } from '@worldresources/wri-design-systems'
 
 const partnerLogos = [
-  <img 
+  <Image 
     key="partner-1"
     src="/images/IUCN-logo.png" 
     alt="Assessment Partner" 
-    height="32px" 
+    width={32}
+    height={32}
   />
 ]
 
