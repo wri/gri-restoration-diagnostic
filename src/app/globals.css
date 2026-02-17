@@ -19,7 +19,7 @@ body {
 }
 
 .gradient-bg {
-  background: linear-gradient(to bottom, #fff8e6 0%, #FFFFFF 40%);
+  background: linear-gradient(to bottom, #fef5dd 10%, #fff8e6 15%, #FFFFFF 40%);
 }
 
 .scrollbar-hide::-webkit-scrollbar {

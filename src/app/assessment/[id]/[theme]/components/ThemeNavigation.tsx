@@ -4,13 +4,15 @@ import { Panel } from '@worldresources/wri-design-systems'
 import { 
   ChevronLeftIcon as ChevronLeft, 
   ChevronRightIcon as ChevronRight,
-  CheckCircleFilledIcon as CheckCircleFilled,
-  RemoveCircleFilledIcon as RemoveCircleFilled,
-  RemoveCircleOutlinedIcon as RemoveCircleOutlined
+  YesAnswerIcon,
+  PartlyAnswerIcon,
+  NoAnswerIcon,
+  LeadThemeIcon
 } from '@/components/icons'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Box } from '@chakra-ui/react'
+import clsx from 'clsx'
 
 interface ThemeNavigationProps {
   theme: 'Motivate' | 'Enable' | 'Implement'
@@ -50,9 +52,7 @@ function calculateStatusCounts(questions: PlainQuestion[], answers: Map<string, 
 
 // Theme icon component
 function ThemeIcon({ theme }: { theme: string }) {
-  // Using material symbols for now
-  const iconName = theme === 'Motivate' ? 'psychology' : theme === 'Enable' ? 'settings' : 'build'
-  return <span className="material-symbols-outlined text-base">{iconName}</span>
+  return <LeadThemeIcon className="w-4 h-4 text-slate-600" />
 }
 
 // Answer status badge
@@ -61,18 +61,18 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
     return <span className="text-[11px] mt-1 block text-slate-400">Not answered</span>
   }
   
-  const config: Record<AnswerValue, { label: string; color: string; icon: React.ReactNode }> = {
-    yes: { label: 'Yes', color: 'text-green-600', icon: <CheckCircleFilled className="w-3 h-3" /> },
-    partly: { label: 'Partly', color: 'text-amber-600', icon: <RemoveCircleFilled className="w-3 h-3" /> },
-    no: { label: 'No', color: 'text-red-600', icon: <RemoveCircleOutlined className="w-3 h-3" /> },
-    na: { label: 'N/A', color: 'text-slate-500', icon: <span className="material-symbols-outlined text-xs">radio_button_unchecked</span> }
+  const config: Record<AnswerValue, { label: string; iconColor: string; icon: React.ReactNode }> = {
+    yes: { label: 'Yes', iconColor: '#009E77', icon: <YesAnswerIcon className="w-3 h-3" /> },
+    partly: { label: 'Partly', iconColor: '#A88100', icon: <PartlyAnswerIcon className="w-3 h-3" /> },
+    no: { label: 'No', iconColor: '#C11101', icon: <NoAnswerIcon className="w-3 h-3" /> },
+    na: { label: 'N/A', iconColor: '#3D3B3B', icon: <div className="w-3 h-3 rounded-full border" style={{ borderColor: '#3D3B3B' }} /> }
   }
   
   const status = config[answer.value]
   
   return (
-    <span className={`text-[11px] flex items-center gap-1 ${status.color} mt-1`}>
-      {status.icon}
+    <span className="text-[11px] flex items-center gap-1 text-slate-700 mt-1">
+      <span style={{ color: status.iconColor }}>{status.icon}</span>
       {status.label}
     </span>
   )
@@ -99,25 +99,31 @@ export function ThemeNavigation({
   const statusCounts = calculateStatusCounts(questions, answers)
   
   const headerContent = (
-    <div className="bg-white mb-2">
+    <div className="bg-white">
       {/* Theme title and navigation */}
-      <div className="flex items-center justify-between mb-2 p-2 border-b">
+      <div className="flex items-center justify-between p-2 border-b">
         <div className="flex items-center gap-2 font-bold capitalize text-sm text-grey-500">
           <ThemeIcon theme={theme} />
-          {theme}
+          <span className='text-lg'>{theme}</span>
         </div>
         <div className="flex gap-1">
           <button
             disabled={!canGoPrev}
             onClick={() => onThemeChange('prev')}
-            className="w-6 h-6 rounded bg-white text-yellow-500 hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className={clsx({ 
+              'text-grey-900': !canGoPrev,
+              'text-yellow-500': canGoPrev
+            }) + " w-6 h-6 rounded bg-white hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"}
           >
             <ChevronLeft className="w-3 h-3" />
           </button>
           <button
             disabled={!canGoNext}
             onClick={() => onThemeChange('next')}
-            className="w-6 h-6 rounded bg-white text-yellow-500 hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className={clsx({ 
+              'text-grey-900': !canGoNext,
+              'text-yellow-500': canGoNext
+            }) + " w-6 h-6 rounded bg-white hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"}
           >
             <ChevronRight className="w-3 h-3" />
           </button>
@@ -136,16 +142,16 @@ export function ThemeNavigation({
       </div>
       
       {/* Status counts */}
-      <div className="flex items-center gap-3 text-xs p-2 border-b">
+      <div className="flex items-center gap-3 text-xs p-2">
         <span className="text-grey-200">Responses:</span>
-        <span className="flex items-center gap-1">
-          <CheckCircleFilled className="w-4 h-4 text-green-500" /> {statusCounts.yes}
+        <span className="flex items-center gap-1 text-slate-700">
+          <YesAnswerIcon className="w-4 h-4" style={{ color: '#009E77' }} /> {statusCounts.yes}
         </span>
-        <span className="flex items-center gap-1">
-          <RemoveCircleFilled className="w-4 h-4 text-amber-500" /> {statusCounts.partly}
+        <span className="flex items-center gap-1 text-slate-700">
+          <PartlyAnswerIcon className="w-4 h-4" style={{ color: '#A88100' }} /> {statusCounts.partly}
         </span>
-        <span className="flex items-center gap-1">
-          <RemoveCircleOutlined className="w-4 h-4 text-red-500" /> {statusCounts.no}
+        <span className="flex items-center gap-1 text-slate-700">
+          <NoAnswerIcon className="w-4 h-4" style={{ color: '#C11101' }} /> {statusCounts.no}
         </span>
       </div>
     </div>
@@ -213,7 +219,9 @@ export function ThemeNavigation({
             display: 'none'
           },
           msOverflowStyle: 'none',
-          scrollbarWidth: 'none'
+          scrollbarWidth: 'none',
+          borderRadius: '0.25rem',
+          marginBottom: '4rem'
         }
       }}
     >

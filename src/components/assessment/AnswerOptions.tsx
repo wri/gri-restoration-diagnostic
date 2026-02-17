@@ -1,7 +1,7 @@
 'use client'
 
 import type { AnswerValue } from '@/db/entities/Answer.entity'
-import { CheckIcon as Check, CloseIcon as Close, RemoveIcon as Remove } from '@/components/icons'
+import { YesAnswerIcon, PartlyAnswerIcon, NoAnswerIcon } from '@/components/icons'
 
 interface AnswerOptionsProps {
   value: AnswerValue | null
@@ -12,42 +12,44 @@ interface AnswerOptionsProps {
 const answerConfig: Record<AnswerValue, { 
   label: string
   icon: React.ReactNode
+  selectedColor: string
+  unselectedColor: string
   bgColor: string
   borderColor: string
-  iconBg: string
-  iconBgSelected: string
+  borderColorNA?: string
 }> = {
   yes: {
     label: 'Yes',
-    icon: <Check className="w-6 h-6" />,
+    icon: <YesAnswerIcon className="w-8 h-8" />,
+    selectedColor: '#009E77',
+    unselectedColor: '#C9C9C9',
     bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-600',
-    iconBg: 'bg-slate-100',
-    iconBgSelected: 'bg-emerald-600'
+    borderColor: 'border-emerald-600'
   },
   partly: {
     label: 'Partly',
-    icon: <Remove className="w-6 h-6" />,
+    icon: <PartlyAnswerIcon className="w-8 h-8" />,
+    selectedColor: '#A88100',
+    unselectedColor: '#C9C9C9',
     bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-500',
-    iconBg: 'bg-slate-100',
-    iconBgSelected: 'bg-amber-500'
+    borderColor: 'border-amber-500'
   },
   no: {
     label: 'No',
-    icon: <Close className="w-6 h-6" />,
+    icon: <NoAnswerIcon className="w-8 h-8" />,
+    selectedColor: '#C11101',
+    unselectedColor: '#C9C9C9',
     bgColor: 'bg-red-50',
-    borderColor: 'border-red-500',
-    iconBg: 'bg-slate-100',
-    iconBgSelected: 'bg-red-500'
+    borderColor: 'border-red-500'
   },
   na: {
     label: 'N/A',
-    icon: <div className="w-3 h-3" />,
+    icon: <div className="w-8 h-8 rounded-full border-2" style={{ borderColor: '#3D3B3B' }} />,
+    selectedColor: '#3D3B3B',
+    unselectedColor: '#C9C9C9',
     bgColor: 'bg-slate-50',
     borderColor: 'border-slate-400',
-    iconBg: 'bg-white border-2 border-slate-300',
-    iconBgSelected: 'bg-slate-400'
+    borderColorNA: '#3D3B3B'
   }
 }
 
@@ -63,17 +65,16 @@ export function AnswerOptions({ value, onChange, disabled }: AnswerOptionsProps)
             type="button"
             disabled={disabled}
             onClick={() => onChange(answerValue)}
-            className={`group p-6 rounded flex flex-col items-center justify-center gap-4 transition-all hover:shadow-lg ring-offset-2 focus:ring-2 ${
+            className={`group p-6 rounded-lg flex flex-col items-center justify-center gap-4 transition-all hover:shadow-lg border border-slate-200 ${
               isSelected
-                ? `${config.bgColor} border-2 ${config.borderColor} ring-${answerValue === 'yes' ? 'emerald' : answerValue === 'partly' ? 'amber' : answerValue === 'no' ? 'red' : 'slate'}-600`
+                ? `${config.bgColor} border-[${config.selectedColor}] border-3 ${config.borderColor} ring-${answerValue === 'yes' ? 'emerald' : answerValue === 'partly' ? 'amber' : answerValue === 'no' ? 'red' : 'slate'}-600`
                 : 'bg-white border border-slate-200 hover:border-slate-400'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
+            style={{
+              borderWidth: isSelected ? '4px' : '1px'
+            }}
           >
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              isSelected
-                ? `${config.iconBgSelected} text-white`
-                : `${config.iconBg} text-slate-400`
-            }`}>
+            <div style={{ color: isSelected ? config.selectedColor : config.unselectedColor }}>
               {config.icon}
             </div>
             <span className={`font-bold ${

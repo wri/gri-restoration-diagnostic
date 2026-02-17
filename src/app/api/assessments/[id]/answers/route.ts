@@ -54,6 +54,7 @@ export async function GET(
   const { getQuestionsWithAnswers } = await import('@/db/queries/assessment-queries')
   
   try {
+    console.log("🚀 ~ GET ~ params:", params)
     const answers = await getQuestionsWithAnswers(params.id)
     return NextResponse.json({ success: true, answers })
   } catch (error) {

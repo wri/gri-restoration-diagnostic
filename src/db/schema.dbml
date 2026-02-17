@@ -1,6 +1,6 @@
 // Restoration Diagnostic Schema
 // Normalized schema for Assessment Engine with Questions, Answers, Guidance, Strategies, and Collaboration
-// Visit dbdiagram.io/ to view this schema diagram
+// Visit dbdiagram.io/ and paste there the contents of thsi file to view this schema diagram
 
 Enum project_type_enum {
   GEF_8

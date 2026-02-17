@@ -76,16 +76,6 @@ export function ThemePageLayout({
   prevTheme,
   nextTheme,
 }: ThemePageLayoutProps) {
-  // Partner logo for footer
-  const partnerLogos = [
-    <img 
-      key="partner-1"
-      src="/images/IUCN-logo.png" 
-      alt="Assessment Partner" 
-      height="32px" 
-    />
-  ]
-
   return (
     <div className="min-h-screen flex flex-col bg-background-light gradient-bg">
       
@@ -112,7 +102,7 @@ export function ThemePageLayout({
         />
       </div>
       
-      <Footer additionalLogos={partnerLogos}>{''}</Footer>
+      
     </div>
   )
 }

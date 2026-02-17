@@ -3,7 +3,7 @@
 import { Button } from '@worldresources/wri-design-systems'
 import { AnswerOptions } from '@/components/assessment/AnswerOptions'
 import { FollowUpQuestions } from '@/components/assessment/FollowUpQuestions'
-import { RationaleEditor } from '@/components/assessment/RationaleEditor'
+import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEditor'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion } from './ThemePageLayout'
 
@@ -62,10 +62,11 @@ export function QuestionContent({
               Provide your rationale and supporting documents below. If you have modified the questions above, please explain how they were adapted for your specific goals or region.
             </p>
           </div>
-          <RationaleEditor
+          <ChakraRichTextEditor
             value={rationale}
             onChange={onRationaleChange}
             placeholder="Add your rationale..."
+            minHeight="200px"
           />
         </div>
       )}
