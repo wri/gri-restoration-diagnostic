@@ -17,22 +17,22 @@ const Title = ({ title }: { title: string }) => {
 
 interface ScopeProps {
   data: {
-    title: string | undefined
+    title: string
     diagnosticLead: {
-      name: string | undefined
-      email: string | undefined
-      organization: string | null | undefined
-      role: string | null | undefined
+      name: string
+      email: string
+      organization: string | null
+      role: string | null
     }
     diagnosticScope: {
       geography: {
-        country: string | null | undefined
-        geographyType: string | undefined
-        subRegion: string | null | undefined
-        gisUrl: string | null | undefined
+        country: string | null
+        geographyType: string
+        subRegion: string | null
+        gisUrl: string | null
       }
       timeHorizon: {
-        completionYear: string | undefined
+        completionYear: string
       }
       restorationGoals: {
         goals: string[]
@@ -185,7 +185,11 @@ const Scope = ({ data }: ScopeProps) => {
             <p className='text-neutral-700 text-sm'>Ecosystems</p>
             <div className='flex flex-wrap gap-2'>
               {data.diagnosticScope.restorationGoals.ecosystems.map((item) => (
-                <Tag key={item} label={item} variant='info-white' />
+                <Tag
+                  key={item}
+                  label={item.charAt(0).toUpperCase() + item.slice(1)}
+                  variant='info-white'
+                />
               ))}
             </div>
           </div>
