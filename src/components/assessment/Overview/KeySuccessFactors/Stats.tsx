@@ -1,7 +1,7 @@
 import {
-  CheckCircleIcon,
-  RemoveCircleFilledIcon,
-  RemoveCircleOutlinedIcon,
+  YesAnswerIcon,
+  PartlyAnswerIcon,
+  NoAnswerIcon,
 } from '@/components/icons'
 import { Questions } from '@/types/questions.types'
 import clsx from 'clsx'
@@ -37,15 +37,15 @@ const Stats = ({
       <div className='w-[1px] h-5 bg-neutral-300' />
       <div className='flex items-center gap-2'>
         <div className='flex items-center gap-0.5'>
-          <CheckCircleIcon className='text-success-500 h-4 w-4' />
+          <YesAnswerIcon className='text-success-500 h-4 w-4' />
           <p className='text-neutral-700 text-sm'>{yes}</p>
         </div>
         <div className='flex items-center gap-0.5'>
-          <RemoveCircleFilledIcon className='text-warning-500 h-4 w-4' />
+          <PartlyAnswerIcon className='text-warning-500 h-4 w-4' />
           <p className='text-neutral-700 text-sm'>{partly}</p>
         </div>
         <div className='flex items-center gap-0.5'>
-          <RemoveCircleOutlinedIcon className='text-error-500 h-4 w-4' />
+          <NoAnswerIcon className='text-error-500 h-4 w-4' />
           <p className='text-neutral-700 text-sm'>{no}</p>
         </div>
         {nA ? (

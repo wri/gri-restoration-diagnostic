@@ -51,7 +51,7 @@ const KeySuccessFactorsSection = ({
         firstUnansweredQuestion
           ? () =>
               router.push(
-                `/assessment/${assessmentId}/${theme.toLowerCase()}?question=${firstUnansweredQuestion.questionCode}`,
+                `/assessment/${assessmentId}/${theme.toLowerCase()}?questionCode=${firstUnansweredQuestion.questionCode}`,
               )
           : undefined
       }

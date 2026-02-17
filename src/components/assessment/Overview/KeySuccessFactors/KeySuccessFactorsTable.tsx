@@ -1,8 +1,8 @@
 import {
-  CheckCircleIcon,
+  YesAnswerIcon,
   CheckIcon,
-  RemoveCircleFilledIcon,
-  RemoveCircleOutlinedIcon,
+  PartlyAnswerIcon,
+  NoAnswerIcon,
 } from '@/components/icons'
 import { Questions } from '@/types/questions.types'
 import { Tag } from '@worldresources/wri-design-systems'
@@ -32,15 +32,15 @@ const KeySuccessFactorsTable = ({
     )
 
   const Response = ({ value = '' }: { value: string }) => {
-    let icon = <CheckCircleIcon className='text-success-500 h-6 w-6' />
+    let icon = <YesAnswerIcon className='text-success-500 h-6 w-6' />
     let text = value
 
     if (value.toLowerCase() === 'yes') {
-      icon = <CheckCircleIcon className='text-success-500 h-6 w-6' />
+      icon = <YesAnswerIcon className='text-success-500 h-6 w-6' />
     } else if (value.toLowerCase() === 'partly') {
-      icon = <RemoveCircleFilledIcon className='text-warning-500 h-6 w-6' />
+      icon = <PartlyAnswerIcon className='text-warning-500 h-6 w-6' />
     } else if (value.toLowerCase() === 'no') {
-      icon = <RemoveCircleOutlinedIcon className='text-error-500 h-6 w-6' />
+      icon = <NoAnswerIcon className='text-error-500 h-6 w-6' />
     } else if (value.toLowerCase() === 'na') {
       icon = (
         <div className='border-2 border-neutral-600 h-4 w-4 rounded-full' />
@@ -51,7 +51,7 @@ const KeySuccessFactorsTable = ({
     }
 
     return (
-      <div className='h-6 flex items-center gap-1'>
+      <div className='h-6 flex items-center gap-1.5'>
         {icon}
         <p className='text-neutral-800 capitalize'>{text}</p>
       </div>
@@ -83,7 +83,7 @@ const KeySuccessFactorsTable = ({
                   className='flex items-start gap-3 py-3 px-[10px]'
                 >
                   <Link
-                    href={`/assessment/${assessmentId}/${q.theme.toLowerCase()}?question=${q.questionCode}`}
+                    href={`/assessment/${assessmentId}/${q.theme.toLowerCase()}?questionCode=${q.questionCode}`}
                     className='max-w-[440px] w-full pl-8 underline decoration-dotted'
                   >
                     <p>{q.keySuccessFactor}</p>
