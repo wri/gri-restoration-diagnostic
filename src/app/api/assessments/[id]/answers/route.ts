@@ -5,6 +5,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   // Lazy load database modules to avoid circular dependency issues
+  const { initializeDatabase } = await import('@/db/data-source')
+  await initializeDatabase()
   const { saveAnswer } = await import('@/db/queries/assessment-queries')
   
   // Await params as required by Next.js 15
@@ -54,6 +56,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { initializeDatabase } = await import('@/db/data-source')
+  await initializeDatabase()
   const { getQuestionsWithAnswers } = await import('@/db/queries/assessment-queries')
   
   // Await params as required by Next.js 15

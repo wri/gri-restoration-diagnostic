@@ -1,6 +1,6 @@
 'use client'
 
-import { Panel } from '@worldresources/wri-design-systems'
+import { getThemedColor, Panel, IconButton, Tooltip, Button } from '@worldresources/wri-design-systems'
 import { 
   ChevronLeftIcon as ChevronLeft, 
   ChevronRightIcon as ChevronRight,
@@ -61,22 +61,37 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
     return <span className="text-[11px] mt-1 block text-slate-400">Not answered</span>
   }
   
-  const config: Record<AnswerValue, { label: string; iconColor: string; icon: React.ReactNode }> = {
-    yes: { label: 'Yes', iconColor: '#009E77', icon: <YesAnswerIcon className="w-3 h-3" /> },
-    partly: { label: 'Partly', iconColor: '#A88100', icon: <PartlyAnswerIcon className="w-3 h-3" /> },
-    no: { label: 'No', iconColor: '#C11101', icon: <NoAnswerIcon className="w-3 h-3" /> },
-    na: { label: 'N/A', iconColor: '#3D3B3B', icon: <div className="w-3 h-3 rounded-full border" style={{ borderColor: '#3D3B3B' }} /> }
+  const config: Record<AnswerValue, { label: string; icon: React.ReactNode }> = {
+    yes: { 
+      label: 'Yes', 
+      icon: <YesAnswerIcon css={{ color: getThemedColor('success', 400) }} className="w-3 h-3" /> },
+    partly: { 
+      label: 'Partly', 
+      icon: <PartlyAnswerIcon css={{ color: getThemedColor('warning', 400) }} className="w-3 h-3" /> },
+    no: { 
+      label: 'No', 
+      icon: <NoAnswerIcon css={{ color: getThemedColor('error', 400) }} className="w-3 h-3" /> 
+    },
+    na: { 
+      label: 'N/A', 
+      icon: <Box className="w-3 h-3 rounded-full border" css={{ borderColor:  getThemedColor('neutral', 300) || '#3D3B3B' }} /> 
+    }
   }
   
   const status = config[answer.value]
   
   return (
-    <span className="text-[11px] flex items-center gap-1 text-slate-700 mt-1">
-      <span style={{ color: status.iconColor }}>{status.icon}</span>
+    <span className="text-[12px] flex items-center gap-1 text-neutral-700 mt-1">
+      <span>{status.icon}</span>
       {status.label}
     </span>
   )
 }
+
+const iconButtonStyles = {
+  width: '26px',
+  height: '26px'
+};
 
 export function ThemeNavigation({
   theme,
@@ -106,34 +121,36 @@ export function ThemeNavigation({
           <ThemeIcon />
           <span className='text-lg'>{theme}</span>
         </div>
-        <div className="flex gap-1">
-          <button
-            disabled={!canGoPrev}
-            onClick={() => onThemeChange('prev')}
-            className={clsx({ 
-              'text-grey-900': !canGoPrev,
-              'text-yellow-500': canGoPrev
-            }) + " w-6 h-6 rounded bg-white hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"}
-          >
-            <ChevronLeft className="w-3 h-3" />
-          </button>
-          <button
-            disabled={!canGoNext}
-            onClick={() => onThemeChange('next')}
-            className={clsx({ 
-              'text-grey-900': !canGoNext,
-              'text-yellow-500': canGoNext
-            }) + " w-6 h-6 rounded bg-white hover:text-grey-600 active:bg-slate-100 border border-slate-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"}
-          >
-            <ChevronRight className="w-3 h-3" />
-          </button>
-        </div>
+        <Box className="flex gap-1" css={{
+          '& span[type="button"]': {
+            // ...iconButtonStyles
+          }
+        }}>
+          <Tooltip content="Previous theme">
+            <IconButton
+              color="primary"
+              as="span"
+              disabled={!canGoPrev}
+              onClick={() => onThemeChange('prev')} 
+              icon={<ChevronLeft />}
+            />
+          </Tooltip>
+          <Tooltip content="Next theme">
+            <IconButton
+              color="primary"
+              as="span"
+              disabled={!canGoNext}
+              onClick={() => onThemeChange('next')}
+              icon={<ChevronRight />}
+            />
+          </Tooltip>
+        </Box>
       </div>
       
       {/* Progress bar */}
       <div className="flex items-center p-2 border-b">
         <div className="text-xs text-grey-500 pr-1">{answeredCount}/{totalCount}</div>
-        <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
+        <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex ml-[5px]">
           <div 
             className="bg-primary h-full" 
             style={{ width: `${totalCount > 0 ? (answeredCount / totalCount) * 100 : 0}%` }}
@@ -209,7 +226,7 @@ export function ThemeNavigation({
       pb="8"
       css={{
         '& > div': {
-          width: '288px',
+          width: '240px',
           position: 'sticky',
           top: '60px',
           height: 'calc(100vh - 120px)',

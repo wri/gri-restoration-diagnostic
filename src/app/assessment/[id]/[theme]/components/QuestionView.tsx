@@ -10,6 +10,7 @@ import { AutoSaveIndicator } from '@/components/assessment/AutoSaveIndicator'
 import { ChevronLeftIcon as ChevronLeft } from '@/components/icons'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
+import { Button } from '@worldresources/wri-design-systems'
 
 interface QuestionViewProps {
   assessmentId: string
@@ -191,13 +192,14 @@ export function QuestionView({
         <div className="max-w-4xl mx-auto pr-8 py-8">
           {/* Auto-save indicator */}
           <div className="flex items-center justify-between mb-6">
-            <button 
-              onClick={() => router.push(`/assessment/${assessmentId}/overview`)}
-              className="flex items-center gap-1 text-sm text-slate-600 hover:text-primary transition-colors"
+            <Button
+              variant="borderless" 
+              className="text-neutral-700"
+              leftIcon={<ChevronLeft className="w-3 h-3" />}
+              onClick={() => router.push(`/assessment/${assessmentId}`)}
             >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="underline underline-offset-1">Back to themes</span>
-            </button>
+              <span className="underline underline-offset-1">Back to overview</span>
+            </Button>
             <AutoSaveIndicator status={status} lastSaved={lastSaved} error={error} />
           </div>
           

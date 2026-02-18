@@ -37,10 +37,6 @@ export function FollowUpQuestions({ followUpQuestions, selectedAnswer }: FollowU
           <li key={index}>{question}</li>
         ))}
       </ul>
-      {/* Future: Add custom topic button */}
-      <button className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50">
-        <span className="material-symbols-outlined text-sm">add</span> Add your own question
-      </button>
     </div>
   )
 }

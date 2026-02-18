@@ -50,7 +50,6 @@ export default async function ThemeQuestionPage({ params }: PageProps) {
   // Serialize TypeORM entities to plain objects for client components
   const plainQuestions = questions.map(q => {
     // Parse followUpQuestions from JSON string
-    console.log("🚀 ~ ThemeQuestionPage ~ q:", q)
     let followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null = null
     if (q.followUpQuestions) {
       try {

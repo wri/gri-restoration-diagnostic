@@ -5,6 +5,7 @@ import { Collapsible } from '@/components/assessment/Collapsible'
 import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEditor'
 import { GuidanceTabIcon, NotesTabIcon } from '@/components/icons'
 import type { PlainQuestion } from './ThemePageLayout'
+import { TabBar } from '@worldresources/wri-design-systems'
 
 interface GuidanceSidebarProps {
   question: PlainQuestion
@@ -18,42 +19,32 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
   const [activeTab, setActiveTab] = useState<TabType>('guidance')
   
   return (
-    <aside className="bg-white w-80 flex-shrink-0 border-l border-slate-200 sticky top-[47px] h-[calc(100vh-47px)] overflow-y-auto">
+    <aside className="bg-white w-[240px] flex-shrink-0 border-l border-slate-200 sticky top-[47px] h-[calc(100vh-47px)] overflow-y-auto">
       {/* Tab Navigation */}
-      <div className="flex">
-        <button
-          onClick={() => setActiveTab('guidance')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-            activeTab === 'guidance'
-              ? 'text-grey-700 border-0'
-              : 'cursor-pointer text-slate-500 bg-slate-100 hover:text-slate-700 hover:bg-slate-50'
-          }`}
-        >
-          <GuidanceTabIcon className="w-4 h-4" />
-          Guidance
-        </button>
-        <button
-          onClick={() => setActiveTab('notes')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-            activeTab === 'notes'
-              ? 'text-grey-700 border-0'
-              : 'cursor-pointer text-slate-500 bg-slate-100 hover:text-slate-700 hover:bg-slate-50'
-          }`}
-        >
-          <NotesTabIcon className="w-4 h-4" />
-          Notes
-        </button>
-      </div>
-      
+      <TabBar
+        defaultValue='guidance'
+        tabs={[
+          {
+            label: 'Guidance',
+            value: 'guidance',
+            icon: <GuidanceTabIcon className="w-4 h-4" /> 
+          },
+          {
+            label: 'Notes',
+            value: 'notes',
+            icon: <NotesTabIcon className="w-4 h-4" /> 
+          }
+        ]}
+        onTabClick={(tab: string) => setActiveTab(tab as TabType)}
+        variant="panel"
+      />
+
       {/* Tab Content */}
       {activeTab === 'guidance' ? (
         <div className="collapsibles-container">
           <Collapsible title="Definition" defaultOpen>
             {question.definition ? (
-              <div 
-                className="prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: question.definition }} 
-              />
+              <div className="prose prose-sm max-w-none">{question.definition}</div>
             ) : (
               <p className="text-slate-400 italic">No definition available.</p>
             )}

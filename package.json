@@ -15,7 +15,8 @@
     "migration:generate": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:generate src/db/migrations/Migration -d src/db/migration-data-source.ts",
     "migration:run": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:run -d src/db/migration-data-source.ts",
     "migration:revert": "DOTENV_CONFIG_PATH=.env npm run typeorm -- migration:revert -d src/db/migration-data-source.ts",
-    "seed:run": "DOTENV_CONFIG_PATH=.env ts-node --project tsconfig.typeorm.json -r dotenv/config src/db/seeds/index.ts"
+    "seed:run": "DOTENV_CONFIG_PATH=.env ts-node --project tsconfig.typeorm.json -r dotenv/config src/db/seeds/index.ts",
+    "db:query": "DOTENV_CONFIG_PATH=.env ts-node --project tsconfig.typeorm.json -r dotenv/config src/db/scripts/run-query.ts"
   },
   "dependencies": {
     "@chakra-ui/charts": "^3.30.0",
