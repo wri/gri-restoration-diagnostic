@@ -1,7 +1,103 @@
+/** @jsxImportSource @emotion/react */
 'use client'
 
+import { forwardRef } from 'react'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import { YesAnswerIcon, PartlyAnswerIcon, NoAnswerIcon } from '@/components/icons'
+import { Box } from '@chakra-ui/react'
+import { Button, getThemedColor } from '@worldresources/wri-design-systems'
+import { css } from '@emotion/react'
+
+interface AnswerButtonProps extends React.ComponentPropsWithoutRef<typeof Button> {
+  isSelected: boolean
+  selectedColor: string
+  bgColor: string
+  borderColor: string
+}
+
+const baseAnswerButtonStyles = css({
+  backgroundColor: 'white',
+  wordWrap: 'break-word',
+  textTransform: 'none',
+  display: 'flex',
+  cursor: 'pointer',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '1rem',
+  borderRadius: '0.5rem',
+  padding: '4',
+  transitionProperty: 'all',
+  transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  transitionDuration: '150ms',
+  boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  borderStyle: 'solid',
+  width: '100%',
+  height: 'auto',
+  minHeight: '120px',
+  '&:hover': {
+    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+  },
+  '&:disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+    '&:hover': {
+      boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    }
+  },
+  '& svg': {
+    width: "2rem", 
+    height: "2rem",
+  }
+})
+
+const getAnswerButtonStyles = (isSelected: boolean, selectedColor: string, bgColor: string) => {
+  if (isSelected) {
+    return css({
+      backgroundColor: bgColor,
+      borderWidth: '4px',
+      borderColor: selectedColor,
+      '&:hover': {
+        backgroundColor: bgColor,
+        borderColor: selectedColor,
+        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      }
+    })
+  }
+  
+  return css({
+    backgroundColor: 'white',
+    borderWidth: '1px',
+    borderColor: getThemedColor('neutral', 400),
+    '&:hover': {
+      backgroundColor: 'white',
+      borderColor: getThemedColor('neutral', 400),
+    },
+    '&:active': {
+      backgroundColor: 'white'
+    }
+  })
+}
+
+const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
+  ({ isSelected, selectedColor, bgColor, children, ...props }, ref) => {
+    return (
+      <Button 
+        variant="outline"
+        ref={ref} 
+        {...props} 
+        css={[
+          baseAnswerButtonStyles,
+          getAnswerButtonStyles(isSelected, selectedColor, bgColor)
+        ]}
+      >
+        {children}
+      </Button>
+    )
+  }
+)
+
+AnswerButton.displayName = 'AnswerButton'
 
 interface AnswerOptionsProps {
   value: AnswerValue | null
@@ -13,79 +109,92 @@ const answerConfig: Record<AnswerValue, {
   label: string
   icon: React.ReactNode
   selectedColor: string
-  unselectedColor: string
   bgColor: string
   borderColor: string
-  borderColorNA?: string
 }> = {
   yes: {
     label: 'Yes',
-    icon: <YesAnswerIcon className="w-8 h-8" />,
-    selectedColor: '#009E77',
-    unselectedColor: '#C9C9C9',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-600'
+    icon: <YesAnswerIcon />,
+    selectedColor: getThemedColor('success', 500),
+    bgColor: getThemedColor('success', 100),
+    borderColor: getThemedColor('success', 500),
   },
   partly: {
     label: 'Partly',
-    icon: <PartlyAnswerIcon className="w-8 h-8" />,
-    selectedColor: '#A88100',
-    unselectedColor: '#C9C9C9',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-500'
+    icon: <PartlyAnswerIcon />,
+    selectedColor: getThemedColor('warning', 500),
+    bgColor: getThemedColor('warning', 100),
+    borderColor: getThemedColor('warning', 500),
   },
   no: {
     label: 'No',
-    icon: <NoAnswerIcon className="w-8 h-8" />,
-    selectedColor: '#C11101',
-    unselectedColor: '#C9C9C9',
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-500'
+    icon: <NoAnswerIcon />,
+    selectedColor: getThemedColor('error', 500),
+    bgColor: getThemedColor('error', 100),
+    borderColor: getThemedColor('error', 500),
   },
   na: {
     label: 'N/A',
-    icon: <div className="w-8 h-8 rounded-full border-2" style={{ borderColor: '#3D3B3B' }} />,
-    selectedColor: '#3D3B3B',
-    unselectedColor: '#C9C9C9',
-    bgColor: 'bg-slate-50',
-    borderColor: 'border-slate-400',
-    borderColorNA: '#3D3B3B'
+    icon: <Box css={css({ 
+      width: '2rem', 
+      height: '2rem', 
+      borderRadius: '9999px', 
+      border: '2px solid',
+      borderColor: getThemedColor('neutral', 600)
+    })} />,
+    selectedColor: getThemedColor('neutral', 600),
+    bgColor: getThemedColor('neutral', 200),
+    borderColor: getThemedColor('neutral', 400)
   }
 }
 
+const iconContainerStyles = (isSelected: boolean, color: string) => css({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: color,
+  width: '2rem !important',
+  height: '2rem !important'
+})
+
+const labelStyles = (isSelected: boolean) => css({
+  fontWeight: 700,
+  fontSize: '1rem',
+  lineHeight: '1.5rem',
+  color: isSelected ? getThemedColor('neutral', 900) : getThemedColor('neutral', 600), // slate-900 : slate-600
+})
+
 export function AnswerOptions({ value, onChange, disabled }: AnswerOptionsProps) {
+  const unselectedColor = getThemedColor('neutral', 400);
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <Box css={css({
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+      gap: '1rem',
+    })}>
       {(Object.entries(answerConfig) as [AnswerValue, typeof answerConfig[AnswerValue]][]).map(([answerValue, config]) => {
-        const isSelected = value === answerValue
+        const isSelected = value === answerValue;
+        const iconColor = isSelected ? config.selectedColor : unselectedColor;
         
         return (
-          <button
+          <AnswerButton
             key={answerValue}
-            type="button"
             disabled={disabled}
             onClick={() => onChange(answerValue)}
-            className={`group p-6 rounded-lg flex flex-col items-center justify-center gap-4 transition-all hover:shadow-lg border border-slate-200 ${
-              isSelected
-                ? `${config.bgColor} border-[${config.selectedColor}] border-3 ${config.borderColor} ring-${answerValue === 'yes' ? 'emerald' : answerValue === 'partly' ? 'amber' : answerValue === 'no' ? 'red' : 'slate'}-600`
-                : 'bg-white border border-slate-200 hover:border-slate-400'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-            style={{
-              borderWidth: isSelected ? '4px' : '1px',
-              borderColor: isSelected ? config.selectedColor : 'inherit'
-            }}
+            isSelected={isSelected}
+            selectedColor={config.selectedColor}
+            bgColor={config.bgColor}
+            borderColor={config.borderColor}
           >
-            <div style={{ color: isSelected ? config.selectedColor : config.unselectedColor }}>
+            <Box css={iconContainerStyles(isSelected, iconColor)}>
               {config.icon}
-            </div>
-            <span className={`font-bold ${
-              isSelected ? 'text-slate-900' : 'text-slate-600'
-            }`}>
+            </Box>
+            <Box as="span" css={labelStyles(isSelected)}>
               {config.label}
-            </span>
-          </button>
+            </Box>
+          </AnswerButton>
         )
       })}
-    </div>
+    </Box>
   )
 }

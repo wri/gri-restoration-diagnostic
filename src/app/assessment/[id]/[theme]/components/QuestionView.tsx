@@ -188,7 +188,7 @@ export function QuestionView({
       />
       
       {/* Main Content */}
-      <main className="flex-1 pb-20 overflow-x-hidden bg-transparent">
+      <main className="flex-1 pb-20 bg-transparent">
         <div className="max-w-4xl mx-auto pr-8 py-8">
           {/* Auto-save indicator */}
           <div className="flex items-center justify-between mb-6">

@@ -1,6 +1,6 @@
 'use client'
 
-import { getThemedColor, Panel, IconButton, Tooltip, Button } from '@worldresources/wri-design-systems'
+import { getThemedColor, Panel, IconButton, Tooltip } from '@worldresources/wri-design-systems'
 import { 
   ChevronLeftIcon as ChevronLeft, 
   ChevronRightIcon as ChevronRight,
@@ -12,7 +12,6 @@ import {
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Box } from '@chakra-ui/react'
-import clsx from 'clsx'
 
 interface ThemeNavigationProps {
   theme: 'Motivate' | 'Enable' | 'Implement'
@@ -87,11 +86,6 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
     </span>
   )
 }
-
-const iconButtonStyles = {
-  width: '26px',
-  height: '26px'
-};
 
 export function ThemeNavigation({
   theme,
