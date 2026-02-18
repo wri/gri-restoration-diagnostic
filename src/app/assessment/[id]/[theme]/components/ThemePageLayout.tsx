@@ -12,6 +12,7 @@ export interface PlainQuestion {
   theme: Theme
   enablingCondition: string
   keySuccessFactor: string
+  minimalKeySuccessFactor: string
   definition: string | null
   questionText: string
   considerations: string | null

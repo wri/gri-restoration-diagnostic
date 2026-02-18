@@ -187,7 +187,7 @@ export function ThemeNavigation({
                       <p className={`text-sm leading-tight ${
                         isSelected ? 'font-semibold text-slate-800' : 'font-medium text-grey-500'
                       }`}>
-                        {question.keySuccessFactor}
+                        {question.minimalKeySuccessFactor}
                       </p>
                       <AnswerStatusBadge answer={answer} />
                     </div>

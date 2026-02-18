@@ -66,6 +66,7 @@ export default async function ThemeQuestionPage({ params }: PageProps) {
       theme: q.theme,
       enablingCondition: q.enablingCondition,
       keySuccessFactor: q.keySuccessFactor,
+      minimalKeySuccessFactor: q.minimalKeySuccessFactor,
       definition: q.definition,
       questionText: q.questionText,
       considerations: q.considerations,
