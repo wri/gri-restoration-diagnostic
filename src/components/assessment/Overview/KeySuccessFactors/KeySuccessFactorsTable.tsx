@@ -35,13 +35,13 @@ const KeySuccessFactorsTable = ({
     let icon = <YesAnswerIcon className='text-success-500 h-6 w-6' />
     let text = value
 
-    if (value.toLowerCase() === 'yes') {
+    if (value?.toLowerCase() === 'yes') {
       icon = <YesAnswerIcon className='text-success-500 h-6 w-6' />
-    } else if (value.toLowerCase() === 'partly') {
+    } else if (value?.toLowerCase() === 'partly') {
       icon = <PartlyAnswerIcon className='text-warning-500 h-6 w-6' />
-    } else if (value.toLowerCase() === 'no') {
+    } else if (value?.toLowerCase() === 'no') {
       icon = <NoAnswerIcon className='text-error-500 h-6 w-6' />
-    } else if (value.toLowerCase() === 'na') {
+    } else if (value?.toLowerCase() === 'na') {
       icon = (
         <div className='border-2 border-neutral-600 h-4 w-4 rounded-full' />
       )
