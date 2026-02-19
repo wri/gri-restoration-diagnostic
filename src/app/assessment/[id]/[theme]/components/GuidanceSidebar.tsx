@@ -6,6 +6,7 @@ import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEdit
 import { GuidanceTabIcon, NotesTabIcon } from '@/components/icons'
 import type { PlainQuestion } from './ThemePageLayout'
 import { TabBar } from '@worldresources/wri-design-systems'
+import { Text } from '@chakra-ui/react'
 
 interface GuidanceSidebarProps {
   question: PlainQuestion
@@ -44,31 +45,25 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
         <div className="collapsibles-container">
           <Collapsible title="Definition" defaultOpen>
             {question.definition ? (
-              <div className="prose prose-sm max-w-none">{question.definition}</div>
+              <Text className="prose prose-sm max-w-none">{question.definition}</Text>
             ) : (
-              <p className="text-slate-400 italic">No definition available.</p>
+              <Text className="text-slate-400 italic">No definition available.</Text>
             )}
           </Collapsible>
           
           <Collapsible title="Considerations">
             {question.considerations ? (
-              <div 
-                className="prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: question.considerations }} 
-              />
+              <Text className="prose prose-sm max-w-none">{question.considerations}</Text>
             ) : (
-              <p className="text-slate-400 italic">No considerations available.</p>
+              <Text className="text-slate-400 italic">No considerations available.</Text>
             )}
           </Collapsible>
           
           <Collapsible title="Example Strategies">
             {question.strategyExamples ? (
-              <div 
-                className="prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: question.strategyExamples }} 
-              />
+              <Text className="prose prose-sm max-w-none">{question.strategyExamples}</Text>
             ) : (
-              <p className="text-slate-400 italic">No example strategies available.</p>
+              <Text className="text-slate-400 italic">No example strategies available.</Text>
             )}
           </Collapsible>
         </div>

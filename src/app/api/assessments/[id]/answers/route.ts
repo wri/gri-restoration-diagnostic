@@ -64,7 +64,6 @@ export async function GET(
   const { id } = await params
   
   try {
-    console.log("🚀 ~ GET ~ params:", { id })
     const answers = await getQuestionsWithAnswers(id)
     return NextResponse.json({ success: true, answers })
   } catch {

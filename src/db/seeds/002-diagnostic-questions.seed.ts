@@ -11,14 +11,14 @@ import {
  * Seed Diagnostic Questions
  * 
  * Seeds all 31 key success factors for ecosystem restoration diagnostic
- * Distribution: 8 Motivate (1-8), 13 Enable (9-21), 10 Implement (22-31)
+ * Distribution: 8 Motivate (1-8), 13 Enable (9-21), 9 Implement (22-31)
  * 
  * Data source: Restoration-Diagnostic-Tool-key-factors-update-feb-16-2006.csv
  */
 export async function seedDiagnosticWithQuestions(): Promise<void> {
   console.log('🌱 Starting diagnostic questions seed...')
 
-  const queryRunner = AppDataSource.createQueryRunner()
+const queryRunner = AppDataSource.createQueryRunner()
   await queryRunner.connect()
 
   try {
