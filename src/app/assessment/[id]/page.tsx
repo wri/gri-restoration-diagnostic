@@ -33,7 +33,16 @@ export default async function AssessmentPage({
     sortOrder: qa.sortOrder,
     createdAt: qa.createdAt,
     diagnosticId: qa.diagnosticId,
-    answer: { ...qa.answer },
+    answer: {
+      assessmentId: qa.answer?.assessmentId ?? '',
+      createdAt: qa.answer?.createdAt ?? qa.createdAt,
+      id: qa.answer?.id ?? '',
+      notes: qa.answer?.notes ?? null,
+      questionId: qa.answer?.questionId ?? qa.id,
+      rationale: qa.answer?.rationale ?? '',
+      updatedAt: qa.answer?.updatedAt ?? qa.createdAt,
+      value: qa.answer?.value ?? '',
+    },
   }))
 
   const scopeData = {
