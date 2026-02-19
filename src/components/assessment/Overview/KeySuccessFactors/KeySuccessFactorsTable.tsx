@@ -13,6 +13,20 @@ interface KeySuccessFactorsTableProps {
   assessmentId: string
 }
 
+const hasRichTextContent = (value?: string) => {
+  if (!value) return false
+  if (/<(img|video|iframe|embed|object|svg|canvas)\b/i.test(value)) return true
+
+  const plainText = value
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .trim()
+
+  return plainText.length > 0
+}
+
 const KeySuccessFactorsTable = ({
   questions,
   assessmentId,
@@ -95,7 +109,7 @@ const KeySuccessFactorsTable = ({
                     <Response value={q.answer.value} />
                   </div>
                   <div className='w-full max-w-[130px] h-6 flex items-center'>
-                    {q.answer.rationale ? (
+                    {hasRichTextContent(q.answer.rationale) ? (
                       <CheckIcon className='text-success-900 h-6 w-6' />
                     ) : (
                       <div className='bg-neutral-600 h-[3px] w-6' />
