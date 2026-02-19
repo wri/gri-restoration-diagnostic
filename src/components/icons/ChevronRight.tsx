@@ -1,17 +1,16 @@
 import React from 'react'
-
 import { Icon, IconProps } from '@chakra-ui/react'
 
-export const ChevronLeftIcon = (props: IconProps) => (
+
+export const ChevronRightIcon = (props: IconProps) => (
   <Icon {...props}>
     <svg
-      height='16'
       viewBox='0 0 16 16'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
-        d='M10.63 16L2.63 8L10.63 0L12.4967 1.86667L6.36334 8L12.4967 14.1333L10.63 16Z'
+        d='M5.37 0L13.37 8L5.37 16L3.5033 14.1333L9.63666 8L3.5033 1.86667L5.37 0Z'
         fill='currentColor'
       />
     </svg>
