@@ -1,34 +1,36 @@
 import type { NextConfig } from 'next'
 import webpack from 'webpack'
 
+// Helper to suppress "Critical dependency" warnings from dynamic require() calls
+const suppressCriticalDependencyWarning = (context: {
+  dependencies: { critical?: string | boolean }[]
+}) => {
+  context.dependencies.forEach((dependency) => {
+    dependency.critical = undefined
+  })
+}
+
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: false,
   output: 'standalone',
   webpack: (config, { isServer }) => {
-    // Suppress TypeORM warnings for unused database drivers
+    // Suppress TypeORM warnings for unused database drivers (scoped to TypeORM only)
     config.plugins = [
       ...config.plugins,
       new webpack.IgnorePlugin({
         resourceRegExp: /^(pg-native|mysql|mysql2|mssql|oracledb|mongodb|sql\.js|sqlite3|better-sqlite3|ioredis|redis|typeorm-aurora-data-api-driver|@sap\/hana-client(\/.*)?|hdb-pool|spanner|@google-cloud\/spanner|react-native-sqlite-storage)(\/.*)?$/,
+        contextRegExp: /typeorm/,
       }),
       // Suppress "Critical dependency: the request of a dependency is an expression" warnings from TypeORM
       new webpack.ContextReplacementPlugin(
         /typeorm[\\/](connection|util|platform)$/,
-        (context: { dependencies: { critical: null }[] }) => {
-          context.dependencies.forEach((dependency) => {
-            dependency.critical = null
-          })
-        }
+        suppressCriticalDependencyWarning
       ),
       // Suppress "Critical dependency" warning from app-root-path (TypeORM dependency)
       new webpack.ContextReplacementPlugin(
         /app-root-path[\\/]lib$/,
-        (context: { dependencies: { critical: null }[] }) => {
-          context.dependencies.forEach((dependency) => {
-            dependency.critical = null
-          })
-        }
+        suppressCriticalDependencyWarning
       ),
     ]
 
