@@ -29,7 +29,6 @@ export function ChakraRichTextEditor({
   value, 
   onChange, 
   placeholder = 'Start writing...',
-  minHeight = '150px'
 }: ChakraRichTextEditorProps) {
   const editor = useRichTextEditor({
     content: value,

@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
 import { GuidanceSidebar } from './GuidanceSidebar'
 import { useAutoSave } from '@/hooks/useAutoSave'
-import { AutoSaveIndicator } from '@/components/assessment/AutoSaveIndicator'
 import { CheckIcon, ChevronLeftIcon as ChevronLeft } from '@/components/icons'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
@@ -85,7 +84,7 @@ export function QuestionView({
   }, [assessmentId])
   
   // Auto-save hook
-  const { status, lastSaved, error, save } = useAutoSave({
+  const { save } = useAutoSave({
     onSave: saveAnswer,
     debounceMs: 1000
   })
@@ -212,7 +211,6 @@ export function QuestionView({
               <span className="underline underline-offset-1">Back to overview</span>
             </Button>
           </div>
-          {/* Auto-save indicator */}
           <div className="flex items-center justify-between mb-6">
             <Tag
               label={`Success Factor ${questionPosition} of ${totalQuestions}`}
@@ -237,7 +235,7 @@ export function QuestionView({
             onSaveAndContinue={handleSaveAndContinue}
           />
 
-          {/* Note: adaptation for design variation */}
+          {/* Note: adaptation for design variation until design system is updated */}
           <Box css={{
             mt: '8',
             '& p': {
@@ -256,13 +254,10 @@ export function QuestionView({
             />
           </Box>
 
-          {/* Implementation Pagination Card Buttons, here first */}
-          {/* left: Option Cards.svg */}
-          {/* right: Option Cards-1.svg */}
+          {/* RD-15-PT-2 Implementation Pagination Card Buttons, here first */}
         </div>
       </main>
       
-      {/* Right Sidebar - Guidance & Notes */}
       <GuidanceSidebar
         question={currentQuestion}
         notes={notes}

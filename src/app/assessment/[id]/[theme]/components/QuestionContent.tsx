@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@worldresources/wri-design-systems'
 import { AnswerOptions } from '@/components/assessment/AnswerOptions'
 import { FollowUpQuestions } from '@/components/assessment/FollowUpQuestions'
 import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEditor'
@@ -22,7 +21,6 @@ export function QuestionContent({
   rationale,
   onAnswerChange,
   onRationaleChange,
-  onSaveAndContinue
 }: QuestionContentProps) {
   const hideRationale = selectedAnswer === 'na'
   

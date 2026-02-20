@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { ThemePageLayout } from './components/ThemePageLayout'
 import { Theme } from '@/db/entities'
-import type { Answer } from '@/db/entities/Answer.entity'
+import type { AnswerValue } from '@/db/entities/Answer.entity'
 
 interface PageProps {
   params: Promise<{ id: string; theme: string }>
@@ -83,7 +83,7 @@ export default async function ThemeQuestionPage({ params, searchParams }: PagePr
   
   // Build answers array - serializable format for client component
   // Map cannot be serialized from Server to Client Components, so use Array<[string, PlainAnswer]>
-  const initialAnswers: Array<[string, { id: string; value: any; rationale: string | null; notes: string | null; assessmentId: string; questionId: string; createdAt: Date; updatedAt: Date }]> = []
+  const initialAnswers: Array<[string, { id: string; value: AnswerValue | null; rationale: string | null; notes: string | null; assessmentId: string; questionId: string; createdAt: Date; updatedAt: Date }]> = []
   const answeredQuestionIds = new Set<string>()
   
   answersData.forEach(q => {
