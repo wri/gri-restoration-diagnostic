@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
@@ -17,7 +17,7 @@ interface QuestionViewProps {
   assessmentId: string
   theme: 'Motivate' | 'Enable' | 'Implement'
   questions: PlainQuestion[]
-  initialAnswers: Map<string, PlainAnswer>
+  initialAnswers: Array<[string, PlainAnswer]>
   focusQuestionCode: string
   canGoPrev: boolean
   canGoNext: boolean
@@ -38,10 +38,15 @@ export function QuestionView({
 }: QuestionViewProps) {
   const router = useRouter()
   
+  // Reconstruct Map from serialized array (Maps cannot be passed from Server to Client Components)
+  const [answersCache, setAnswersCache] = useState(() => 
+    new Map<string, PlainAnswer>(initialAnswers)
+  )
+  
   // Current question state
   const [currentQuestionCode, setCurrentQuestionCode] = useState(focusQuestionCode)
   const currentQuestion = questions.find(q => q.questionCode === currentQuestionCode) || questions[0]
-  const currentAnswer = initialAnswers.get(currentQuestion?.id || '')
+  const currentAnswer = answersCache.get(currentQuestion?.id || '')
   
   // Answer state
   const [selectedAnswer, setSelectedAnswer] = useState<AnswerValue | null>(
@@ -49,9 +54,6 @@ export function QuestionView({
   )
   const [rationale, setRationale] = useState(currentAnswer?.rationale || '')
   const [notes, setNotes] = useState(currentAnswer?.notes || '')
-  
-  // Local answers cache for UI updates
-  const [answersCache, setAnswersCache] = useState(initialAnswers)
   
   // Auto-save function
   const saveAnswer = useCallback(async (data: {
@@ -176,6 +178,11 @@ export function QuestionView({
 
   const markAsCompleteHandler = () => console.log('Not implemented', void 0);
   
+  // Calculate current question position within theme for Tag display
+  const currentIndex = questions.findIndex(q => q.questionCode === currentQuestionCode)
+  const questionPosition = currentIndex + 1
+  const totalQuestions = questions.length
+  
   return (
     <>
       {/* Left Sidebar - Theme Navigation */}
@@ -200,6 +207,7 @@ export function QuestionView({
               className="text-neutral-700"
               leftIcon={<ChevronLeft className="w-3 h-3" />}
               onClick={() => router.push(`/assessment/${assessmentId}`)}
+              style={{ paddingLeft: '0' }}
             >
               <span className="underline underline-offset-1">Back to overview</span>
             </Button>
@@ -207,7 +215,7 @@ export function QuestionView({
           {/* Auto-save indicator */}
           <div className="flex items-center justify-between mb-6">
             <Tag
-              label={`Success Factor ${1} of ${8}`}
+              label={`Success Factor ${questionPosition} of ${totalQuestions}`}
               variant="info-white"
             />
             {/* RD-29 */}
@@ -232,9 +240,6 @@ export function QuestionView({
           {/* Note: adaptation for design variation */}
           <Box css={{
             mt: '8',
-            '& svg': {
-              display: 'none'
-            },
             '& p': {
               ml: 0
             }
@@ -243,6 +248,7 @@ export function QuestionView({
               actionLabel="Mark complete"
               caption="Mark this factor as complete when you’ve finished reviewing the response, rationale, and strategies."
               isButtonRight
+              icon={null}
               label="Ready to finish this factor?"
               size="full-width"
               onActionClick={markAsCompleteHandler}
