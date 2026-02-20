@@ -7,10 +7,11 @@ import { QuestionContent } from './QuestionContent'
 import { GuidanceSidebar } from './GuidanceSidebar'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { AutoSaveIndicator } from '@/components/assessment/AutoSaveIndicator'
-import { ChevronLeftIcon as ChevronLeft } from '@/components/icons'
+import { CheckIcon, ChevronLeftIcon as ChevronLeft } from '@/components/icons'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
-import { Button } from '@worldresources/wri-design-systems'
+import { Button, InlineMessage, Tag } from '@worldresources/wri-design-systems'
+import { Box } from '@chakra-ui/react'
 
 interface QuestionViewProps {
   assessmentId: string
@@ -172,6 +173,8 @@ export function QuestionView({
   if (!currentQuestion) {
     return <div className="p-8 text-center text-slate-500">No questions found for this theme.</div>
   }
+
+  const markAsCompleteHandler = () => console.log('Not implemented', void 0);
   
   return (
     <>
@@ -200,7 +203,21 @@ export function QuestionView({
             >
               <span className="underline underline-offset-1">Back to overview</span>
             </Button>
-            <AutoSaveIndicator status={status} lastSaved={lastSaved} error={error} />
+          </div>
+          {/* Auto-save indicator */}
+          <div className="flex items-center justify-between mb-6">
+            <Tag
+              label={`Success Factor ${1} of ${8}`}
+              variant="info-white"
+            />
+            {/* RD-29 */}
+            <Button 
+              leftIcon={<CheckIcon /> }
+              variant="primary"
+              onClick={markAsCompleteHandler}
+              >
+              Mark complete
+            </Button>
           </div>
           
           <QuestionContent
@@ -211,6 +228,31 @@ export function QuestionView({
             onRationaleChange={handleRationaleChange}
             onSaveAndContinue={handleSaveAndContinue}
           />
+
+          {/* Note: adaptation for design variation */}
+          <Box css={{
+            mt: '8',
+            '& svg': {
+              display: 'none'
+            },
+            '& p': {
+              ml: 0
+            }
+          }}>
+            <InlineMessage
+              actionLabel="Mark complete"
+              caption="Mark this factor as complete when you’ve finished reviewing the response, rationale, and strategies."
+              isButtonRight
+              label="Ready to finish this factor?"
+              size="full-width"
+              onActionClick={markAsCompleteHandler}
+              variant="info-grey"
+            />
+          </Box>
+
+          {/* Implementation Pagination Card Buttons, here first */}
+          {/* left: Option Cards.svg */}
+          {/* right: Option Cards-1.svg */}
         </div>
       </main>
       
