@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Source_Serif_4 } from 'next/font/google'
 import {
@@ -10,7 +11,6 @@ import {
 } from '@worldresources/wri-design-systems'
 import { WriLogoIcon } from '@/components/icons'
 import { languageOptions } from '@/constants/language-options'
-import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 const sourceSerif4 = Source_Serif_4({
@@ -21,6 +21,14 @@ const sourceSerif4 = Source_Serif_4({
 export default function AssessmentNavbar() {
   const [language, setLanguage] = useState('')
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  // Prevent hydration mismatch - Navbar has responsive logic that checks window dimensions
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
 
   return (
     <Navbar

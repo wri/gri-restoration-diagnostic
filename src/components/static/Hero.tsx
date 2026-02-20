@@ -4,7 +4,7 @@ import { Navbar, Menu, Button } from '@worldresources/wri-design-systems'
 import Link from 'next/link'
 import { WriLogoIcon } from '../icons'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const languages = [
   {
@@ -19,34 +19,43 @@ const languages = [
 
 export const Hero = () => {
   const [language, setLanguage] = useState('')
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+
+  // Prevent hydration mismatch - Navbar has responsive logic that checks window dimensions
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <>
-      <Navbar
-        pathname={pathname}
-        linkRouter={Link}
-        logo={
-          <Link href={'#'}>
-            <WriLogoIcon height='auto' width='120px' />
-            <span className='font-semibold ml-7'>Restoration Diagnostic</span>
-          </Link>
-        }
-        navigationSection={[]}
-        utilitySection={[
-          <Menu
-            key='language-menu'
-            label={
-              languages?.find((l) => l.value === language)?.label || 'Language'
-            }
-            items={languages}
-            onSelect={setLanguage}
-          />,
-        ]}
-        actionsSection={[]}
-        maxWidth={1440}
-        fixed
-      />
+      {mounted && (
+        <Navbar
+          pathname={pathname}
+          linkRouter={Link}
+          logo={
+            <Link href={'/'}>
+              <WriLogoIcon height='auto' width='120px' />
+              <span className='font-semibold ml-7'>Restoration Diagnostic</span>
+            </Link>
+          }
+          navigationSection={[]}
+          utilitySection={[
+            <Menu
+              key='language-menu'
+              label={
+                languages?.find((l) => l.value === language)?.label ||
+                'Language'
+              }
+              items={languages}
+              onSelect={setLanguage}
+            />,
+          ]}
+          actionsSection={[]}
+          maxWidth={1440}
+          fixed
+        />
+      )}
       <section className='bg-white dark:bg-gray-900'>
         <div className='py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12'>
           <h1 className='mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white'>
