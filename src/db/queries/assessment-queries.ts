@@ -2,6 +2,7 @@ import { AppDataSource, initializeDatabase } from '../data-source'
 import { Question, Theme } from '../entities/Question.entity'
 import { Answer, AnswerValue } from '../entities/Answer.entity'
 import { Assessment } from '../entities/Assessment.entity'
+import { AnswerStatus } from '@/types/answer.types'
 
 /**
  * Fetch assessment by ID with related data
@@ -171,7 +172,8 @@ export async function saveAnswer(
   questionId: string,
   value: AnswerValue | null,
   rationale?: string,
-  notes?: string
+  notes?: string,
+  status?: AnswerStatus
 ) {
   await initializeDatabase()
   const answerRepo = AppDataSource.getRepository(Answer)
@@ -181,7 +183,10 @@ export async function saveAnswer(
     where: {
       assessmentId,
       questionId
-    }
+    },
+    order: {
+      updatedAt: 'DESC'
+    },
   })
 
   if (answer) {
@@ -193,6 +198,8 @@ export async function saveAnswer(
     if (notes !== undefined) {
       answer.notes = notes
     }
+
+    answer.status = status ?? AnswerStatus.IN_PROGRESS
   } else {
     // Create new
     answer = answerRepo.create({
@@ -200,11 +207,22 @@ export async function saveAnswer(
       questionId,
       value,
       rationale: rationale || null,
-      notes: notes || null
+      notes: notes || null,
+      status: status ?? AnswerStatus.IN_PROGRESS
     })
   }
 
   await answerRepo.save(answer)
+
+  // duplicate answer when status is complete
+  if (answer && status === AnswerStatus.COMPLETE) {
+    const duplicate = answerRepo.create({
+      ...answer,
+    })
+
+    await answerRepo.save(duplicate)
+  }
+
   return answer
 }
 
@@ -286,7 +304,13 @@ export async function getCompleteQuestionData(
 
   // Get answer
   const answer = await answerRepo.findOne({
-    where: { assessmentId, questionId }
+    where: {
+      assessmentId,
+      questionId,
+    },
+    order: {
+      updatedAt: 'DESC',
+    },
   })
 
   return {

@@ -42,6 +42,7 @@ export default async function AssessmentPage({
       rationale: qa.answer?.rationale ?? '',
       updatedAt: qa.answer?.updatedAt ?? qa.createdAt,
       value: qa.answer?.value ?? '',
+      status: qa.answer?.status ?? '',
     },
   }))
 

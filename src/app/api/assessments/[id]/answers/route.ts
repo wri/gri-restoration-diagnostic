@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import { AnswerStatus } from '@/types/answer.types'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
@@ -15,7 +16,7 @@ export async function POST(
   
   try {
     const body = await request.json()
-    const { questionId, value, rationale, notes } = body
+    const { questionId, value, rationale, notes, status } = body
     
     if (!questionId) {
       return NextResponse.json(
@@ -29,7 +30,8 @@ export async function POST(
       questionId,
       value || undefined,
       rationale || undefined,
-      notes || undefined
+      notes || undefined,
+      status || AnswerStatus.IN_PROGRESS
     )
     
     return NextResponse.json({ 

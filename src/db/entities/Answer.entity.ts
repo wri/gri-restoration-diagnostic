@@ -21,8 +21,14 @@ export enum AnswerValue {
   NA = 'na',
 }
 
+export enum AnswerStatus {
+  NOT_STARTED = 'not_started',
+  IN_PROGRESS = 'in_progress',
+  COMPLETE = 'complete',
+}
+
 @Entity('answer')
-@Unique(['assessmentId', 'questionId'])
+@Unique(['id', 'assessmentId', 'questionId', 'updatedAt'])
 export class Answer {
   @PrimaryGeneratedColumn('uuid')
   id!: string
@@ -61,6 +67,15 @@ export class Answer {
 
   @Column({ name: 'question_id', type: 'uuid' })
   questionId!: string
+
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: AnswerStatus,
+    default: AnswerStatus.NOT_STARTED,
+  })
+  @Index()
+  status!: AnswerStatus
 
   // @OneToMany(() => Strategy, (strategy) => strategy.answer) // On hold
   // strategies!: Strategy[]
