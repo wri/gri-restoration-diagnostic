@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -8,7 +7,7 @@ import {
   // OneToMany,  // On hold - was used for strategies relation
   JoinColumn,
   Index,
-  Unique,
+  PrimaryColumn,
 } from 'typeorm'
 import type { Assessment } from './Assessment.entity'
 import type { Question } from './Question.entity'
@@ -28,9 +27,8 @@ export enum AnswerStatus {
 }
 
 @Entity('answer')
-@Unique(['id', 'assessmentId', 'questionId', 'updatedAt'])
 export class Answer {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid', { default: () => 'uuid_generate_v4()' })
   id!: string
 
   @Column({ type: 'enum', enum: AnswerValue, nullable: true })
@@ -46,6 +44,7 @@ export class Answer {
   createdAt!: Date
 
   @UpdateDateColumn({ name: 'updated_at' })
+  @PrimaryColumn({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt!: Date
 
   @ManyToOne('Assessment', 'answers', {

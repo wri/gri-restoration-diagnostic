@@ -62,7 +62,7 @@ export default async function AssessmentPage({
         gisUrl: assessment.region.gisUrl,
       },
       timeHorizon: {
-        completionYear: '2046',
+        completionYear: '',
       },
       restorationGoals: {
         goals: [],

@@ -72,7 +72,10 @@ export function QuestionView({
     const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        ...data,
+        id: currentAnswer?.id,
+      })
     })
     
     if (!response.ok) {
@@ -89,7 +92,7 @@ export function QuestionView({
     })
     
     return result
-  }, [assessmentId])
+  }, [assessmentId, currentAnswer])
   
   // Auto-save hook
   const { save } = useAutoSave({

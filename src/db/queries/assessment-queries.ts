@@ -76,6 +76,7 @@ export async function getQuestionsWithAnswers(assessmentId: string) {
     .where('question.diagnostic_id = :diagnosticId', { diagnosticId: assessment.diagnosticId })
     .orderBy('question.theme', 'ASC')
     .addOrderBy('question.sort_order', 'ASC')
+    .addOrderBy('answer.updatedAt', 'DESC')
     .getMany()
 
   return questionsWithAnswers
@@ -173,22 +174,23 @@ export async function saveAnswer(
   value: AnswerValue | null,
   rationale?: string,
   notes?: string,
-  status?: AnswerStatus
+  status?: AnswerStatus,
+  answerId?: string,
 ) {
   await initializeDatabase()
   const answerRepo = AppDataSource.getRepository(Answer)
+  
+  let answer
+  if (answerId) {
+    // Try to find existing answer
+    answer = await answerRepo.findOne({
+      where: {
+        id: answerId,
+      },
+    })
+  }
 
-  // Try to find existing answer
-  let answer = await answerRepo.findOne({
-    where: {
-      assessmentId,
-      questionId
-    },
-    order: {
-      updatedAt: 'DESC'
-    },
-  })
-
+  
   if (answer) {
     // Update existing
     answer.value = value
@@ -198,7 +200,6 @@ export async function saveAnswer(
     if (notes !== undefined) {
       answer.notes = notes
     }
-
     answer.status = status ?? AnswerStatus.IN_PROGRESS
   } else {
     // Create new
@@ -208,7 +209,7 @@ export async function saveAnswer(
       value,
       rationale: rationale || null,
       notes: notes || null,
-      status: status ?? AnswerStatus.IN_PROGRESS
+      status: AnswerStatus.IN_PROGRESS,
     })
   }
 
@@ -217,7 +218,13 @@ export async function saveAnswer(
   // duplicate answer when status is complete
   if (answer && status === AnswerStatus.COMPLETE) {
     const duplicate = answerRepo.create({
-      ...answer,
+      id: answerId,
+      assessmentId,
+      questionId,
+      value,
+      rationale: rationale || null,
+      notes: notes || null,
+      status: AnswerStatus.COMPLETE,
     })
 
     await answerRepo.save(duplicate)
