@@ -44,7 +44,7 @@ export class Answer {
   createdAt!: Date
 
   @UpdateDateColumn({ name: 'updated_at' })
-  @PrimaryColumn({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
+  @PrimaryColumn({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt!: Date
 
   @ManyToOne('Assessment', 'answers', {
