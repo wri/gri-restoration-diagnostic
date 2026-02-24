@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Button,
   InlineMessage,
+  Password,
 } from '@worldresources/wri-design-systems'
 import { Box, Text, Input } from '@chakra-ui/react'
 
@@ -92,39 +93,25 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
         borderRadius='lg'
         boxShadow='lg'
       >
-        <Text fontSize='2xl' fontWeight='bold' marginBottom={6} textAlign='center'>
+        <Text fontSize='2xl' fontWeight='bold' marginBottom={6} textAlign='left'>
           Enter password to access the diagnostic
         </Text>
 
         <form onSubmit={handleSubmit}>
           <Box marginBottom={error ? 3 : 5}>
-            <Box position='relative'>
-              <Text
-                fontSize='sm'
-                fontWeight='medium'
-                marginBottom={1}
-                color='gray.700'
-              >
-                Password
-              </Text>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={handlePasswordChange}
-                disabled={isLoading}
-                placeholder='Enter your password'
-                size='md'
+            <Box position='relative' mb={4}>
+              <Password
+                label="Password"
+                onChange={(wriPasswordPolicies) => {
+                  console.log('wriPasswordPolicies', wriPasswordPolicies);
+                }}
                 required
               />
-              <Button
-                label={showPassword ? 'Hide' : 'Show'}
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
-                variant='secondary'
-                size='small'
-                className='absolute right-2 top-8'
-                type='button'
-              />
+            </Box>
+            <Box position="relative">
+              <Button variant='primary'>
+                Resume diagnostic
+              </Button>
             </Box>
           </Box>
 
@@ -133,13 +120,6 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
               <InlineMessage variant='error' label={error} />
             </Box>
           )}
-
-          <Button
-            type='submit'
-            label={isLoading ? 'Authenticating...' : 'Resume diagnostic'}
-            disabled={isLoading}
-            className='w-full'
-          />
         </form>
       </Box>
     </Box>
