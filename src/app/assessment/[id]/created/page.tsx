@@ -83,8 +83,11 @@ export default function AssessmentCreatedPage() {
         textArea.style.opacity = '0';
         document.body.appendChild(textArea);
         textArea.select();
-        document.execCommand('copy');
+        const success = document.execCommand('copy');
         document.body.removeChild(textArea);
+        if (!success) {
+          throw new Error('execCommand copy failed');
+        }
         setLinkCopied(true);
         setTimeout(() => setLinkCopied(false), 2000);
       }
@@ -109,8 +112,11 @@ export default function AssessmentCreatedPage() {
         textArea.style.opacity = '0';
         document.body.appendChild(textArea);
         textArea.select();
-        document.execCommand('copy');
+        const success = document.execCommand('copy');
         document.body.removeChild(textArea);
+        if (!success) {
+          throw new Error('execCommand copy failed');
+        }
         setPasswordCopied(true);
         setTimeout(() => setPasswordCopied(false), 2000);
       }
