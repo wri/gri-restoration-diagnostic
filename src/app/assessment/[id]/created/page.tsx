@@ -70,15 +70,55 @@ export default function AssessmentCreatedPage() {
     : `/assessment/${assessmentId}`;
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(assessmentLink);
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 2000);
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(assessmentLink);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+      } else {
+        // Fallback for browsers without Clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = assessmentLink;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+      }
+    } catch (error) {
+      console.error('Failed to copy link:', error);
+      // Still show copied feedback even if there's an error
+      // User can manually copy from the input field
+    }
   };
 
   const handleCopyPassword = async () => {
-    await navigator.clipboard.writeText(password);
-    setPasswordCopied(true);
-    setTimeout(() => setPasswordCopied(false), 2000);
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(password);
+        setPasswordCopied(true);
+        setTimeout(() => setPasswordCopied(false), 2000);
+      } else {
+        // Fallback for browsers without Clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = password;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setPasswordCopied(true);
+        setTimeout(() => setPasswordCopied(false), 2000);
+      }
+    } catch (error) {
+      console.error('Failed to copy password:', error);
+      // Still show copied feedback even if there's an error
+      // User can manually copy from the input field
+    }
   };
 
   const handleStartAssessment = () => {
