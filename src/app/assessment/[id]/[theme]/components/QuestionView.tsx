@@ -173,9 +173,12 @@ export function QuestionView({
     // Find next unanswered question in theme
     const currentIndex = questions.findIndex(q => q.questionCode === currentQuestionCode)
     const nextQuestion = questions.slice(currentIndex + 1)?.[0]
+    const prevQuestion = currentIndex > 0 ? questions[currentIndex - 1] : null
     
-    if (nextQuestion) {
+    if (nextQuestion && isNextOrPrev === 'next') {
       handleQuestionSelect(nextQuestion.questionCode)
+    } else if (prevQuestion && isNextOrPrev === 'prev') {
+      handleQuestionSelect(prevQuestion.questionCode)
     } else if (canGoNext && nextTheme) {
       // Move to next theme
       router.push(`/assessment/${assessmentId}/${nextTheme}`)
@@ -186,7 +189,7 @@ export function QuestionView({
   }, [
     currentQuestion?.id, selectedAnswer, rationale, notes, save,
     questions, currentQuestionCode, canGoNext, nextTheme,
-    assessmentId, router, handleQuestionSelect
+    assessmentId, router, handleQuestionSelect, isNextOrPrev,
   ])
   
   if (!currentQuestion) {
