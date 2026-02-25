@@ -109,11 +109,11 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
       // Success - refresh the page to reload with session
       router.refresh()
     } catch (error) {
+      console.warn(error);
       setError(
         'Unable to connect to the server. Please check your connection and try again.',
       )
       setIsLoading(false)
-      void error
     }
   }
 

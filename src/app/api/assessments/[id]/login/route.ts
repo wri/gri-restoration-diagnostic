@@ -62,27 +62,23 @@ export async function POST(
       )
     }
 
-    // 8. Fetch assessment with passwordHash field
+    // 7. Fetch assessment with passwordHash field
     const assessment = await getAssessmentById(id)
 
-    if (!assessment) {
-      return NextResponse.json(
-        { error: 'Assessment not found' },
-        { status: 404 }
-      )
+    // 8. Verify credentials without revealing whether the assessment exists
+    // This prevents assessment ID enumeration attacks
+    let isPasswordValid = false
+    if (assessment?.passwordHash) {
+      isPasswordValid = await bcrypt.compare(password, assessment.passwordHash)
     }
 
-    // 9. Verify password with bcrypt.compare()
-    const isPasswordValid = await bcrypt.compare(password, assessment.passwordHash)
-
-    if (!isPasswordValid) {
+    // 9. Return same error for both missing assessment and invalid password
+    if (!assessment || !isPasswordValid) {
       // Increment rate limit counter on failed attempt
       rateLimiter.incrementAttempts(rateLimitKey)
 
       const response = NextResponse.json(
-        {
-          error: 'The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.'
-        },
+        { error: 'Invalid credentials' },
         { status: 401 }
       )
 

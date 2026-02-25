@@ -233,9 +233,7 @@ describe('POST /api/assessments/[id]/login', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe(
-        'The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.'
-      );
+      expect(data.error).toBe('Invalid credentials');
     });
 
     it('should not set cookie on invalid password', async () => {
@@ -313,8 +311,8 @@ describe('POST /api/assessments/[id]/login', () => {
     });
   });
 
-  describe('Assessment not found (404)', () => {
-    it('should return 404 when assessment does not exist', async () => {
+  describe('Assessment not found (401 to prevent enumeration)', () => {
+    it('should return 401 when assessment does not exist', async () => {
       (getAssessmentById as jest.Mock).mockResolvedValue(null);
       const request = createMockRequest({ password: 'any-password' });
       const params = createMockParams('nonexistent-id');
@@ -322,8 +320,8 @@ describe('POST /api/assessments/[id]/login', () => {
       const response = await POST(request, { params });
       const data = await response.json();
 
-      expect(response.status).toBe(404);
-      expect(data.error).toBe('Assessment not found');
+      expect(response.status).toBe(401);
+      expect(data.error).toBe('Invalid credentials');
     });
 
     it('should not check password when assessment not found', async () => {
@@ -334,6 +332,16 @@ describe('POST /api/assessments/[id]/login', () => {
       await POST(request, { params });
 
       expect(bcrypt.compare).not.toHaveBeenCalled();
+    });
+
+    it('should increment rate limit on missing assessment', async () => {
+      (getAssessmentById as jest.Mock).mockResolvedValue(null);
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('nonexistent-id');
+
+      await POST(request, { params });
+
+      expect(__mockIncrementAttempts).toHaveBeenCalled();
     });
 
     it('should not set cookie when assessment not found', async () => {

@@ -71,7 +71,7 @@ export function middleware(request: NextRequest) {
       // }
     } else {
       // No session cookie found
-      console.log(`[Middleware] No session cookie for assessment: ${assessmentId}`);
+      console.log(`[Middleware] No session cookie found`);
     }
 
     // Always continue to the page - let the component handle auth UI
