@@ -8,7 +8,7 @@ import { useState } from 'react'
 
 const Title = ({ title }: { title: string }) => {
   return (
-    <div className='flex items-center justify-between gap-3 mb-2'>
+    <div className='flex items-center justify-between gap-3 mt-3 mb-2'>
       <p className='text-lg font-bold text-neutral-800'>{title}</p>
       <hr className='w-full border-neutral-300 h-[1px] flex-1' />
     </div>
@@ -42,6 +42,28 @@ interface ScopeProps {
   }
 }
 
+const copyTextToClipboard = async (text: string) => {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text)
+  } else {
+    // Fallback for insecure contexts (like accessing via local IP)
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'absolute'
+    textArea.style.left = '-999999px'
+    document.body.prepend(textArea)
+    textArea.select()
+    try {
+      document.execCommand('copy')
+    } catch (error) {
+      console.error('Fallback copy failed:', error)
+      throw new Error('Unable to copy text')
+    } finally {
+      textArea.remove()
+    }
+  }
+}
+
 const Scope = ({ data }: ScopeProps) => {
   const [isEmailCopied, setIsEmailCopied] = useState(false)
   const [isLinkCopied, setIsLinkCopied] = useState(false)
@@ -49,7 +71,7 @@ const Scope = ({ data }: ScopeProps) => {
   const handleCopyEmail = async (text: string | undefined) => {
     if (!text) return
 
-    await navigator.clipboard.writeText(text)
+    await copyTextToClipboard(text)
 
     setIsEmailCopied(true)
     setTimeout(() => setIsEmailCopied(false), 2000)
@@ -58,7 +80,7 @@ const Scope = ({ data }: ScopeProps) => {
   const handleCopyLink = async (text: string | null | undefined) => {
     if (!text) return
 
-    await navigator.clipboard.writeText(text)
+    await copyTextToClipboard(text)
 
     setIsLinkCopied(true)
     setTimeout(() => setIsLinkCopied(false), 2000)
@@ -100,13 +122,13 @@ const Scope = ({ data }: ScopeProps) => {
           <div>
             <p className='text-neutral-700 text-sm'>Organization</p>
             <p className='text-neutral-800 font-bold'>
-              {data.diagnosticLead.organization}
+              {data.diagnosticLead.organization ?? 'No information provided'}
             </p>
           </div>
           <div>
             <p className='text-neutral-700 text-sm'>Job role</p>
             <p className='text-neutral-800 font-bold'>
-              {data.diagnosticLead.role}
+              {data.diagnosticLead.role ?? 'No information provided'}
             </p>
           </div>
         </div>
@@ -137,9 +159,9 @@ const Scope = ({ data }: ScopeProps) => {
               {data.diagnosticScope.geography.subRegion}
             </p>
           </div>
-          {data.diagnosticScope.geography.gisUrl ? (
-            <div>
-              <p className='text-neutral-700 text-sm'>GIS Link</p>
+          <div>
+            <p className='text-neutral-700 text-sm'>GIS Link</p>
+            {data.diagnosticScope.geography.gisUrl ? (
               <div className='flex items-center gap-2'>
                 <p className='text-neutral-800 font-bold underline decoration-primary-700 decoration-dotted'>
                   {data.diagnosticScope.geography.gisUrl}
@@ -157,8 +179,12 @@ const Scope = ({ data }: ScopeProps) => {
                   </div>
                 )}
               </div>
-            </div>
-          ) : null}
+            ) : (
+              <p className='text-neutral-800 font-bold'>
+                No information provided
+              </p>
+            )}
+          </div>
         </div>
 
         <Title title='Time horizon' />
