@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 /**
  * Session duration in milliseconds (24 hours)
@@ -99,12 +99,22 @@ export function validateSessionCookie(
       return { valid: false };
     }
 
-    // Verify signature
+    // Verify signature using constant-time comparison to prevent timing attacks
     const secret = getSigningSecret();
     const data = `${cookieAssessmentId}:${timestampStr}`;
     const expectedSignature = generateSignature(data, secret);
 
-    if (providedSignature !== expectedSignature) {
+    // Convert hex strings to buffers for secure comparison
+    // Both signatures should be the same length (64 hex chars for SHA-256)
+    if (providedSignature.length !== expectedSignature.length) {
+      return { valid: false };
+    }
+
+    const providedBuffer = Buffer.from(providedSignature, 'hex');
+    const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+
+    // Use constant-time comparison to prevent timing attacks
+    if (!timingSafeEqual(providedBuffer, expectedBuffer)) {
       return { valid: false };
     }
 
