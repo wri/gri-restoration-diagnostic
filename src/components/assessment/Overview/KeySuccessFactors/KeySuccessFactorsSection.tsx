@@ -65,8 +65,6 @@ const KeySuccessFactorsSection = ({
     firstInProgressQuestion?.questionCode ||
     firstQuestion?.questionCode
 
-  console.log(11, { shouldStart, shouldContinue, isComplete, nextQuestionCode })
-
   return (
     <CardContainer
       title={title}
