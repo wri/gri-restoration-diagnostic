@@ -1,6 +1,8 @@
 import 'reflect-metadata'
 import { NextRequest, NextResponse } from 'next/server'
 import * as bcrypt from 'bcrypt'
+import { getRateLimiter, createRateLimitKey } from '@/utils/rate-limiter'
+import { getClientIP } from '@/utils/ip-address'
 
 export async function POST(
   request: NextRequest,
@@ -22,7 +24,37 @@ export async function POST(
     const body = await request.json()
     const { password } = body
 
-    // 5. Validate password field
+    // 5. Extract IP address and create rate limit key
+    const ipAddress = getClientIP(request)
+    const rateLimitKey = createRateLimitKey(id, ipAddress)
+    const rateLimiter = getRateLimiter()
+
+    // 6. Check rate limit BEFORE password validation
+    const rateLimitResult = rateLimiter.checkLimit(rateLimitKey)
+    
+    if (!rateLimitResult.allowed) {
+      const response = NextResponse.json(
+        {
+          error: 'Too many login attempts. Please try again later.',
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        { status: 429 }
+      )
+
+      // Add rate limit headers
+      const headers = rateLimiter.getHeaders(rateLimitKey)
+      Object.entries(headers).forEach(([key, value]) => {
+        response.headers.set(key, value)
+      })
+      
+      if (rateLimitResult.retryAfter) {
+        response.headers.set('Retry-After', rateLimitResult.retryAfter.toString())
+      }
+
+      return response
+    }
+
+    // 7. Validate password field
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
         { error: 'Password is required' },
@@ -30,7 +62,7 @@ export async function POST(
       )
     }
 
-    // 6. Fetch assessment with passwordHash field
+    // 8. Fetch assessment with passwordHash field
     const assessment = await getAssessmentById(id)
 
     if (!assessment) {
@@ -40,19 +72,36 @@ export async function POST(
       )
     }
 
-    // 7. Verify password with bcrypt.compare()
+    // 9. Verify password with bcrypt.compare()
     const isPasswordValid = await bcrypt.compare(password, assessment.passwordHash)
 
     if (!isPasswordValid) {
-      return NextResponse.json(
+      // Increment rate limit counter on failed attempt
+      rateLimiter.incrementAttempts(rateLimitKey)
+
+      const response = NextResponse.json(
         {
           error: 'The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.'
         },
         { status: 401 }
       )
+
+      // Add rate limit headers
+      const headers = rateLimiter.getHeaders(rateLimitKey)
+      Object.entries(headers).forEach(([key, value]) => {
+        response.headers.set(key, value)
+      })
+
+      return response
     }
 
-    // 8. Set cookie and return response
+    // 10. Get rate limit headers BEFORE reset (for accurate remaining count)
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitKey)
+    
+    // 11. Reset rate limit counter on successful authentication
+    rateLimiter.resetAttempts(rateLimitKey)
+
+    // 12. Set cookie and return response
     const cookie = createSessionCookie(id)
     const response = NextResponse.json({ success: true })
 
@@ -62,6 +111,11 @@ export async function POST(
       sameSite: 'strict',
       maxAge: 86400, // 24 hours
       path: '/'
+    })
+
+    // Add rate limit headers to success response (using headers from before reset)
+    Object.entries(rateLimitHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value)
     })
 
     return response

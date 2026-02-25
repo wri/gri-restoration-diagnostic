@@ -5,12 +5,20 @@ jest.mock('next/server', () => ({
   NextRequest: jest.fn(),
   NextResponse: {
     json: jest.fn((body, init) => {
+      const mockHeaders = new Map<string, string>();
       const mockResponse = {
         json: async () => body,
         status: init?.status || 200,
         ok: (init?.status || 200) >= 200 && (init?.status || 200) < 300,
         cookies: {
           set: jest.fn()
+        },
+        headers: {
+          set: jest.fn((key: string, value: string) => {
+            mockHeaders.set(key, value);
+          }),
+          get: jest.fn((key: string) => mockHeaders.get(key)),
+          has: jest.fn((key: string) => mockHeaders.has(key)),
         }
       };
       return mockResponse;
@@ -42,11 +50,51 @@ jest.mock('@/utils/session', () => ({
   createSessionCookie: jest.fn()
 }));
 
+// Mock rate limiter
+jest.mock('@/utils/rate-limiter', () => {
+  const mockCheckLimit = jest.fn();
+  const mockIncrementAttempts = jest.fn();
+  const mockResetAttempts = jest.fn();
+  const mockGetHeaders = jest.fn();
+
+  return {
+    getRateLimiter: jest.fn(() => ({
+      checkLimit: mockCheckLimit,
+      incrementAttempts: mockIncrementAttempts,
+      resetAttempts: mockResetAttempts,
+      getHeaders: mockGetHeaders,
+    })),
+    createRateLimitKey: jest.fn((assessmentId, ip) => `${assessmentId}:${ip}`),
+    __mockCheckLimit: mockCheckLimit,
+    __mockIncrementAttempts: mockIncrementAttempts,
+    __mockResetAttempts: mockResetAttempts,
+    __mockGetHeaders: mockGetHeaders,
+  };
+});
+
+// Mock IP address extraction
+jest.mock('@/utils/ip-address', () => ({
+  getClientIP: jest.fn()
+}));
+
 // Import after mocks are set up
 import { POST } from './route';
 import * as bcrypt from 'bcrypt';
 import { getAssessmentById } from '@/db/queries/assessment-queries';
 import { createSessionCookie } from '@/utils/session';
+import { getClientIP } from '@/utils/ip-address';
+import { 
+  getRateLimiter, 
+  createRateLimitKey,
+  // @ts-expect-error - accessing mock helpers
+  __mockCheckLimit,
+  // @ts-expect-error - accessing mock helpers
+  __mockIncrementAttempts,
+  // @ts-expect-error - accessing mock helpers
+  __mockResetAttempts,
+  // @ts-expect-error - accessing mock helpers
+  __mockGetHeaders,
+} from '@/utils/rate-limiter';
 
 // Mock data
 const mockAssessment = {
@@ -86,6 +134,15 @@ describe('POST /api/assessments/[id]/login', () => {
     (getAssessmentById as jest.Mock).mockResolvedValue(mockAssessment);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (createSessionCookie as jest.Mock).mockReturnValue('mock-cookie-value');
+    (getClientIP as jest.Mock).mockReturnValue('192.168.1.1');
+
+    // Setup rate limiter mocks
+    __mockCheckLimit.mockReturnValue({ allowed: true, remaining: 4 });
+    __mockGetHeaders.mockReturnValue({
+      'X-RateLimit-Limit': '5',
+      'X-RateLimit-Remaining': '4',
+      'X-RateLimit-Reset': '1234567890'
+    });
   });
 
   describe('Successful login (200)', () => {
@@ -461,6 +518,230 @@ describe('POST /api/assessments/[id]/login', () => {
         'cookie-2',
         expect.any(Object)
       );
+    });
+  });
+
+  describe('Rate limiting', () => {
+    it('should extract IP address from request', async () => {
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(getClientIP).toHaveBeenCalledWith(request);
+    });
+
+    it('should create rate limit key with assessment ID and IP', async () => {
+      (getClientIP as jest.Mock).mockReturnValue('203.0.113.1');
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-123', '203.0.113.1');
+      expect(getRateLimiter).toHaveBeenCalled();
+    });
+
+    it('should check rate limit before password validation', async () => {
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      // Verify checkLimit was called
+      expect(__mockCheckLimit).toHaveBeenCalled();
+    });
+
+    it('should return 429 when rate limit exceeded', async () => {
+      __mockCheckLimit.mockReturnValue({ 
+        allowed: false, 
+        retryAfter: 600,
+        remaining: 0 
+      });
+
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+      const data = await response.json();
+
+      expect(response.status).toBe(429);
+      expect(data.error).toBe('Too many login attempts. Please try again later.');
+      expect(data.retryAfter).toBe(600);
+    });
+
+    it('should include Retry-After header in 429 response', async () => {
+      __mockCheckLimit.mockReturnValue({ 
+        allowed: false, 
+        retryAfter: 900,
+        remaining: 0 
+      });
+      __mockGetHeaders.mockReturnValue({
+        'X-RateLimit-Limit': '5',
+        'X-RateLimit-Remaining': '0',
+        'X-RateLimit-Reset': '1234567890'
+      });
+
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+
+      // Verify the response status and Retry-After header
+      expect(response.status).toBe(429);
+      expect(response.headers.set).toHaveBeenCalledWith('Retry-After', '900');
+    });
+
+    it('should include rate limit headers in 429 response', async () => {
+      __mockCheckLimit.mockReturnValue({ 
+        allowed: false, 
+        retryAfter: 600,
+        remaining: 0 
+      });
+      __mockGetHeaders.mockReturnValue({
+        'X-RateLimit-Limit': '5',
+        'X-RateLimit-Remaining': '0',
+        'X-RateLimit-Reset': '1234567890'
+      });
+
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+
+      expect(__mockGetHeaders).toHaveBeenCalled();
+      // Verify specific header values
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Limit', '5');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Remaining', '0');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Reset', '1234567890');
+    });
+
+    it('should not check password when rate limited', async () => {
+      __mockCheckLimit.mockReturnValue({ 
+        allowed: false, 
+        retryAfter: 600,
+        remaining: 0 
+      });
+
+      const request = createMockRequest({ password: 'any-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(getAssessmentById).not.toHaveBeenCalled();
+      expect(bcrypt.compare).not.toHaveBeenCalled();
+    });
+
+    it('should increment counter on failed authentication', async () => {
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+      const request = createMockRequest({ password: 'wrong-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(__mockIncrementAttempts).toHaveBeenCalled();
+    });
+
+    it('should not increment counter on successful authentication', async () => {
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(__mockIncrementAttempts).not.toHaveBeenCalled();
+    });
+
+    it('should reset counter on successful authentication', async () => {
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      await POST(request, { params });
+
+      expect(__mockResetAttempts).toHaveBeenCalled();
+    });
+
+    it('should include rate limit headers in success response', async () => {
+      __mockGetHeaders.mockReturnValue({
+        'X-RateLimit-Limit': '5',
+        'X-RateLimit-Remaining': '3',
+        'X-RateLimit-Reset': '1234567890'
+      });
+      
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+
+      expect(__mockGetHeaders).toHaveBeenCalled();
+      // Verify specific header values
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Limit', '5');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Remaining', '3');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Reset', '1234567890');
+    });
+
+    it('should include rate limit headers in 401 response', async () => {
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+      __mockGetHeaders.mockReturnValue({
+        'X-RateLimit-Limit': '5',
+        'X-RateLimit-Remaining': '2',
+        'X-RateLimit-Reset': '1234567890'
+      });
+      
+      const request = createMockRequest({ password: 'wrong-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+
+      expect(__mockGetHeaders).toHaveBeenCalled();
+      // Verify specific header values
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Limit', '5');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Remaining', '2');
+      expect(response.headers.set).toHaveBeenCalledWith('X-RateLimit-Reset', '1234567890');
+    });
+
+    it('should isolate rate limits per assessment', async () => {
+      (getClientIP as jest.Mock).mockReturnValue('203.0.113.5');
+      
+      const request1 = createMockRequest({ password: 'password1' });
+      const params1 = createMockParams('assessment-aaa');
+
+      const request2 = createMockRequest({ password: 'password2' });
+      const params2 = createMockParams('assessment-bbb');
+
+      await POST(request1, { params: params1 });
+      await POST(request2, { params: params2 });
+
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-aaa', '203.0.113.5');
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-bbb', '203.0.113.5');
+    });
+
+    it('should isolate rate limits per IP', async () => {
+      (getClientIP as jest.Mock)
+        .mockReturnValueOnce('203.0.113.10')
+        .mockReturnValueOnce('203.0.113.20');
+      
+      const request1 = createMockRequest({ password: 'password1' });
+      const params1 = createMockParams('assessment-123');
+
+      const request2 = createMockRequest({ password: 'password2' });
+      const params2 = createMockParams('assessment-123');
+
+      await POST(request1, { params: params1 });
+      await POST(request2, { params: params2 });
+
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-123', '203.0.113.10');
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-123', '203.0.113.20');
+    });
+
+    it('should handle missing IP address gracefully', async () => {
+      (getClientIP as jest.Mock).mockReturnValue('unknown');
+      const request = createMockRequest({ password: 'correct-password' });
+      const params = createMockParams('assessment-123');
+
+      const response = await POST(request, { params });
+
+      expect(response.status).toBe(200);
+      expect(createRateLimitKey).toHaveBeenCalledWith('assessment-123', 'unknown');
     });
   });
 });

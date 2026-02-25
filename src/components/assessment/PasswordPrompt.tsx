@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Button,
   InlineMessage,
   Panel,
   Password,
+  TextInput,
 } from '@worldresources/wri-design-systems'
 import { Box, Text } from '@chakra-ui/react'
 
@@ -19,12 +20,49 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isRateLimited, setIsRateLimited] = useState(false)
+  const [retryAfter, setRetryAfter] = useState<number>(0)
+
+  // Countdown timer for rate limiting
+  useEffect(() => {
+    if (retryAfter <= 0) {
+      setIsRateLimited(false)
+      return
+    }
+
+    const timer = setInterval(() => {
+      setRetryAfter((prev) => {
+        const newValue = prev - 1
+        if (newValue <= 0) {
+          setIsRateLimited(false)
+          setError(null)
+        }
+        return newValue
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [retryAfter])
+
+  const formatRetryTime = useCallback((seconds: number): string => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+
+    if (minutes > 0) {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`
+    }
+    return `${seconds} second${seconds !== 1 ? 's' : ''}`
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!password) {
       setError('Password is required')
+      return
+    }
+
+    if (isRateLimited) {
       return
     }
 
@@ -40,6 +78,17 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
         },
         body: JSON.stringify({ password }),
       })
+
+      // Handle rate limiting
+      if (response.status === 429) {
+        const data = await response.json()
+        const retryAfterSeconds = data.retryAfter || 900 // Default to 15 minutes
+        setRetryAfter(retryAfterSeconds)
+        setIsRateLimited(true)
+        setError(`Too many failed attempts. Please try again in ${formatRetryTime(retryAfterSeconds)}.`)
+        setIsLoading(false)
+        return
+      }
 
       if (response.status === 401) {
         setError(
@@ -80,8 +129,8 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
     password: string
   }) => {
     setPassword(newPassword)
-    // Clear error when user starts typing again
-    if (error) {
+    // Clear error when user starts typing again (except rate limit errors)
+    if (error && !isRateLimited) {
       setError(null)
     }
   }
@@ -104,24 +153,42 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
                 </Text>
 
                 <Box marginBottom={error ? 3 : 5}>
-                  <Password
-                    label='Password'
-                    onChange={handlePasswordChange}
-                    hideValidations
-                    required
-                  />
+                  {isRateLimited ? (
+                    <TextInput
+                        caption="Too many attempts"
+                        disabled
+                      /> 
+                    ) : (
+                    <Password
+                      label='Password'
+                      onChange={handlePasswordChange}
+                      hideValidations
+                      required
+                    />
+                  )}
                 </Box>
 
                 {error && (
                   <Box marginBottom={3}>
-                    <InlineMessage variant='error' label={error} />
+                    <InlineMessage 
+                      variant='error' 
+                      label={error}
+                    />
+                  </Box>
+                )}
+
+                {isRateLimited && retryAfter > 0 && (
+                  <Box marginBottom={3}>
+                    <Text fontSize='sm' color='neutral.700'>
+                      Time remaining: {formatRetryTime(retryAfter)}
+                    </Text>
                   </Box>
                 )}
 
                 <Button
                   type='submit'
                   label={isLoading ? 'Authenticating...' : 'Resume diagnostic'}
-                  disabled={isLoading || !password}
+                  disabled={isLoading || !password || isRateLimited}
                   className='w-full'
                 />
               </div>
