@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import {
   Button,
   InlineMessage,
+  Panel,
   Password,
 } from '@worldresources/wri-design-systems'
-import { Box, Text, Input } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 
 interface PasswordPromptProps {
   assessmentId: string
@@ -16,7 +17,6 @@ interface PasswordPromptProps {
 export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
   const router = useRouter()
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -64,12 +64,22 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
         'Unable to connect to the server. Please check your connection and try again.',
       )
       setIsLoading(false)
-      void error;
+      void error
     }
   }
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value)
+  const handlePasswordChange = ({
+    password: newPassword,
+  }: {
+    strength: string
+    length: boolean
+    uppercase: boolean
+    lowercase: boolean
+    numbers: boolean
+    specialCharacters: boolean
+    password: string
+  }) => {
+    setPassword(newPassword)
     // Clear error when user starts typing again
     if (error) {
       setError(null)
@@ -77,51 +87,48 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
   }
 
   return (
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      minHeight='100vh'
-      backgroundColor='gray.50'
-      padding={4}
-    >
-      <Box
-        maxWidth='500px'
-        width='100%'
-        backgroundColor='white'
-        padding={8}
-        borderRadius='lg'
-        boxShadow='lg'
-      >
-        <Text fontSize='2xl' fontWeight='bold' marginBottom={6} textAlign='left'>
-          Enter password to access the diagnostic
-        </Text>
+    <form onSubmit={handleSubmit} className="bg-gradient-to-b from-white to-primary-200 min-h-[100vh]">
+      <div className="max-w-[540px] py-16 w-full flex flex-col overflow-y-auto mx-auto">
+        <div className="border border-neutral-300 m-auto rounded-none sm:rounded-[10px] overflow-hidden mb-6 w-full">
+          <Panel 
+            width='540px'
+            content={
+              <div className='p-6 sm:p-8'>
+                <Text 
+                  fontSize='3xl' 
+                  fontWeight='bold' 
+                  marginBottom={3} 
+                  textAlign='left'
+                  lineHeight={'short'}>
+                  Enter password to access the diagnostic
+                </Text>
 
-        <form onSubmit={handleSubmit}>
-          <Box marginBottom={error ? 3 : 5}>
-            <Box position='relative' mb={4}>
-              <Password
-                label="Password"
-                onChange={(wriPasswordPolicies) => {
-                  console.log('wriPasswordPolicies', wriPasswordPolicies);
-                }}
-                required
-              />
-            </Box>
-            <Box position="relative">
-              <Button variant='primary'>
-                Resume diagnostic
-              </Button>
-            </Box>
-          </Box>
+                <Box marginBottom={error ? 3 : 5}>
+                  <Password
+                    label='Password'
+                    onChange={handlePasswordChange}
+                    hideValidations
+                    required
+                  />
+                </Box>
 
-          {error && (
-            <Box marginBottom={3}>
-              <InlineMessage variant='error' label={error} />
-            </Box>
-          )}
-        </form>
-      </Box>
-    </Box>
+                {error && (
+                  <Box marginBottom={3}>
+                    <InlineMessage variant='error' label={error} />
+                  </Box>
+                )}
+
+                <Button
+                  type='submit'
+                  label={isLoading ? 'Authenticating...' : 'Resume diagnostic'}
+                  disabled={isLoading || !password}
+                  className='w-full'
+                />
+              </div>
+            }
+          />
+        </div>
+      </div>
+    </form>
   )
 }
