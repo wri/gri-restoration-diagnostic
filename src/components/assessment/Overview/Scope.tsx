@@ -5,6 +5,7 @@ import CardContainer from './CardContainer'
 import { IconButton, Tag } from '@worldresources/wri-design-systems'
 import { CheckCircleIcon, CopyIcon } from '../../icons'
 import { useState } from 'react'
+import { copyTextToClipboard } from '@/utils/validation'
 
 const Title = ({ title }: { title: string }) => {
   return (
@@ -38,28 +39,6 @@ interface ScopeProps {
         goals: string[]
         ecosystems: string[]
       }
-    }
-  }
-}
-
-const copyTextToClipboard = async (text: string) => {
-  if (navigator.clipboard && window.isSecureContext) {
-    await navigator.clipboard.writeText(text)
-  } else {
-    // Fallback for insecure contexts (like accessing via local IP)
-    const textArea = document.createElement('textarea')
-    textArea.value = text
-    textArea.style.position = 'absolute'
-    textArea.style.left = '-999999px'
-    document.body.prepend(textArea)
-    textArea.select()
-    try {
-      document.execCommand('copy')
-    } catch (error) {
-      console.error('Fallback copy failed:', error)
-      throw new Error('Unable to copy text')
-    } finally {
-      textArea.remove()
     }
   }
 }
