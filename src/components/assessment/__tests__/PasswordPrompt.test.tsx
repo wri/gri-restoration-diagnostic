@@ -7,6 +7,53 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import { PasswordPrompt } from '../PasswordPrompt'
 
+// Type definitions for mock components
+type ButtonProps = {
+  label: string
+  disabled?: boolean
+  type?: 'button' | 'submit' | 'reset'
+  onClick?: () => void
+  className?: string
+}
+
+type InlineMessageProps = {
+  label: string
+  variant?: string
+}
+
+type PanelProps = {
+  content: React.ReactNode
+}
+
+type PasswordProps = {
+  label: string
+  onChange: (data: {
+    password: string
+    strength: string
+    length: boolean
+    uppercase: boolean
+    lowercase: boolean
+    numbers: boolean
+    specialCharacters: boolean
+  }) => void
+  hideValidations?: boolean
+  required?: boolean
+  disabled?: boolean
+}
+
+type TextInputProps = {
+  label?: string
+  onChange?: (value: string) => void
+  value?: string
+  disabled?: boolean
+  required?: boolean
+}
+
+type ChakraBoxProps = {
+  children: React.ReactNode
+  [key: string]: unknown
+}
+
 // Mock Next.js navigation
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -14,7 +61,7 @@ jest.mock('next/navigation', () => ({
 
 // Mock WRI Design System components
 jest.mock('@worldresources/wri-design-systems', () => ({
-  Button: ({ label, disabled, type, onClick, className }: any) => (
+  Button: ({ label, disabled, type, onClick, className }: ButtonProps) => (
     <button 
       type={type} 
       disabled={disabled} 
@@ -25,13 +72,13 @@ jest.mock('@worldresources/wri-design-systems', () => ({
       {label}
     </button>
   ),
-  InlineMessage: ({ label, variant }: any) => (
+  InlineMessage: ({ label, variant }: InlineMessageProps) => (
     <div data-testid="inline-message" data-variant={variant}>
       {label}
     </div>
   ),
-  Panel: ({ content }: any) => <div data-testid="panel">{content}</div>,
-  Password: ({ label, onChange, hideValidations, required, disabled }: any) => (
+  Panel: ({ content }: PanelProps) => <div data-testid="panel">{content}</div>,
+  Password: ({ label, onChange, required, disabled }: PasswordProps) => (
     <div data-testid="password-input">
       <label>{label}</label>
       <input
@@ -53,14 +100,14 @@ jest.mock('@worldresources/wri-design-systems', () => ({
       />
     </div>
   ),
-  TextInput: ({ label, onChange, value, disabled, required }: any) => (
+  TextInput: ({ label, onChange, value, disabled, required }: TextInputProps) => (
     <div data-testid="text-input">
       <label>{label}</label>
       <input
         type="text"
         data-testid="password-field"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
         required={required}
       />
@@ -70,15 +117,15 @@ jest.mock('@worldresources/wri-design-systems', () => ({
 
 // Mock Chakra UI components
 jest.mock('@chakra-ui/react', () => ({
-  Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+  Box: ({ children, ...props }: ChakraBoxProps) => <div {...props}>{children}</div>,
+  Text: ({ children, ...props }: ChakraBoxProps) => <span {...props}>{children}</span>,
 }))
 
 // Mock fetch
 global.fetch = jest.fn()
 
 describe('PasswordPrompt Component', () => {
-  let mockRouter: any
+  let mockRouter: { refresh: jest.Mock }
   let mockFetch: jest.MockedFunction<typeof fetch>
 
   beforeEach(() => {
