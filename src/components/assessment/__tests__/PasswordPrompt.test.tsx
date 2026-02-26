@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { PasswordPrompt } from '../PasswordPrompt'
 
 // Type definitions for mock components
@@ -57,6 +57,7 @@ type ChakraBoxProps = {
 // Mock Next.js navigation
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
 }))
 
 // Mock WRI Design System components
@@ -125,8 +126,9 @@ jest.mock('@chakra-ui/react', () => ({
 global.fetch = jest.fn()
 
 describe('PasswordPrompt Component', () => {
-  let mockRouter: { refresh: jest.Mock }
+  let mockRouter: { refresh: jest.Mock; push: jest.Mock }
   let mockFetch: jest.MockedFunction<typeof fetch>
+  let mockSearchParams: { get: jest.Mock }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -134,8 +136,13 @@ describe('PasswordPrompt Component', () => {
 
     mockRouter = {
       refresh: jest.fn(),
+      push: jest.fn(),
+    }
+    mockSearchParams = {
+      get: jest.fn(() => null), // No returnTo by default
     }
     ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
+    ;(useSearchParams as jest.Mock).mockReturnValue(mockSearchParams)
     mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
   })
 
