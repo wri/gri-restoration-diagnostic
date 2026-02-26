@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "description": "English question translations - Exported from QuestionTranslation table",
+    "totalQuestions": 31,
+    "themes": {
+      "Motivate": "M01-M08 (8 questions)",
+      "Enable": "E01-E13 (13 questions)",
+      "Implement": "I01-I10 (10 questions)"
+    },
+    "lastExported": "2026-02-26T00:00:00.000Z",
+    "exportCommand": "npm run i18n:export-questions -- --language en"
+  },
+  "_note": "This file will be populated by running: npm run i18n:sync --export or npm run i18n:export-questions",
+  "_structure": {
+    "questionCode": {
+      "questionText": "Main question text displayed to user",
+      "definition": "Detailed definition of the key success factor",
+      "considerations": "Points to consider when answering",
+      "followUpQuestions": {
+        "if yes": ["Follow-up question 1", "Follow-up question 2"],
+        "if no": ["Follow-up question 3"]
+      },
+      "strategyExamples": "Example strategies for addressing this factor",
+      "keySuccessFactor": "Full descriptive title",
+      "minimalKeySuccessFactor": "Compact title for navigation",
+      "lastUpdated": "2026-02-26T00:00:00.000Z"
+    }
+  }
+}

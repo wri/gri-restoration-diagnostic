@@ -1,0 +1,296 @@
+{
+  "common": {
+    "brand": "Restoration Diagnostic",
+    "buttons": {
+      "continue": "Continue",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "download": "Download",
+      "backToSetup": "Back to setup",
+      "backToOverview": "Back to overview"
+    },
+    "footer": {
+      "privacyPolicy": "Privacy policy",
+      "termsOfService": "Terms of service"
+    },
+    "loading": "Loading...",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "navigation": {
+    "brand": "Restoration Diagnostic",
+    "languageMenu": "Language",
+    "languages": {
+      "en": "English",
+      "es": "Español"
+    },
+    "themes": {
+      "motivate": "Motivate",
+      "enable": "Enable",
+      "implement": "Implement"
+    },
+    "overview": "Overview",
+    "tooltips": {
+      "previousTheme": "Previous theme",
+      "nextTheme": "Next theme"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Restoration Diagnostic",
+      "description1": "A structured method for identifying which key success factors for ecosystem restoration you already have in place, partially in place, or are missing within a country or landscape that has restoration opportunities.",
+      "description2": "A structured method for assessing ecosystem restoration readiness. The diagnostic will help you identify key success factors that you have in place, partially in place, or still need to consider how to include.",
+      "ctaButton": "Start Diagnostic"
+    }
+  },
+  "forms": {
+    "common": {
+      "requiredNote": "Fields marked with * are required."
+    },
+    "setup": {
+      "title": "Welcome to the Restoration Diagnostic Tool",
+      "subtitle": "A rapid assessment tool to evaluate the readiness of your landscape/geography for restoration and design strategic actions to ensure long-term success.",
+      "features": {
+        "steps": "3 step process",
+        "duration": "3 - 5 weeks to complete"
+      },
+      "sections": {
+        "getStarted": "Get started",
+        "getStartedDescription": "Enter some basic details about this diagnostic to get started.",
+        "diagnosticLead": "Diagnostic lead",
+        "diagnosticLeadDescription": "Please enter details for the primary person responsible for this diagnostic.",
+        "geography": "Geography",
+        "geographyDescription": "Enter details about the location of your restoration project."
+      },
+      "collapsible": {
+        "whatIs": "What is the Restoration Diagnostic Tool?",
+        "whatIsContent": "The WRI Restoration Diagnostic helps assess whether cultural, financial, political, and environmental \"enabling conditions\" support ecosystem restoration. By identifying bottlenecks, you can move from general planning to targeted, effective action."
+      },
+      "downloads": {
+        "preparationGuide": {
+          "title": "Preparation guide",
+          "description": "Download a PDF pre-diagnostic preparation guide."
+        },
+        "spreadsheet": {
+          "title": "Spreadsheet template",
+          "description": "Use this option if offline access is needed."
+        }
+      },
+      "labels": {
+        "diagnosticTitle": "Diagnostic title",
+        "jobTitle": "Job title",
+        "fullName": "Full name",
+        "email": "Email address",
+        "organization": "Organization",
+        "role": "Job role",
+        "country": "Country",
+        "subRegion": "Sub-region / Province",
+        "geographyType": "Geography Type",
+        "scope": "Scope",
+        "gisLink": "GIS Link",
+        "ecosystemContext": "Ecosystem context"
+      },
+      "placeholders": {
+        "diagnosticTitle": "Enter a diagnostic title",
+        "fullName": "Enter full name",
+        "email": "name@organization.com",
+        "organization": "Enter an organization name",
+        "role": "e.g. Project Manager",
+        "country": "Select country",
+        "subRegion": "Enter sub-region",
+        "geographyType": "Select geography type",
+        "scope": "Select scope",
+        "gisLink": "Enter GIS link"
+      },
+      "captions": {
+        "diagnosticTitle": "Include a descriptive title for your diagnostic. This will be shown to anyone that accesses the diagnostic.",
+        "ecosystemContext": "Select all ecosystem types present in your assessment area."
+      },
+      "validation": {
+        "titleRequired": "Title is required",
+        "fullNameRequired": "Full name is required",
+        "fullNameMinLength": "Name must be at least 2 characters",
+        "emailRequired": "Email address is required",
+        "emailInvalid": "Please provide a valid email address",
+        "countryRequired": "Country is required",
+        "subRegionRequired": "Sub-region is required",
+        "geographyTypeRequired": "Geography type is required",
+        "scopeRequired": "Scope is required",
+        "ecosystemsRequired": "Select at least one ecosystem type",
+        "termsRequired": "You must agree to the terms and conditions"
+      },
+      "checkboxes": {
+        "terms": "I agree to WRI's Terms of Service and Privacy Policy so I can save and manage my progress.",
+        "allowDataSharing": "I allow my anonymized data to be used in global research and meta-analysis to help identify restoration trends."
+      },
+      "ecosystems": {
+        "forest": {
+          "label": "Forest",
+          "description": "Tropical, temperate, or boreal forest ecosystems"
+        },
+        "grassland": {
+          "label": "Grassland",
+          "description": "Savannas, prairies, and steppes"
+        },
+        "wetland": {
+          "label": "Wetland",
+          "description": "Marshes, swamps, and floodplains"
+        },
+        "coastal": {
+          "label": "Coastal",
+          "description": "Mangroves, estuaries, and coastal zones"
+        },
+        "peatland": {
+          "label": "Peatland",
+          "description": "Bogs, fens, and peat swamp forests"
+        }
+      },
+      "errors": {
+        "title": "There are errors in the form:",
+        "networkError": "Unable to connect to the server. Please check your connection and try again.",
+        "genericError": "Something went wrong"
+      }
+    }
+  },
+  "assessment": {
+    "navigation": {
+      "progress": "{answered}/{total}",
+      "status": {
+        "yes": "Yes",
+        "partly": "Partly",
+        "no": "No",
+        "na": "N/A",
+        "notAnswered": "Not answered"
+      }
+    },
+    "content": {
+      "headers": {
+        "question": "Question",
+        "response": "Response",
+        "rationale": "Rationale"
+      },
+      "subheadings": {
+        "topicsToInclude": "Topics to include"
+      },
+      "placeholders": {
+        "rationale": "Add your rationale...",
+        "notes": "Add notes about this question..."
+      }
+    },
+    "answers": {
+      "labels": {
+        "yes": "Yes",
+        "partly": "Partly",
+        "no": "No",
+        "na": "N/A"
+      }
+    },
+    "guidance": {
+      "tabs": {
+        "guidance": "Guidance",
+        "notes": "Notes"
+      },
+      "sections": {
+        "definition": "Definition",
+        "considerations": "Considerations",
+        "exampleStrategies": "Example Strategies"
+      },
+      "empty": {
+        "definition": "No definition available.",
+        "considerations": "No considerations available.",
+        "exampleStrategies": "No example strategies available."
+      },
+      "notesCaption": "Add any notes or observations about this question for your team."
+    },
+    "actions": {
+      "buttons": {
+        "markComplete": "Mark complete",
+        "editFactor": "Edit factor",
+        "saveAndContinue": "Save and continue",
+        "continueWithoutMarking": "Continue without marking"
+      },
+      "tags": {
+        "successFactor": "Success Factor {n} of {total}"
+      },
+      "messages": {
+        "readyToFinish": "Ready to finish this factor?",
+        "markAsComplete": "Mark as complete"
+      },
+      "captions": {
+        "markComplete": "Mark this factor as complete when you've finished reviewing..."
+      },
+      "modal": {
+        "markComplete": {
+          "header": "Mark factor as complete?",
+          "content": "You've filled in the response and required fields...",
+          "confirmButton": "Mark complete & continue",
+          "cancelButton": "Continue without marking"
+        }
+      }
+    },
+    "autoSave": {
+      "status": {
+        "idle": "",
+        "saving": "Saving...",
+        "saved": "Saved",
+        "error": "Failed to save"
+      }
+    },
+    "created": {
+      "sessionExpired": {
+        "title": "Session expired",
+        "message": "The access credentials for this assessment are no longer available..."
+      }
+    }
+  },
+  "auth": {
+    "passwordPrompt": {
+      "title": "Enter password to access the diagnostic",
+      "label": "Password",
+      "caption": "Too many attempts",
+      "button": "Resume diagnostic"
+    },
+    "errors": {
+      "passwordRequired": "Password is required",
+      "incorrectPassword": "The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.",
+      "tooManyAttempts": "Too many failed attempts. Please try again in {time}.",
+      "authError": "An error occurred while authenticating. Please try again later.",
+      "networkError": "Unable to connect to the server. Please check your connection and try again."
+    }
+  },
+  "errors": {
+    "api": {
+      "invalidEmail": "Invalid email format",
+      "questionIdRequired": "questionId is required",
+      "failedToSaveAnswer": "Failed to save answer",
+      "failedToFetchAnswers": "Failed to fetch answers",
+      "tooManyLoginAttempts": "Too many login attempts. Please try again later.",
+      "passwordRequired": "Password is required",
+      "invalidCredentials": "Invalid credentials",
+      "unexpectedError": "An unexpected error occurred. Please try again later."
+    },
+    "generic": {
+      "somethingWentWrong": "Something went wrong",
+      "tryAgain": "Please try again"
+    }
+  },
+  "metadata": {
+    "defaultTitle": "Restoration Diagnostic",
+    "defaultDescription": "WRI Restoration Diagnostic",
+    "pages": {
+      "home": {
+        "title": "Restoration Diagnostic - Home",
+        "description": "A structured method for assessing ecosystem restoration readiness"
+      },
+      "setup": {
+        "title": "Setup Assessment - Restoration Diagnostic",
+        "description": "Create a new restoration diagnostic assessment"
+      },
+      "assessment": {
+        "title": "{theme} - Restoration Diagnostic",
+        "description": "Complete your restoration diagnostic assessment"
+      }
+    }
+  }
+}
