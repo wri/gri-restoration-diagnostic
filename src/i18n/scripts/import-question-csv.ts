@@ -1,0 +1,249 @@
+#!/usr/bin/env ts-node
+/**
+ * Import Question Translations from CSV
+ * 
+ * Usage:
+ *   npm run i18n:import-csv -- --file path/to/file.csv --language en
+ *   npm run i18n:import-csv -- --file path/to/file.csv --language en --dry-run
+ *   npm run i18n:import-csv -- --file path/to/file.csv --language en --force
+ * 
+ * Features:
+ * - Validates question codes against existing questions
+ * - Sanitizes text content 
+ * - Parses follow-up questions
+ * - Generates diff report
+ * - Transactional (all or nothing)
+ */
+
+import { parse } from 'csv-parse/sync'
+import { readFileSync } from 'fs'
+import { initializeDatabase } from '../../db/data-source'
+import { Question } from '../../db/entities/Question.entity'
+import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions } from '../../db/seeds/utils/sanitize-text'
+
+interface CSVRow {
+  id: string
+  Theme: string
+  'Enabling condition': string
+  Minimal: string
+  'Key Factor': string
+  Question: string
+  Definition: string
+  Guidance: string
+  'Follow up question(s)': string
+  'Examples of strategies to address gap in key factor': string
+}
+
+interface Change {
+  code: string
+  action: 'insert' | 'update'
+  field: string
+  oldValue?: any
+  newValue?: any
+}
+
+const QUESTION_CODE_MAP: { [key: number]: string } = {
+  1: 'M01', 2: 'M02', 3: 'M03', 4: 'M04', 5: 'M05', 6: 'M06', 7: 'M07', 8: 'M08',
+  9: 'E01', 10: 'E02', 11: 'E03', 12: 'E04', 13: 'E05', 14: 'E06', 15: 'E07', 16: 'E08',
+  17: 'E09', 18: 'E10', 19: 'E11', 20: 'E12', 21: 'E13',
+  22: 'I01', 23: 'I02', 24: 'I03', 25: 'I04', 26: 'I05', 27: 'I06', 28: 'I07', 29: 'I08', 30: 'I09', 31: 'I10'
+}
+
+async function importQuestionsFromCSV(
+  filePath: string,
+  options: { dryRun?: boolean; force?: boolean } = {}
+) {
+  console.log('\n📥 Starting CSV import...\n')
+  console.log(`File: ${filePath}`)
+  console.log(`Dry run: ${options.dryRun ? 'YES' : 'NO'}`)
+  console.log(`Force: ${options.force ? 'YES' : 'NO'}\n`)
+
+  // Initialize DB
+  const dataSource = await initializeDatabase()
+  const queryRunner = dataSource.createQueryRunner()
+  
+  try {
+    // Read and parse CSV
+    const fileContent = readFileSync(filePath, 'utf-8')
+    const rows: CSVRow[] = parse(fileContent, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+    })
+    
+    console.log(`Found ${rows.length} rows in CSV\n`)
+    
+    // Start transaction
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    
+    const changes: Change[] = []
+    let processed = 0
+    let skipped = 0
+    
+    for (const row of rows) {
+      const id = parseInt(row.id, 10)
+      const questionCode = QUESTION_CODE_MAP[id]
+      
+      if (!questionCode) {
+        console.warn(`⚠️  Row ${id}: No question code mapping found, skipping`)
+        skipped++
+        continue
+      }
+      
+      // Find existing question by code
+      const question = await queryRunner.manager.findOne(Question, {
+        where: { questionCode },
+      })
+      
+      if (!question) {
+        console.warn(`⚠️  ${questionCode}: Question not found in database, skipping`)
+        skipped++
+        continue
+      }
+      
+      // Prepare sanitized data
+      const updatedData = {
+        questionText: sanitizeQuestionText(row.Question) || question.questionText,
+        definition: sanitizeText(row.Definition),
+        considerations: sanitizeText(row.Guidance),
+        followUpQuestions: parseFollowUpQuestions(row['Follow up question(s)']),
+        strategyExamples: sanitizeText(row['Examples of strategies to address gap in key factor']),
+        keySuccessFactor: row['Key Factor'] || question.keySuccessFactor,
+        minimalKeySuccessFactor: row.Minimal || question.minimalKeySuccessFactor,
+      }
+      
+      // Track what changed
+      let hasChanges = false
+      const fieldChanges: Change[] = []
+      
+      Object.entries(updatedData).forEach(([field, newValue]) => {
+        const oldValue = question[field as keyof Question]
+        
+        // Normalize for comparison
+        const normalizedOld = oldValue === null || oldValue === undefined ? null : String(oldValue).trim()
+        const normalizedNew = newValue === null || newValue === undefined ? null : String(newValue).trim()
+        
+        if (normalizedOld !== normalizedNew) {
+          hasChanges = true
+          fieldChanges.push({
+            code: questionCode,
+            action: 'update',
+            field,
+            oldValue: normalizedOld,
+            newValue: normalizedNew,
+          })
+        }
+      })
+      
+      if (!hasChanges && !options.force) {
+        console.log(`✓ ${questionCode}: No changes`)
+        processed++
+        continue
+      }
+      
+      // Update question
+      await queryRunner.manager.update(Question, question.id, updatedData)
+      
+      if (hasChanges) {
+        console.log(`✏️  ${questionCode}: Updated (${fieldChanges.length} field${fieldChanges.length > 1 ? 's' : ''})`)
+        changes.push(...fieldChanges)
+      } else if (options.force) {
+        console.log(`✏️  ${questionCode}: Force updated`)
+      }
+      
+      processed++
+    }
+    
+    // Print summary
+    console.log('\n' + '='.repeat(60))
+    console.log('SUMMARY')
+    console.log('='.repeat(60))
+    console.log(`Processed: ${processed}`)
+    console.log(`Skipped: ${skipped}`)
+    console.log(`Updated fields: ${changes.length}`)
+    
+    if (changes.length > 0) {
+      console.log('\nDetailed Changes:')
+      const changesByQuestion = changes.reduce((acc, change) => {
+        if (!acc[change.code]) acc[change.code] = []
+        acc[change.code].push(change)
+        return acc
+      }, {} as Record<string, Change[]>)
+      
+      Object.entries(changesByQuestion).forEach(([code, questionChanges]) => {
+        console.log(`\n  ${code}:`)
+        questionChanges.forEach(change => {
+          console.log(`    - ${change.field}`)
+          if (change.oldValue) {
+            console.log(`      OLD: ${change.oldValue.substring(0, 80)}${change.oldValue.length > 80 ? '...' : ''}`)
+          }
+          if (change.newValue) {
+            console.log(`      NEW: ${change.newValue.substring(0, 80)}${change.newValue.length > 80 ? '...' : ''}`)
+          }
+        })
+      })
+    }
+    
+    if (options.dryRun) {
+      console.log('\n⚠️  DRY RUN - Rolling back changes\n')
+      await queryRunner.rollbackTransaction()
+    } else {
+      await queryRunner.commitTransaction()
+      console.log('\n✅ Transaction committed\n')
+    }
+    
+  } catch (error) {
+    console.error('\n❌ Error during import:', error)
+    await queryRunner.rollbackTransaction()
+    throw error
+  } finally {
+    await queryRunner.release()
+    await dataSource.destroy()
+  }
+}
+
+// CLI Argument Parsing
+function parseArgs() {
+  const args = process.argv.slice(2)
+  const options: { file?: string; dryRun?: boolean; force?: boolean } = {}
+  
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--file' && args[i + 1]) {
+      options.file = args[i + 1]
+      i++
+    } else if (args[i] === '--dry-run') {
+      options.dryRun = true
+    } else if (args[i] === '--force') {
+      options.force = true
+    }
+  }
+  
+  return options
+}
+
+// Main execution
+if (require.main === module) {
+  const { file, dryRun, force } = parseArgs()
+  
+  if (!file) {
+    console.error('❌ Error: --file parameter is required')
+    console.log('\nUsage:')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv --dry-run')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv --force')
+    process.exit(1)
+  }
+  
+  importQuestionsFromCSV(file, { dryRun, force })
+    .then(() => {
+      console.log('✅ Import completed successfully')
+      process.exit(0)
+    })
+    .catch((error) => {
+      console.error('❌ Import failed:', error)
+      process.exit(1)
+    })
+}
+
+export { importQuestionsFromCSV }
