@@ -108,7 +108,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/test-id', {
         assessment_session: 'valid-session-cookie'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: true });
+      mockValidateSessionCookie.mockResolvedValue({ valid: true });
 
       await middleware(request as unknown as NextRequest);
 
@@ -137,7 +137,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/test-id/motivate', {
         assessment_session: 'invalid-session'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: false });
+      mockValidateSessionCookie.mockResolvedValue({ valid: false });
 
       await middleware(request as unknown as NextRequest);
 
@@ -154,7 +154,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/test-id/enable', {
         assessment_session: 'valid-session'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: true });
+      mockValidateSessionCookie.mockResolvedValue({ valid: true });
 
       await middleware(request as unknown as NextRequest);
 
@@ -167,7 +167,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/test-id/implement', {
         assessment_session: 'session-for-other-id'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: false });
+      mockValidateSessionCookie.mockResolvedValue({ valid: false });
 
       await middleware(request as unknown as NextRequest);
 
@@ -279,7 +279,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/test-id', {
         assessment_session: 'invalid'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: false });
+      mockValidateSessionCookie.mockResolvedValue({ valid: false });
 
       await middleware(request as unknown as NextRequest);
 
@@ -295,7 +295,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/correct-id/motivate', {
         assessment_session: 'session-cookie'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: true });
+      mockValidateSessionCookie.mockResolvedValue({ valid: true });
 
       await middleware(request as unknown as NextRequest);
 
@@ -306,7 +306,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/uuid-abc-123/enable', {
         assessment_session: 'test-session'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: true });
+      mockValidateSessionCookie.mockResolvedValue({ valid: true });
 
       await middleware(request as unknown as NextRequest);
 
@@ -329,7 +329,7 @@ describe('Middleware Authentication', () => {
       const request = createMockRequest('http://localhost:3000/assessment/my-assessment/enabling-conditions', {
         assessment_session: 'expired-session'
       });
-      mockValidateSessionCookie.mockReturnValue({ valid: false });
+      mockValidateSessionCookie.mockResolvedValue({ valid: false });
 
       await middleware(request as unknown as NextRequest);
 

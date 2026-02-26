@@ -111,15 +111,30 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
       // Success - redirect to intended URL or refresh
       if (returnTo && returnTo.startsWith('/assessment/')) {
         // Validate returnTo is a safe relative URL for this assessment
-        const validPattern = new RegExp(`^/assessment/${assessmentId}/[^/]+$`)
-        if (validPattern.test(returnTo)) {
-          router.push(returnTo)
+        const expectedPrefix = `/assessment/${assessmentId}/`
+        
+        if (returnTo.startsWith(expectedPrefix)) {
+          const remainder = returnTo.slice(expectedPrefix.length)
+          
+          // Validate theme segment: must have content, no slashes, no query params, no fragments, no URL encoding
+          const isValidTheme = remainder.length > 0 && 
+                              !remainder.includes('/') && 
+                              !remainder.includes('?') && 
+                              !remainder.includes('#') &&
+                              !remainder.includes('%')
+          
+          if (isValidTheme) {
+            router.push(returnTo)
+          } else {
+            // If returnTo is invalid, just refresh
+            router.refresh()
+          }
         } else {
-          // If returnTo is invalid, just refresh
+          // Wrong assessment ID or invalid format - refresh
           router.refresh()
         }
       } else {
-        // No returnTo parameter - just refresh to show authenticated state
+        // No returnTo parameter or doesn't start with /assessment/ - just refresh
         router.refresh()
       }
     } catch (error) {
