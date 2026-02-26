@@ -72,49 +72,31 @@ export function validateSessionCookie(
   cookie: string,
   assessmentId?: string
 ): { valid: boolean; assessmentId?: string } {
-  console.log(`\n[Session] Validating cookie...`);
-  console.log(`[Session] Expected assessment ID: ${assessmentId || '(any)'}`);
-  
   try {
     // Check if cookie is provided
     if (!cookie || typeof cookie !== 'string') {
-      console.log(`[Session] ❌ Validation failed: Cookie not provided or not a string`);
       return { valid: false };
     }
-
-    console.log(`[Session] Cookie length: ${cookie.length} chars`);
 
     // Parse cookie format: assessmentId:timestamp:signature
     const parts = cookie.split(':');
     if (parts.length !== 3) {
-      console.log(`[Session] ❌ Validation failed: Cookie has ${parts.length} parts, expected 3`);
       return { valid: false };
     }
 
     const [cookieAssessmentId, timestampStr, providedSignature] = parts;
-    console.log(`[Session] Cookie assessment ID: ${cookieAssessmentId}`);
-    console.log(`[Session] Cookie timestamp: ${timestampStr}`);
-    console.log(`[Session] Cookie signature length: ${providedSignature.length} chars`);
 
     // Validate timestamp format
     const timestamp = parseInt(timestampStr, 10);
     if (isNaN(timestamp)) {
-      console.log(`[Session] ❌ Validation failed: Invalid timestamp format`);
       return { valid: false };
     }
 
     // Check expiry (24 hours from timestamp)
     const now = Date.now();
     const age = now - timestamp;
-    const ageInHours = age / (1000 * 60 * 60);
-    console.log(`[Session] Cookie age: ${ageInHours.toFixed(2)} hours (max: 24 hours)`);
     
     if (age < 0 || age > SESSION_DURATION) {
-      if (age < 0) {
-        console.log(`[Session] ❌ Validation failed: Cookie timestamp is in the future`);
-      } else {
-        console.log(`[Session] ❌ Validation failed: Cookie expired (age: ${ageInHours.toFixed(2)}h)`);
-      }
       return { valid: false };
     }
 
@@ -123,12 +105,9 @@ export function validateSessionCookie(
     const data = `${cookieAssessmentId}:${timestampStr}`;
     const expectedSignature = generateSignature(data, secret);
 
-    console.log(`[Session] Expected signature length: ${expectedSignature.length} chars`);
-
     // Convert hex strings to buffers for secure comparison
     // Both signatures should be the same length (64 hex chars for SHA-256)
     if (providedSignature.length !== expectedSignature.length) {
-      console.log(`[Session] ❌ Validation failed: Signature length mismatch (${providedSignature.length} vs ${expectedSignature.length})`);
       return { valid: false };
     }
 
@@ -137,23 +116,14 @@ export function validateSessionCookie(
 
     // Use constant-time comparison to prevent timing attacks
     if (!timingSafeEqual(providedBuffer, expectedBuffer)) {
-      console.log(`[Session] ❌ Validation failed: Signature mismatch`);
-      console.log(`[Session]   Provided (first 20): ${providedSignature.substring(0, 20)}...`);
-      console.log(`[Session]   Expected (first 20): ${expectedSignature.substring(0, 20)}...`);
       return { valid: false };
     }
-
-    console.log(`[Session] ✓ Signature verified`);
 
     // If assessmentId is provided, verify it matches
     if (assessmentId && cookieAssessmentId !== assessmentId) {
-      console.log(`[Session] ❌ Validation failed: Assessment ID mismatch`);
-      console.log(`[Session]   Cookie has: ${cookieAssessmentId}`);
-      console.log(`[Session]   Expected: ${assessmentId}`);
       return { valid: false };
     }
 
-    console.log(`[Session] ✅ Validation PASSED`);
     return {
       valid: true,
       assessmentId: cookieAssessmentId,
