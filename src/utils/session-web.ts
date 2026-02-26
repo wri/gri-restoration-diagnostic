@@ -1,9 +1,27 @@
-// import { timingSafeEqual } from 'crypto';
-
 /**
  * Session duration in milliseconds (24 hours)
  */
 export const SESSION_DURATION = 24 * 60 * 60 * 1000;
+
+/**
+ * Constant-time string comparison to prevent timing attacks
+ * Compares two strings character by character without early exit
+ * @param a - First string to compare
+ * @param b - Second string to compare
+ * @returns true if strings are equal, false otherwise
+ */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  
+  return result === 0;
+}
 
 /**
  * Get the signing secret from environment variables
@@ -96,10 +114,8 @@ export async function validateSessionCookieWeb(
       return { valid: false };
     }
 
-    // Use simple string comparison (signatures are already hex strings)
-    // For edge runtime, we can't use timingSafeEqual easily, but constant-time comparison
-    // is less critical for session cookies than for password comparisons
-    if (providedSignature !== expectedSignature) {
+    // Use constant-time comparison to prevent timing attacks
+    if (!timingSafeEqual(providedSignature, expectedSignature)) {
       return { valid: false };
     }
 
