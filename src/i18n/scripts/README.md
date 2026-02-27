@@ -349,12 +349,3 @@ jobs:
 **Issue:** "Transaction rollback"
 - **Cause:** Database error during import
 - **Fix:** Check database logs, ensure connection is active
-
-## Future Enhancements
-
-When Spanish support is added (Phase 3 of i18n plan):
-
-1. Create `QuestionTranslation` entity
-2. Update scripts to use `--language` parameter
-3. Support multiple CSV imports (one per language)
-4. Validate all languages have complete translations
