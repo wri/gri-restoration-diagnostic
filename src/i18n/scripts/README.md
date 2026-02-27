@@ -16,6 +16,7 @@ Import question translations from CSV files (like those provided by WRI stakehol
 - Shows detailed diff of changes
 - Transactional (all-or-nothing)
 - Dry-run mode for preview
+- **Optional cleanup: removes questions not in CSV** (use with `--cleanup --force`)
 
 **Usage:**
 
@@ -28,6 +29,10 @@ npm run i18n:import-csv -- --file docs/resources/questions.csv
 
 # Force update even if no changes detected
 npm run i18n:import-csv -- --file docs/resources/questions.csv --force
+
+# Import AND remove questions not in CSV (pristine database)
+npm run i18n:import-csv -- --file docs/resources/questions.csv --cleanup --dry-run
+npm run i18n:import-csv -- --file docs/resources/questions.csv --cleanup --force
 ```
 
 **CSV Format Expected:**
@@ -90,6 +95,29 @@ npm run i18n:validate -- --questions-only
 
 # CI mode (for GitHub Actions)
 npm run i18n:validate -- --ci
+```
+
+### 4. `cleanup-questions.ts`
+
+Clean up database to ensure pristine state.
+
+**Features:**
+- Detects and removes duplicate question codes (keeps most recent)
+- Finds questions with missing required fields
+- Shows comprehensive database statistics
+- Dry-run mode for safety
+
+**Usage:**
+
+```bash
+# Check for issues (no changes)
+npm run i18n:cleanup -- --dry-run
+
+# Fix duplicates
+npm run i18n:cleanup
+
+# Check specific issues
+npm run i18n:cleanup -- --duplicates --dry-run
 ```
 
 ## Workflows
@@ -180,6 +208,61 @@ npm run i18n:validate -- --ci
 5. **Test & Commit**
 
 **Time:** ~5-10 minutes
+
+### Workflow 3: Maintain Pristine Database
+
+**Scenario:** Ensure database has only the exact questions from the latest CSV (remove old/obsolete questions)
+
+**Steps:**
+
+1. **Check Current State**
+   ```bash
+   npm run i18n:cleanup -- --dry-run
+   npm run i18n:validate
+   ```
+
+2. **Preview Import with Cleanup**
+   ```bash
+   npm run i18n:import-csv -- \
+     --file docs/resources/latest-questions.csv \
+     --cleanup \
+     --dry-run
+   ```
+   
+   This shows:
+   - Questions that will be updated
+   - Questions that will be deleted (not in CSV)
+
+3. **Apply Changes** (pristine state)
+   ```bash
+   npm run i18n:import-csv -- \
+     --file docs/resources/latest-questions.csv \
+     --cleanup \
+     --force
+   ```
+   
+   ⚠️ **Warning:** `--cleanup --force` will DELETE questions not in the CSV!
+
+4. **Verify Clean State**
+   ```bash
+   npm run i18n:cleanup -- --dry-run
+   npm run i18n:validate
+   ```
+
+5. **Export & Commit**
+   ```bash
+   npm run i18n:export-questions
+   git add -A
+   git commit -m "chore(i18n): Sync database with canonical CSV (pristine state)"
+   ```
+
+**Time:** ~10 minutes
+
+**⚠️ Use Case:** 
+- When question codes have been reorganized
+- After removing deprecated questions
+- When establishing a "source of truth" CSV
+- Before major releases
 
 ## CSV to Question Code Mapping
 

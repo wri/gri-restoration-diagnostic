@@ -6,6 +6,7 @@
  *   npm run i18n:import-csv -- --file path/to/file.csv --language en
  *   npm run i18n:import-csv -- --file path/to/file.csv --language en --dry-run
  *   npm run i18n:import-csv -- --file path/to/file.csv --language en --force
+ *   npm run i18n:import-csv -- --file path/to/file.csv --cleanup --force
  * 
  * Features:
  * - Validates question codes against existing questions
@@ -13,6 +14,7 @@
  * - Parses follow-up questions
  * - Generates diff report
  * - Transactional (all or nothing)
+ * - Optional cleanup: removes questions in DB not present in CSV
  */
 
 import { parse } from 'csv-parse/sync'
@@ -51,12 +53,13 @@ const QUESTION_CODE_MAP: { [key: number]: string } = {
 
 async function importQuestionsFromCSV(
   filePath: string,
-  options: { dryRun?: boolean; force?: boolean } = {}
+  options: { dryRun?: boolean; force?: boolean; cleanup?: boolean } = {}
 ) {
   console.log('\n📥 Starting CSV import...\n')
   console.log(`File: ${filePath}`)
   console.log(`Dry run: ${options.dryRun ? 'YES' : 'NO'}`)
-  console.log(`Force: ${options.force ? 'YES' : 'NO'}\n`)
+  console.log(`Force: ${options.force ? 'YES' : 'NO'}`)
+  console.log(`Cleanup: ${options.cleanup ? 'YES' : 'NO'}\n`)
 
   // Initialize DB
   const dataSource = await initializeDatabase()
@@ -185,6 +188,45 @@ async function importQuestionsFromCSV(
       })
     }
     
+    // Cleanup obsolete questions (if requested)
+    if (options.cleanup) {
+      console.log('\n' + '='.repeat(60))
+      console.log('🧹 CLEANUP: Checking for obsolete questions...')
+      console.log('='.repeat(60))
+      
+      // Get all question codes from CSV
+      const csvQuestionCodes = new Set(
+        rows
+          .map(row => QUESTION_CODE_MAP[parseInt(row.id, 10)])
+          .filter(code => code !== undefined)
+      )
+      
+      // Find all questions in database
+      const allDbQuestions = await queryRunner.manager.find(Question, {
+        order: { questionCode: 'ASC' }
+      })
+      
+      // Identify questions to delete (in DB but not in CSV)
+      const toDelete = allDbQuestions.filter(q => !csvQuestionCodes.has(q.questionCode))
+      
+      if (toDelete.length > 0) {
+        console.log(`\n⚠️  Found ${toDelete.length} question(s) in DB not present in CSV:`)
+        toDelete.forEach(q => {
+          console.log(`   - ${q.questionCode}: ${q.keySuccessFactor}`)
+        })
+        
+        if (options.force && !options.dryRun) {
+          // Delete obsolete questions
+          await queryRunner.manager.remove(Question, toDelete)
+          console.log(`\n✅ Deleted ${toDelete.length} obsolete question(s)`)
+        } else if (!options.force) {
+          console.log('\n⚠️  Use --force flag to delete these questions')
+        }
+      } else {
+        console.log('✅ No obsolete questions found - database is clean')
+      }
+    }
+    
     if (options.dryRun) {
       console.log('\n⚠️  DRY RUN - Rolling back changes\n')
       await queryRunner.rollbackTransaction()
@@ -206,7 +248,7 @@ async function importQuestionsFromCSV(
 // CLI Argument Parsing
 function parseArgs() {
   const args = process.argv.slice(2)
-  const options: { file?: string; dryRun?: boolean; force?: boolean } = {}
+  const options: { file?: string; dryRun?: boolean; force?: boolean; cleanup?: boolean } = {}
   
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--file' && args[i + 1]) {
@@ -216,6 +258,8 @@ function parseArgs() {
       options.dryRun = true
     } else if (args[i] === '--force') {
       options.force = true
+    } else if (args[i] === '--cleanup') {
+      options.cleanup = true
     }
   }
   
@@ -224,7 +268,7 @@ function parseArgs() {
 
 // Main execution
 if (require.main === module) {
-  const { file, dryRun, force } = parseArgs()
+  const { file, dryRun, force, cleanup } = parseArgs()
   
   if (!file) {
     console.error('❌ Error: --file parameter is required')
@@ -232,10 +276,11 @@ if (require.main === module) {
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv --dry-run')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv --force')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv --cleanup --force')
     process.exit(1)
   }
   
-  importQuestionsFromCSV(file, { dryRun, force })
+  importQuestionsFromCSV(file, { dryRun, force, cleanup })
     .then(() => {
       console.log('✅ Import completed successfully')
       process.exit(0)
