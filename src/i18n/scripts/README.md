@@ -1,12 +1,12 @@
 # i18n Automation Scripts
 
-This directory contains automated scripts for managing translation workflows without requiring AI assistance.
+Automated scripts for managing translation workflows.
 
 ## Scripts
 
 ### 1. `import-question-csv.ts`
 
-Import question translations from CSV files (like those provided by WRI stakeholders).
+Import question translations from CSV files.
 
 **Features:**
 - Maps CSV rows to question codes (M01-M08, E01-E13, I01-I10)
@@ -122,9 +122,9 @@ npm run i18n:cleanup -- --duplicates --dry-run
 
 ## Workflows
 
-### Workflow 1: Import CSV from Stakeholders
+### Workflow 1: Import CSV Containing Decided Structure
 
-**Scenario:** WRI team sends updated CSV with question content
+**Scenario:** Team sends updated CSV with question content
 
 **Steps:**
 
@@ -174,7 +174,7 @@ npm run i18n:cleanup -- --duplicates --dry-run
    ```bash
    git add docs/resources/questions-update-2026-02-26.csv
    git add src/i18n/translations/questions-en.json
-   git commit -m "chore(i18n): Update question content from WRI team"
+   git commit -m "chore(i18n): Update question content from team"
    ```
 
 **Time:** ~10-15 minutes
