@@ -99,6 +99,11 @@ variable "health_check_path" {
   default     = "/api/health"
 }
 
+variable "certificate_arn" {
+  description = "ARN of the ACM certificate for HTTPS"
+  type        = string
+}
+
 # =============================================================================
 # Application Variables
 # =============================================================================
