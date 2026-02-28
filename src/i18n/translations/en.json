@@ -120,6 +120,21 @@
         "ecosystemsRequired": "Select at least one ecosystem type",
         "termsRequired": "You must agree to the terms and conditions"
       },
+      "offlineMessage": {
+        "title": "Complete offline",
+        "description": "You can download and complete this diagnostic offline using a spreadsheet or PDF format. Submit your completed file to receive your results.",
+        "button": "Download"
+      },
+      "leadIdentity": {
+        "question": "Does the diagnostic lead identify as a member of any of the following groups?",
+        "options": {
+          "indigenousPeoples": "Indigenous Peoples",
+          "localCommunities": "Local communities",
+          "both": "Both Indigenous Peoples and Local communities",
+          "preferNotToSay": "Prefer not to say",
+          "noneOfTheAbove": "None of the above"
+        }
+      },
       "checkboxes": {
         "terms": "I agree to WRI's Terms of Service and Privacy Policy so I can save and manage my progress.",
         "allowDataSharing": "I allow my anonymized data to be used in global research and meta-analysis to help identify restoration trends."
@@ -151,6 +166,300 @@
         "networkError": "Unable to connect to the server. Please check your connection and try again.",
         "genericError": "Something went wrong"
       }
+    }
+  },
+  "scoping": {
+    "intro": {
+      "heading": "Prepare for the diagnostic",
+      "description1": "Before you begin the diagnostic, it's important to prepare the necessary context and materials. This preparation will help ensure that your responses are accurate and well-informed.",
+      "description2": "There are 2 parts to this step:",
+      "parts": {
+        "scope": {
+          "title": "Set the scope",
+          "description": "Define the target landscape, time horizon, and restoration goals"
+        },
+        "approach": {
+          "title": "Plan your diagnostic approach",
+          "badge": "Optional",
+          "description": "Decide how you will engage stakeholders and gather information"
+        }
+      },
+      "button": "Start preparation"
+    },
+    "sidebar": {
+      "title": "Diagnostic preparation",
+      "progress": "{current}/{total}",
+      "groups": {
+        "scope": "Setting the scope",
+        "approach": "Plan your approach"
+      },
+      "steps": {
+        "targetGeography": "Target geography",
+        "timeHorizon": "Time horizon",
+        "restorationGoals": "Restoration goals",
+        "engagement": "Define engagement strategy",
+        "materials": "Gather materials"
+      }
+    },
+    "common": {
+      "buttons": {
+        "saveAndContinue": "Save and continue",
+        "skip": "Skip",
+        "previous": "Previous"
+      }
+    },
+    "step1": {
+      "heading": "Target geography",
+      "description": "Define the geographic scope of your restoration diagnostic. This information will help contextualize your responses throughout the assessment.",
+      "fields": {
+        "targetScale": {
+          "label": "Target scale",
+          "placeholder": "Please select",
+          "options": {
+            "national": "National",
+            "subnational": "Subnational",
+            "landscape": "Landscape",
+            "site": "Site"
+          }
+        },
+        "country": {
+          "label": "Country",
+          "placeholder": "Please select"
+        },
+        "subRegion": {
+          "label": "Sub-region / Province",
+          "placeholder": "Enter sub-region or province"
+        },
+        "restorationBoundary": {
+          "label": "Restoration boundary link",
+          "placeholder": "Enter URL or file link",
+          "optional": true
+        },
+        "ecosystems": {
+          "label": "Capture ecosystem types",
+          "description": "Select all ecosystem types present in your target area"
+        }
+      }
+    },
+    "step2": {
+      "heading": "Time horizon",
+      "description": "Specify the timeframe for your restoration activities. This helps set realistic expectations for outcomes and monitoring.",
+      "fields": {
+        "restorationPeriod": {
+          "label": "Restoration period (years)",
+          "placeholder": "Enter number of years",
+          "optional": true
+        }
+      }
+    },
+    "step3": {
+      "heading": "Restoration goals",
+      "description": "Describe your overarching goals for restoration. Consider objectives related to biodiversity, climate mitigation, livelihoods, and ecosystem services.",
+      "fields": {
+        "goals": {
+          "label": "Describe your goals for restoration",
+          "placeholder": "Enter your restoration goals..."
+        }
+      }
+    },
+    "step4": {
+      "heading": "Define engagement strategy",
+      "description": "How will you engage stakeholders in completing this diagnostic? Select the approaches that best fit your context.",
+      "accordions": {
+        "participatory": {
+          "title": "Participatory workshops",
+          "items": [
+            "Bring together diverse stakeholders to discuss and answer questions collaboratively",
+            "Facilitates dialogue and ensures multiple perspectives are considered",
+            "Best for building consensus and shared understanding"
+          ]
+        },
+        "interviews": {
+          "title": "Interviews / focus groups",
+          "items": [
+            "Conduct one-on-one or small group discussions with key informants",
+            "Allows for in-depth exploration of specific topics",
+            "Useful when certain stakeholders cannot attend larger workshops"
+          ]
+        },
+        "distributed": {
+          "title": "Distributed completion",
+          "items": [
+            "Share the diagnostic with stakeholders to complete independently",
+            "Allows individuals to respond at their own pace",
+            "May require consolidation of multiple responses"
+          ]
+        }
+      },
+      "fields": {
+        "notes": {
+          "label": "Engagement strategy notes",
+          "placeholder": "Add any notes about your engagement approach...",
+          "optional": true
+        }
+      }
+    },
+    "step5": {
+      "heading": "Gather materials",
+      "description": "Collect relevant documents and data sources that will inform your diagnostic responses. Organize these materials for easy reference.",
+      "accordions": {
+        "policy": {
+          "title": "Policy & legal context",
+          "items": [
+            "National or regional restoration commitments and policies",
+            "Land tenure regulations and customary rights frameworks",
+            "Environmental protection laws and enforcement mechanisms"
+          ]
+        },
+        "implementation": {
+          "title": "Implementation & planning",
+          "items": [
+            "Existing restoration plans or strategies",
+            "Budget allocations and funding sources",
+            "Stakeholder mapping and engagement records"
+          ]
+        },
+        "biophysical": {
+          "title": "Biophysical & socioeconomic data",
+          "items": [
+            "Land use and land cover maps",
+            "Biodiversity assessments and species inventories",
+            "Socioeconomic profiles of local communities"
+          ]
+        },
+        "monitoring": {
+          "title": "Monitoring & baselines",
+          "items": [
+            "Baseline data on ecosystem condition",
+            "Historical trends in land degradation or restoration",
+            "Existing monitoring frameworks or indicators"
+          ]
+        }
+      },
+      "fields": {
+        "sharedFolder": {
+          "label": "Shared folder link",
+          "placeholder": "Enter URL to shared folder (e.g., Google Drive, Dropbox)",
+          "optional": true,
+          "caption": "Optional: Provide a link where your team can access relevant documents"
+        }
+      }
+    },
+    "ecosystems": {
+      "terrestrial": {
+        "label": "Terrestrial",
+        "count": "{selected}/8",
+        "types": {
+          "tropicalSubtropicalForests": "Tropical-subtropical forests",
+          "temperateForests": "Temperate-boreal forests and woodlands",
+          "shrublands": "Shrublands and shrubby woodlands",
+          "savannas": "Savannas and grasslands",
+          "deserts": "Deserts and semi-deserts",
+          "polarAlpine": "Polar-alpine",
+          "agricultural": "Productive and agricultural systems",
+          "urban": "Urban Landscapes"
+        }
+      },
+      "freshwater": {
+        "label": "Freshwater",
+        "count": "{selected}/5",
+        "types": {
+          "peatlands": "Peatlands",
+          "wetlands": "Wetlands",
+          "riparian": "Riparian ecosystems",
+          "catchments": "Catchments",
+          "artificialFreshwaters": "Artificial fresh waters"
+        }
+      },
+      "marine": {
+        "label": "Marine",
+        "count": "{selected}/3",
+        "types": {
+          "marineShelfs": "Marine shelfs",
+          "mangroves": "Mangroves and shoreline systems",
+          "deepSeaFloors": "Deep-sea floors"
+        }
+      }
+    },
+    "guidance": {
+      "step1": {
+        "whySetTargetGeography": {
+          "title": "Why set the target geography",
+          "content": "Defining the geographic scope helps ensure that your diagnostic responses are contextually relevant and that recommendations can be tailored to your specific landscape or jurisdiction. It also helps identify which stakeholders should be engaged and what data sources are most applicable."
+        },
+        "howToDoIt": {
+          "title": "How to do it",
+          "content": "Start by identifying the administrative or ecological boundary of your restoration area. Consider whether your focus is national policy, a subnational jurisdiction, a specific landscape, or an individual site. Select all ecosystem types present in your target area to help guide your responses to ecosystem-specific questions."
+        }
+      },
+      "step2": {
+        "whySetTimeHorizon": {
+          "title": "Why set the time horizon",
+          "content": "Establishing a time horizon helps set realistic expectations for restoration outcomes and aligns your diagnostic responses with achievable milestones. Different restoration activities yield results over different timescales, from immediate interventions to long-term ecological recovery."
+        },
+        "howToDoIt": {
+          "title": "How to do it",
+          "content": "Consider the expected duration of your restoration activities, from initial planning through implementation and monitoring. Typical restoration periods range from 5 to 30 years, depending on ecosystem type and restoration goals. If you're unsure, you can leave this field blank or provide an estimate."
+        }
+      },
+      "step3": {
+        "whySetRestorationGoals": {
+          "title": "Why set restoration goals",
+          "content": "Clearly articulated restoration goals provide direction for your diagnostic and help ensure that your responses align with your intended outcomes. Goals may focus on biodiversity conservation, climate change mitigation, livelihood improvement, water security, or other ecosystem services."
+        },
+        "howToDoIt": {
+          "title": "How to do it",
+          "content": "Describe what you hope to achieve through restoration in your target area. Be as specific as possible about environmental, social, and economic objectives. Consider both ecological outcomes (e.g., forest cover, species recovery) and socioeconomic benefits (e.g., improved livelihoods, enhanced resilience)."
+        }
+      },
+      "step4": {
+        "designingEngagement": {
+          "title": "Designing stakeholder engagement",
+          "content": "Effective stakeholder engagement ensures that diverse perspectives are included in the diagnostic. Consider who should be involved, including government agencies, local communities, Indigenous Peoples, civil society organizations, and private sector actors."
+        },
+        "ensuringInclusion": {
+          "title": "Ensuring inclusion and equity",
+          "items": [
+            "Actively seek out voices from marginalized or underrepresented groups, including women, youth, and Indigenous Peoples",
+            "Consider language, accessibility, and timing when planning engagement activities",
+            "Provide sufficient context and preparation materials so all participants can contribute meaningfully",
+            "Document who participated and how their input was incorporated"
+          ]
+        }
+      },
+      "step5": {
+        "preparingEvidence": {
+          "title": "Preparing your evidence",
+          "content": "Gathering relevant documents and data sources before starting the diagnostic will help you provide well-informed responses. This preparation phase can also reveal gaps in available information that may need to be addressed."
+        },
+        "organizingAccess": {
+          "title": "Organizing access to documents",
+          "content": "Consider creating a shared folder (e.g., Google Drive, Dropbox, or SharePoint) where all team members can access relevant materials. Organize documents by category and ensure they are clearly labeled. This will make it easier to reference specific evidence when completing the diagnostic."
+        }
+      }
+    },
+    "validation": {
+      "targetScale": {
+        "required": "Please add a target scale.",
+        "summary": "Target scale is mandatory"
+      },
+      "country": {
+        "required": "Please select a country.",
+        "summary": "Country is mandatory"
+      },
+      "subRegion": {
+        "required": "Please add a sub-region or province.",
+        "summary": "Sub-region / Province is mandatory"
+      },
+      "ecosystems": {
+        "required": "Please select at least one (1) ecosystem type.",
+        "summary": "Capture ecosystem types is mandatory"
+      },
+      "goals": {
+        "required": "Please describe your restoration goals.",
+        "summary": "Restoration goals is mandatory"
+      },
+      "formErrors": "There are {count} errors in the form:"
     }
   },
   "assessment": {

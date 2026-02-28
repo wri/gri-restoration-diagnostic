@@ -120,6 +120,21 @@
         "ecosystemsRequired": "",
         "termsRequired": ""
       },
+      "offlineMessage": {
+        "title": "",
+        "description": "",
+        "button": ""
+      },
+      "leadIdentity": {
+        "question": "",
+        "options": {
+          "indigenousPeoples": "",
+          "localCommunities": "",
+          "both": "",
+          "preferNotToSay": "",
+          "noneOfTheAbove": ""
+        }
+      },
       "checkboxes": {
         "terms": "",
         "allowDataSharing": ""
@@ -151,6 +166,300 @@
         "networkError": "",
         "genericError": ""
       }
+    }
+  },
+  "scoping": {
+    "intro": {
+      "heading": "",
+      "description1": "",
+      "description2": "",
+      "parts": {
+        "scope": {
+          "title": "",
+          "description": ""
+        },
+        "approach": {
+          "title": "",
+          "badge": "",
+          "description": ""
+        }
+      },
+      "button": ""
+    },
+    "sidebar": {
+      "title": "",
+      "progress": "",
+      "groups": {
+        "scope": "",
+        "approach": ""
+      },
+      "steps": {
+        "targetGeography": "",
+        "timeHorizon": "",
+        "restorationGoals": "",
+        "engagement": "",
+        "materials": ""
+      }
+    },
+    "common": {
+      "buttons": {
+        "saveAndContinue": "",
+        "skip": "",
+        "previous": ""
+      }
+    },
+    "step1": {
+      "heading": "",
+      "description": "",
+      "fields": {
+        "targetScale": {
+          "label": "",
+          "placeholder": "",
+          "options": {
+            "national": "",
+            "subnational": "",
+            "landscape": "",
+            "site": ""
+          }
+        },
+        "country": {
+          "label": "",
+          "placeholder": ""
+        },
+        "subRegion": {
+          "label": "",
+          "placeholder": ""
+        },
+        "restorationBoundary": {
+          "label": "",
+          "placeholder": "",
+          "optional": true
+        },
+        "ecosystems": {
+          "label": "",
+          "description": ""
+        }
+      }
+    },
+    "step2": {
+      "heading": "",
+      "description": "",
+      "fields": {
+        "restorationPeriod": {
+          "label": "",
+          "placeholder": "",
+          "optional": true
+        }
+      }
+    },
+    "step3": {
+      "heading": "",
+      "description": "",
+      "fields": {
+        "goals": {
+          "label": "",
+          "placeholder": ""
+        }
+      }
+    },
+    "step4": {
+      "heading": "",
+      "description": "",
+      "accordions": {
+        "participatory": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "interviews": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "distributed": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "fields": {
+        "notes": {
+          "label": "",
+          "placeholder": "",
+          "optional": true
+        }
+      }
+    },
+    "step5": {
+      "heading": "",
+      "description": "",
+      "accordions": {
+        "policy": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "implementation": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "biophysical": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "monitoring": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "fields": {
+        "sharedFolder": {
+          "label": "",
+          "placeholder": "",
+          "optional": true,
+          "caption": ""
+        }
+      }
+    },
+    "ecosystems": {
+      "terrestrial": {
+        "label": "",
+        "count": "",
+        "types": {
+          "tropicalSubtropicalForests": "",
+          "temperateForests": "",
+          "shrublands": "",
+          "savannas": "",
+          "deserts": "",
+          "polarAlpine": "",
+          "agricultural": "",
+          "urban": ""
+        }
+      },
+      "freshwater": {
+        "label": "",
+        "count": "",
+        "types": {
+          "peatlands": "",
+          "wetlands": "",
+          "riparian": "",
+          "catchments": "",
+          "artificialFreshwaters": ""
+        }
+      },
+      "marine": {
+        "label": "",
+        "count": "",
+        "types": {
+          "marineShelfs": "",
+          "mangroves": "",
+          "deepSeaFloors": ""
+        }
+      }
+    },
+    "guidance": {
+      "step1": {
+        "whySetTargetGeography": {
+          "title": "",
+          "content": ""
+        },
+        "howToDoIt": {
+          "title": "",
+          "content": ""
+        }
+      },
+      "step2": {
+        "whySetTimeHorizon": {
+          "title": "",
+          "content": ""
+        },
+        "howToDoIt": {
+          "title": "",
+          "content": ""
+        }
+      },
+      "step3": {
+        "whySetRestorationGoals": {
+          "title": "",
+          "content": ""
+        },
+        "howToDoIt": {
+          "title": "",
+          "content": ""
+        }
+      },
+      "step4": {
+        "designingEngagement": {
+          "title": "",
+          "content": ""
+        },
+        "ensuringInclusion": {
+          "title": "",
+          "items": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "step5": {
+        "preparingEvidence": {
+          "title": "",
+          "content": ""
+        },
+        "organizingAccess": {
+          "title": "",
+          "content": ""
+        }
+      }
+    },
+    "validation": {
+      "targetScale": {
+        "required": "",
+        "summary": ""
+      },
+      "country": {
+        "required": "",
+        "summary": ""
+      },
+      "subRegion": {
+        "required": "",
+        "summary": ""
+      },
+      "ecosystems": {
+        "required": "",
+        "summary": ""
+      },
+      "goals": {
+        "required": "",
+        "summary": ""
+      },
+      "formErrors": ""
     }
   },
   "assessment": {
