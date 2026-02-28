@@ -36,7 +36,13 @@ variable "wri_owner" {
 # =============================================================================
 
 variable "vpc_id" {
-  description = "ID of an existing VPC to use. Leave empty to create a new VPC. Set this for environments that share a VPC (e.g., production sharing QA's VPC)."
+  description = "ID of an existing VPC to use. Leave empty to create a new VPC. Ignored if shared_vpc_state_key is set."
+  type        = string
+  default     = ""
+}
+
+variable "shared_vpc_state_key" {
+  description = "S3 state key of the environment that owns the shared VPC (e.g., 'qa/terraform.tfstate'). When set, the VPC ID is read from that remote state instead of using vpc_id."
   type        = string
   default     = ""
 }

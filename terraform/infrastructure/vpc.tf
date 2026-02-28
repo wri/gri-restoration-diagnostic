@@ -1,10 +1,28 @@
 # =============================================================================
+# Remote state for shared VPC (when using another environment's VPC)
+# =============================================================================
+
+data "terraform_remote_state" "shared_vpc" {
+  count   = var.shared_vpc_state_key != "" ? 1 : 0
+  backend = "s3"
+
+  config = {
+    bucket = "rd-app-terraform-state-shared"
+    key    = var.shared_vpc_state_key
+    region = var.aws_region
+  }
+}
+
+# =============================================================================
 # VPC Locals
 # =============================================================================
 
 locals {
-  create_vpc         = var.vpc_id == ""
-  vpc_id             = local.create_vpc ? aws_vpc.main[0].id : var.vpc_id
+  # Resolve VPC ID: remote state > explicit var > create new
+  shared_vpc_id      = var.shared_vpc_state_key != "" ? data.terraform_remote_state.shared_vpc[0].outputs.vpc_id : ""
+  effective_vpc_id   = coalesce(local.shared_vpc_id, var.vpc_id, "")
+  create_vpc         = local.effective_vpc_id == ""
+  vpc_id             = local.create_vpc ? aws_vpc.main[0].id : local.effective_vpc_id
   public_subnet_ids  = local.create_vpc ? aws_subnet.public[*].id : data.aws_subnets.public[0].ids
   private_subnet_ids = local.create_vpc ? aws_subnet.private[*].id : data.aws_subnets.private[0].ids
 }
@@ -18,7 +36,7 @@ data "aws_subnets" "public" {
 
   filter {
     name   = "vpc-id"
-    values = [var.vpc_id]
+    values = [local.effective_vpc_id]
   }
 
   tags = {
@@ -31,7 +49,7 @@ data "aws_subnets" "private" {
 
   filter {
     name   = "vpc-id"
-    values = [var.vpc_id]
+    values = [local.effective_vpc_id]
   }
 
   tags = {

@@ -6,10 +6,9 @@ project_name = "rd-app"
 environment  = "production"
 aws_region   = "us-east-1"
 
-# VPC Configuration - shares the QA VPC
-# Set vpc_id to the QA VPC ID (from: cd infrastructure && terraform output -raw vpc_id  using QA backend)
-# When vpc_id is set, vpc_cidr and availability_zones_count are ignored
-vpc_id                   = "vpc-004a837db9c08ba78"
+# VPC Configuration - shares the QA VPC via remote state
+# The VPC ID is read automatically from QA's Terraform state
+shared_vpc_state_key     = "qa/terraform.tfstate"
 availability_zones_count = 2
 
 # ECS Configuration - Higher resources for production
