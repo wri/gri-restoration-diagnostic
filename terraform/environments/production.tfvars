@@ -31,3 +31,4 @@ app_environment_variables = {
 }
 
 certificate_arn = "arn:aws:acm:us-east-1:590183828939:certificate/4f5dc7d7-9b37-4795-8bb9-5415edeb7e79"
+domain_name     = "www.restorationdiagnostic.org"

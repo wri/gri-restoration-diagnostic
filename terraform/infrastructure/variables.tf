@@ -104,6 +104,12 @@ variable "certificate_arn" {
   type        = string
 }
 
+variable "domain_name" {
+  description = "Custom domain name for the application (e.g., qa.restorationdiagnostic.org)"
+  type        = string
+  default     = ""
+}
+
 # =============================================================================
 # Application Variables
 # =============================================================================

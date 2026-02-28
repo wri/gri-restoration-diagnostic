@@ -76,7 +76,7 @@ output "alb_arn" {
 
 output "app_url" {
   description = "URL to access the application"
-  value       = "https://${aws_lb.main.dns_name}"
+  value       = var.domain_name != "" ? "https://${var.domain_name}" : "http://${aws_lb.main.dns_name}"
 }
 
 # =============================================================================
