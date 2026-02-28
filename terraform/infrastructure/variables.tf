@@ -35,8 +35,14 @@ variable "wri_owner" {
 # VPC Variables
 # =============================================================================
 
+variable "vpc_id" {
+  description = "ID of an existing VPC to use. Leave empty to create a new VPC. Set this for environments that share a VPC (e.g., production sharing QA's VPC)."
+  type        = string
+  default     = ""
+}
+
 variable "vpc_cidr" {
-  description = "CIDR block for VPC"
+  description = "CIDR block for VPC (only used when creating a new VPC)"
   type        = string
   default     = "10.0.0.0/16"
 }
