@@ -9,7 +9,7 @@ aws_region   = "us-east-1"
 # VPC Configuration - shares the QA VPC
 # Set vpc_id to the QA VPC ID (from: cd infrastructure && terraform output -raw vpc_id  using QA backend)
 # When vpc_id is set, vpc_cidr and availability_zones_count are ignored
-vpc_id                   = ""  # TODO: set to QA VPC ID, e.g. "vpc-0abc123def456"
+vpc_id                   = "vpc-004a837db9c08ba78"
 availability_zones_count = 2
 
 # ECS Configuration - Higher resources for production
