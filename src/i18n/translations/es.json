@@ -462,6 +462,110 @@
       "formErrors": ""
     }
   },
+  "overview": {
+    "page": {
+      "title": ""
+    },
+    "scope": {
+      "sectionTitle": "",
+      "aboutDiagnostic": {
+        "title": "",
+        "sections": {
+          "title": "",
+          "diagnosticLead": ""
+        },
+        "fields": {
+          "fullName": "",
+          "email": "",
+          "organization": "",
+          "jobRole": ""
+        }
+      },
+      "diagnosticScope": {
+        "title": "",
+        "sections": {
+          "geography": "",
+          "timeHorizon": "",
+          "restorationGoals": ""
+        },
+        "fields": {
+          "country": "",
+          "geographyType": "",
+          "subRegion": "",
+          "gisLink": "",
+          "completionYear": "",
+          "goals": "",
+          "ecosystems": ""
+        }
+      },
+      "actions": {
+        "copied": ""
+      },
+      "empty": {
+        "noInformation": ""
+      }
+    },
+    "keySuccessFactors": {
+      "sectionTitle": "",
+      "themes": {
+        "motivate": {
+          "title": "",
+          "caption": ""
+        },
+        "enable": {
+          "title": "",
+          "caption": ""
+        },
+        "implement": {
+          "title": "",
+          "caption": ""
+        }
+      },
+      "stats": {
+        "complete": ""
+      },
+      "table": {
+        "headers": {
+          "keySuccessFactor": "",
+          "status": "",
+          "response": "",
+          "rationale": "",
+          "strategies": ""
+        }
+      },
+      "status": {
+        "complete": "",
+        "inProgress": "",
+        "notStarted": ""
+      },
+      "actions": {
+        "start": "",
+        "continue": ""
+      }
+    },
+    "strategicPlan": {
+      "sectionTitle": "",
+      "title": "",
+      "caption": "",
+      "empty": {
+        "title": "",
+        "description": ""
+      }
+    },
+    "sectionTitle": {
+      "tabs": {
+        "progress": "",
+        "responses": ""
+      }
+    },
+    "cardContainer": {
+      "actions": {
+        "edit": "",
+        "hide": "",
+        "show": ""
+      }
+    }
+  },
   "assessment": {
     "navigation": {
       "progress": "",

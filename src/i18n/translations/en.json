@@ -462,6 +462,110 @@
       "formErrors": "There are {count} errors in the form:"
     }
   },
+  "overview": {
+    "page": {
+      "title": "Overview"
+    },
+    "scope": {
+      "sectionTitle": "Scope",
+      "aboutDiagnostic": {
+        "title": "About the diagnostic",
+        "sections": {
+          "title": "Title",
+          "diagnosticLead": "Diagnostic lead"
+        },
+        "fields": {
+          "fullName": "Full name",
+          "email": "Email",
+          "organization": "Organization",
+          "jobRole": "Job role"
+        }
+      },
+      "diagnosticScope": {
+        "title": "Diagnostic scope",
+        "sections": {
+          "geography": "Geography",
+          "timeHorizon": "Time horizon",
+          "restorationGoals": "Restoration goals"
+        },
+        "fields": {
+          "country": "Country",
+          "geographyType": "Geography type",
+          "subRegion": "Sub-region / Province",
+          "gisLink": "GIS Link",
+          "completionYear": "Completion year",
+          "goals": "Goals",
+          "ecosystems": "Ecosystems"
+        }
+      },
+      "actions": {
+        "copied": "Copied"
+      },
+      "empty": {
+        "noInformation": "No information provided"
+      }
+    },
+    "keySuccessFactors": {
+      "sectionTitle": "Key success factors",
+      "themes": {
+        "motivate": {
+          "title": "Motivate",
+          "caption": "Factors that create incentives and demand for restoration among investors, policymakers, and implementers."
+        },
+        "enable": {
+          "title": "Enable",
+          "caption": "Policies, institutions, finance, and land tenure conditions."
+        },
+        "implement": {
+          "title": "Implement",
+          "caption": "Technical capacity, knowledge, and operational readiness."
+        }
+      },
+      "stats": {
+        "complete": "{complete}/{total} complete"
+      },
+      "table": {
+        "headers": {
+          "keySuccessFactor": "Key success factor",
+          "status": "Status",
+          "response": "Response",
+          "rationale": "Rationale",
+          "strategies": "Strategies"
+        }
+      },
+      "status": {
+        "complete": "Complete",
+        "inProgress": "In progress",
+        "notStarted": "Not started"
+      },
+      "actions": {
+        "start": "Start",
+        "continue": "Continue"
+      }
+    },
+    "strategicPlan": {
+      "sectionTitle": "Strategic Plan",
+      "title": "Strategic Plan",
+      "caption": "All strategies added across Diagnostic factors.",
+      "empty": {
+        "title": "No strategies created",
+        "description": "When you add strategies under a factor they will appear here"
+      }
+    },
+    "sectionTitle": {
+      "tabs": {
+        "progress": "Progress",
+        "responses": "Responses"
+      }
+    },
+    "cardContainer": {
+      "actions": {
+        "edit": "Edit",
+        "hide": "Hide {label}",
+        "show": "Show {label}"
+      }
+    }
+  },
   "assessment": {
     "navigation": {
       "progress": "{answered}/{total}",
