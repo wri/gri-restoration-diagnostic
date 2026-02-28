@@ -42,7 +42,7 @@ variable "vpc_id" {
 }
 
 variable "shared_vpc_state_key" {
-  description = "S3 state key of the environment that owns the shared VPC (e.g., 'qa/terraform.tfstate'). When set, the VPC ID is read from that remote state instead of using vpc_id."
+  description = "S3 state key of the environment that owns the shared VPC and ALB (e.g., 'qa/terraform.tfstate'). When set, the VPC ID, ALB, and listeners are read from that remote state."
   type        = string
   default     = ""
 }
@@ -111,9 +111,8 @@ variable "certificate_arn" {
 }
 
 variable "domain_name" {
-  description = "Custom domain name for the application (e.g., qa.restorationdiagnostic.org)"
+  description = "Custom domain name for the application (e.g., qa.restorationdiagnostic.org). Required for host-based ALB routing."
   type        = string
-  default     = ""
 }
 
 # =============================================================================
