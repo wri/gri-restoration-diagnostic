@@ -2,11 +2,66 @@
  * Text Sanitization Utilities for Question Seed Data
  * 
  * Handles cleaning of CSV data including:
+ * - Converting Windows-1252 encoded characters to proper UTF-8
  * - Removing Unicode bullet points (•)
  * - Converting smart quotes to standard quotes
  * - Removing leading bullets and numbers
  * - Parsing follow-up questions into proper JSON structure
  */
+
+/**
+ * Windows-1252 to UTF-8 character mapping.
+ * Bytes 0x80-0x9F in Windows-1252 are control characters in ISO-8859-1/UTF-8
+ * but represent printable characters in Windows-1252.
+ * When read as UTF-8, these bytes produce U+FFFD (�) replacement characters.
+ */
+const WINDOWS_1252_MAP: Record<number, string> = {
+  0x80: '\u20AC', // €
+  0x82: '\u201A', // ‚
+  0x83: '\u0192', // ƒ
+  0x84: '\u201E', // „
+  0x85: '\u2026', // …
+  0x86: '\u2020', // †
+  0x87: '\u2021', // ‡
+  0x88: '\u02C6', // ˆ
+  0x89: '\u2030', // ‰
+  0x8A: '\u0160', // Š
+  0x8B: '\u2039', // ‹
+  0x8C: '\u0152', // Œ
+  0x8E: '\u017D', // Ž
+  0x91: '\u2018', // ' (left single quote)
+  0x92: '\u2019', // ' (right single quote)
+  0x93: '\u201C', // " (left double quote)
+  0x94: '\u201D', // " (right double quote)
+  0x95: '\u2022', // • (bullet)
+  0x96: '\u2013', // – (en-dash)
+  0x97: '\u2014', // — (em-dash)
+  0x98: '\u02DC', // ˜
+  0x99: '\u2122', // ™
+  0x9A: '\u0161', // š
+  0x9B: '\u203A', // ›
+  0x9C: '\u0153', // œ
+  0x9E: '\u017E', // ž
+  0x9F: '\u0178', // Ÿ
+}
+
+/**
+ * Convert a file buffer from Windows-1252 encoding to a proper UTF-8 string.
+ * Handles the 0x80-0x9F byte range that differs between Windows-1252 and ISO-8859-1/UTF-8.
+ * All other bytes are treated as Latin-1 (which maps 1:1 with Unicode code points).
+ */
+export function convertWindows1252ToUtf8(buffer: Buffer): string {
+  let result = ''
+  for (let i = 0; i < buffer.length; i++) {
+    const byte = buffer[i]
+    if (byte in WINDOWS_1252_MAP) {
+      result += WINDOWS_1252_MAP[byte]
+    } else {
+      result += String.fromCharCode(byte)
+    }
+  }
+  return result
+}
 
 export function sanitizeText(text: string | null | undefined): string | null {
   if (!text) return null

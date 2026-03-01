@@ -21,7 +21,7 @@ import { parse } from 'csv-parse/sync'
 import { readFileSync } from 'fs'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
-import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions } from '../../db/seeds/utils/sanitize-text'
+import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions, convertWindows1252ToUtf8 } from '../../db/seeds/utils/sanitize-text'
 
 interface CSVRow {
   id: string
@@ -68,8 +68,9 @@ async function importQuestionsFromCSV(
   const queryRunner = dataSource.createQueryRunner()
   
   try {
-    // Read and parse CSV
-    const fileContent = readFileSync(filePath, 'utf-8')
+    // Read and parse CSV (handle Windows-1252 encoded files)
+    const rawBuffer = readFileSync(filePath)
+    const fileContent = convertWindows1252ToUtf8(rawBuffer)
     const rows: CSVRow[] = parse(fileContent, {
       columns: true,
       skip_empty_lines: true,
