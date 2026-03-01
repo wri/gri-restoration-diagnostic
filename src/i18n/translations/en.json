@@ -460,6 +460,30 @@
         "summary": "Restoration goals is mandatory"
       },
       "formErrors": "There are {count} errors in the form:"
+    },
+    "success": {
+      "heading": "Diagnostic successfully created",
+      "description": "You can now assess whether the 31 key success factors for restoration in your chosen ecosystem are currently:",
+      "statusList": {
+        "inPlace": "In place",
+        "partlyInPlace": "Partly in place",
+        "notInPlace": "Not in place",
+        "notApplicable": "Not applicable"
+      },
+      "infoBoxes": {
+        "objective": "The objective is not to produce an exhaustive breakdown of every aspect of the restoration process, but to rapidly identify strengths, weaknesses, and potential bottlenecks.",
+        "exportShare": "You can export or share your progress (in view-only or editable format) at any time; or use workshop mode (enabled from the top right of the screen) to see a simplified full screen view."
+      },
+      "themes": {
+        "heading": "There are 3 key themes to assess",
+        "description": "The overview screen shows how much progress you have made through each theme.",
+        "cards": {
+          "motivate": "Motivate ({count} questions)",
+          "enable": "Enable ({count} questions)",
+          "implement": "Implement ({count} questions)"
+        }
+      },
+      "button": "Continue"
     }
   },
   "overview": {
@@ -642,12 +666,72 @@
         }
       }
     },
+    "contributors": {
+      "heading": "Contributors",
+      "description": "Add the full name of everyone involved in answering this question.",
+      "field": {
+        "placeholder": "Type to search"
+      }
+    },
+    "strategies": {
+      "heading": "Strategies",
+      "exampleIntro": "Examples of strategies for this factor:",
+      "warning": "Strategic importance: Strategies addressing these key factors can have varying complexities and timescales. Restoration can be beneficial to countries or communities with historical/cultural connection to lands. It can be a way for governments to meet commitments to international agreements (e.g., UNFCCC, UNCCD, CBD, Aichi Challenges).",
+      "fields": {
+        "title": {
+          "label": "Title",
+          "placeholder": "Enter strategy title",
+          "maxLength": "(Maximum {remaining} characters remaining)"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Describe the strategy..."
+        },
+        "scale": {
+          "label": "Scale",
+          "placeholder": "Select scale",
+          "options": {
+            "national": "National",
+            "subnational": "Subnational",
+            "landscape": "Landscape",
+            "site": "Site"
+          }
+        },
+        "deadline": {
+          "label": "Deadline",
+          "placeholder": "Select date"
+        },
+        "responsibility": {
+          "label": "Responsibility",
+          "placeholder": "Enter name"
+        }
+      },
+      "actions": {
+        "addStrategy": "+ Add strategy"
+      }
+    },
     "autoSave": {
       "status": {
         "idle": "",
-        "saving": "Saving...",
-        "saved": "Saved",
-        "error": "Failed to save"
+        "saving": "Saving progress",
+        "saved": "Progress auto-saved",
+        "error": "Error saving progress"
+      }
+    },
+    "modals": {
+      "markCompleteConfirm": {
+        "heading": "Are you sure you want to mark complete?",
+        "description": "There is information that hasn't been filled in yet for this key success factor. Make sure you are happy to proceed before marking complete.",
+        "confirmButton": "Mark complete",
+        "cancelButton": "Cancel"
+      },
+      "progressNotSaved": {
+        "heading": "Progress not saved",
+        "description1": "We're currently having trouble saving your progress.",
+        "description2": "Please check your internet connection and try again.",
+        "description3": "If the issue continues, we recommend copying your answers to another document before leaving this page to avoid losing your work.",
+        "cancelButton": "Cancel",
+        "leavePageButton": "Leave page"
       }
     },
     "created": {

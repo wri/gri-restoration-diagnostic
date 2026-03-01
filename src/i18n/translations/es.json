@@ -460,6 +460,30 @@
         "summary": ""
       },
       "formErrors": ""
+    },
+    "success": {
+      "heading": "",
+      "description": "",
+      "statusList": {
+        "inPlace": "",
+        "partlyInPlace": "",
+        "notInPlace": "",
+        "notApplicable": ""
+      },
+      "infoBoxes": {
+        "objective": "",
+        "exportShare": ""
+      },
+      "themes": {
+        "heading": "",
+        "description": "",
+        "cards": {
+          "motivate": "",
+          "enable": "",
+          "implement": ""
+        }
+      },
+      "button": ""
     }
   },
   "overview": {
@@ -642,12 +666,72 @@
         }
       }
     },
+    "contributors": {
+      "heading": "",
+      "description": "",
+      "field": {
+        "placeholder": ""
+      }
+    },
+    "strategies": {
+      "heading": "",
+      "exampleIntro": "",
+      "warning": "",
+      "fields": {
+        "title": {
+          "label": "",
+          "placeholder": "",
+          "maxLength": ""
+        },
+        "description": {
+          "label": "",
+          "placeholder": ""
+        },
+        "scale": {
+          "label": "",
+          "placeholder": "",
+          "options": {
+            "national": "",
+            "subnational": "",
+            "landscape": "",
+            "site": ""
+          }
+        },
+        "deadline": {
+          "label": "",
+          "placeholder": ""
+        },
+        "responsibility": {
+          "label": "",
+          "placeholder": ""
+        }
+      },
+      "actions": {
+        "addStrategy": ""
+      }
+    },
     "autoSave": {
       "status": {
         "idle": "",
         "saving": "",
         "saved": "",
         "error": ""
+      }
+    },
+    "modals": {
+      "markCompleteConfirm": {
+        "heading": "",
+        "description": "",
+        "confirmButton": "",
+        "cancelButton": ""
+      },
+      "progressNotSaved": {
+        "heading": "",
+        "description1": "",
+        "description2": "",
+        "description3": "",
+        "cancelButton": "",
+        "leavePageButton": ""
       }
     },
     "created": {
