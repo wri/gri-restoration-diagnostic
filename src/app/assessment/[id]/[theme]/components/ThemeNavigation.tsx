@@ -12,6 +12,7 @@ import {
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Box } from '@chakra-ui/react'
+import { hasRichTextContent } from '@/utils/validation'
 
 interface ThemeNavigationProps {
   theme: 'Motivate' | 'Enable' | 'Implement'
@@ -100,8 +101,14 @@ export function ThemeNavigation({
   // Group questions by enabling condition
   const groupedQuestions = groupByEnablingCondition(questions)
   
-  // Calculate progress
-  const answeredCount = questions.filter(q => answers.has(q.id)).length
+  // Calculate progress - only count fully responded questions
+  // A question is fully responded when it has an answer AND rationale (except N/A)
+  const answeredCount = questions.filter(q => {
+    const answer = answers.get(q.id)
+    if (!answer?.value) return false
+    if (answer.value === 'na') return true  // N/A doesn't require rationale
+    return hasRichTextContent(answer.rationale || undefined)
+  }).length
   const totalCount = questions.length
   
   // Calculate status counts

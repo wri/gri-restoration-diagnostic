@@ -8,7 +8,6 @@ interface ChakraRichTextEditorProps {
   value: string
   onChange: (html: string) => void
   placeholder?: string
-  minHeight?: string
 }
 
 /**
@@ -49,6 +48,18 @@ export function ChakraRichTextEditor({
       <RichTextEditor.Root editor={editor}>
         <RichTextEditor.Toolbar>
           <RichTextEditor.ControlGroup>
+            <Control.TextStyle />
+          </RichTextEditor.ControlGroup>
+
+          <RichTextEditor.ControlGroup>
+            <Control.Alignment />
+          </RichTextEditor.ControlGroup>
+
+          <RichTextEditor.ControlGroup>
+            <Control.FontSize />
+          </RichTextEditor.ControlGroup>
+
+          <RichTextEditor.ControlGroup>
             <Control.Bold />
             <Control.Italic />
             <Control.Underline />
@@ -56,23 +67,13 @@ export function ChakraRichTextEditor({
           </RichTextEditor.ControlGroup>
 
           <RichTextEditor.ControlGroup>
-            <Control.H2 />
-            <Control.H3 />
-          </RichTextEditor.ControlGroup>
-
-          <RichTextEditor.ControlGroup>
             <Control.BulletList />
             <Control.OrderedList />
+            <Control.Hr />
           </RichTextEditor.ControlGroup>
 
           <RichTextEditor.ControlGroup>
             <Control.Link />
-            <Control.Blockquote />
-          </RichTextEditor.ControlGroup>
-
-          <RichTextEditor.ControlGroup>
-            <Control.Undo />
-            <Control.Redo />
           </RichTextEditor.ControlGroup>
         </RichTextEditor.Toolbar>
 
