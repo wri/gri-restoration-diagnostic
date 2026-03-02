@@ -110,6 +110,7 @@ resource "aws_lb_listener" "http" {
 
 resource "aws_lb_listener_rule" "https_host" {
   listener_arn = local.https_listener_arn
+  priority     = var.listener_rule_priority
 
   action {
     type             = "forward"

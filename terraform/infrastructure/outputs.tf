@@ -86,7 +86,7 @@ output "http_listener_arn" {
 
 output "app_url" {
   description = "URL to access the application"
-  value       = var.domain_name != "" ? "https://${var.domain_name}" : "http://${local.alb_dns_name}"
+  value       = "https://${var.domain_name}"
 }
 
 # =============================================================================

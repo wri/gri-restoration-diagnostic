@@ -115,6 +115,11 @@ variable "domain_name" {
   type        = string
 }
 
+variable "listener_rule_priority" {
+  description = "Priority for the ALB listener rule. Must be unique across all rules on the shared HTTPS listener. Lower values are evaluated first."
+  type        = number
+}
+
 # =============================================================================
 # Application Variables
 # =============================================================================
