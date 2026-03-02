@@ -31,7 +31,7 @@ app_environment_variables = {
   "DB_PASSWORD" = "ePim6ipwl8OTKLxTZbPa"
   "DB_NAME" = "qa"
   "SESSION_SECRET" = "Pnl3OtiP9l59AROw-qa-pwd"
-  "DATABASE_SSL_REJECT_UNAUTHORIZED" = "true"
+  "DATABASE_SSL_REJECT_UNAUTHORIZED" = "false"
 }
 
 certificate_arn = "arn:aws:acm:us-east-1:590183828939:certificate/4f5dc7d7-9b37-4795-8bb9-5415edeb7e79"
