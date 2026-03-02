@@ -657,7 +657,7 @@ export const Alignment = createSelectControl({
   command: (editor, value) => {
     editor.chain().focus().setTextAlign(value).run()
   },
-  renderValue: (_value, option) => {
+  renderValue: (_value) => {
     const Icon = {
       left: LuAlignLeft,
       center: LuAlignCenter,
