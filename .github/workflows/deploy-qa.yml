@@ -135,6 +135,7 @@ jobs:
         run: |
           terraform plan \
             -var-file="../environments/${{ env.ENVIRONMENT }}.tfvars" \
+            -var='secret_environment_variables=${{ secrets.RD_APP_ENV }}' \
             -out=tfplan
 
       - name: Terraform Apply
