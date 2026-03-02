@@ -20,7 +20,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
   const [activeTab, setActiveTab] = useState<TabType>('guidance')
   
   return (
-    <aside className="bg-white w-[320px] flex-shrink-0 border-l border-slate-200 sticky top-[47px] h-[calc(100vh-55px)] overflow-y-auto">
+    <aside className="bg-white w-[320px] flex-shrink-0 border-l border-slate-200 sticky top-[47px] h-[calc(100vh-47px-55px)] overflow-y-auto">
       {/* Tab Navigation */}
       <TabBar
         defaultValue='guidance'

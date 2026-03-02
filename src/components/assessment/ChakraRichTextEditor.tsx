@@ -22,7 +22,6 @@ interface ChakraRichTextEditorProps {
  * @param value - HTML string content
  * @param onChange - Callback fired on content change (debounced by parent)
  * @param placeholder - Placeholder text when empty
- * @param minHeight - Minimum height for editor content area
  */
 export function ChakraRichTextEditor({ 
   value, 
