@@ -25,6 +25,7 @@ export function middleware(request: NextRequest) {
     const excludedPatterns = [
       /^\/assessment\/setup/,
       /^\/assessment\/[^\/]+\/created$/,
+      /^\/assessment\/[^\/]+\/preparation$/,
     ];
 
     const isExcluded = excludedPatterns.some(pattern => pattern.test(path));
