@@ -13,6 +13,11 @@ import {
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import {
+  freshwaterEcosystems,
+  marineEcosystems,
+  terrestrialEcosystems,
+} from './utils'
 
 type AssessmentData = {
   geographyType: TargetGeographyType
@@ -32,101 +37,6 @@ type TargetGeographyFormData = Pick<
   | 'gisUrl'
   | 'ecosystems'
 >
-
-type EcosystemOption = {
-  children: string
-  name: string
-  value: string
-}
-
-const terrestrialEcosystems: EcosystemOption[] = [
-  {
-    children: 'Tropical-subtropical forests',
-    name: 'tropical-subtropical-forests',
-    value: 'tropical-subtropical-forests',
-  },
-  {
-    children: 'Temperate-boreal forests and woodlands',
-    name: 'temperate-boreal-forests-and-woodlands',
-    value: 'temperate-boreal-forests-and-woodlands',
-  },
-  {
-    children: 'Shrublands and shrubby woodlands',
-    name: 'shrublands-and-shrubby-woodlands',
-    value: 'shrublands-and-shrubby-woodlands',
-  },
-  {
-    children: 'Savannas and grasslands',
-    name: 'savannas-and-grasslands',
-    value: 'savannas-and-grasslands',
-  },
-  {
-    children: 'Deserts and semi-deserts',
-    name: 'deserts-and-semi-deserts',
-    value: 'deserts-and-semi-deserts',
-  },
-  {
-    children: 'Polar-alpine',
-    name: 'polar-alpine',
-    value: 'polar-alpine',
-  },
-  {
-    children: 'Productive and agricultural systems',
-    name: 'productive-and-agricultural-systems',
-    value: 'productive-and-agricultural-systems',
-  },
-  {
-    children: 'Urban Landscapes',
-    name: 'urban-landscapes',
-    value: 'urban-landscapes',
-  },
-]
-
-const freshwaterEcosystems: EcosystemOption[] = [
-  {
-    children: 'Peatlands',
-    name: 'peatlands',
-    value: 'peatlands',
-  },
-  {
-    children: 'Wetlands',
-    name: 'wetlands',
-    value: 'wetlands',
-  },
-  {
-    children: 'Riparian ecosystems',
-    name: 'riparian-ecosystems',
-    value: 'riparian-ecosystems',
-  },
-  {
-    children: 'Catchments',
-    name: 'catchments',
-    value: 'catchments',
-  },
-  {
-    children: 'Artificial fresh waters',
-    name: 'artificial-fresh-waters',
-    value: 'artificial-fresh-waters',
-  },
-]
-
-const marineEcosystems: EcosystemOption[] = [
-  {
-    children: 'Marine shelfs',
-    name: 'marine-shelfs',
-    value: 'marine-shelfs',
-  },
-  {
-    children: 'Mangroves and shoreline systems',
-    name: 'mangroves-and-shoreline-systems',
-    value: 'mangroves-and-shoreline-systems',
-  },
-  {
-    children: 'Deep-sea floors',
-    name: 'deep-sea-floors',
-    value: 'deep-sea-floors',
-  },
-]
 
 const ecosystemGroupValues = {
   terrestrial: terrestrialEcosystems.map((option) => option.value),
