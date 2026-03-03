@@ -16,7 +16,7 @@ export const ROUTES = {
   },
 }
 
-export const TARGET_GEOGRAPHY_TYPE_OPTIONS = {
+export const TARGET_GEOGRAPHY_TYPE_OPTIONS: Record<string, string> = {
   [TargetGeographyType.NATIONAL]: 'National',
   [TargetGeographyType.SUBNATIONAL]:
     'Subnational (i.e., municipality, province, district)',

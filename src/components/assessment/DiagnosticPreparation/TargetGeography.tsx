@@ -354,7 +354,6 @@ const TargetGeography = () => {
           {...register('subRegion')}
           defaultValue={assessmentData.subRegion}
         />
-        {/* GIS Link */}
         <TextInput
           label='Restoration boundary link'
           caption='Add a link to a GIS dataset or boundary file'

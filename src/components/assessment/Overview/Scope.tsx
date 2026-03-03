@@ -6,6 +6,7 @@ import { IconButton, Tag } from '@worldresources/wri-design-systems'
 import { CheckCircleIcon, CopyIcon } from '../../icons'
 import { useState } from 'react'
 import { copyTextToClipboard } from '@/utils/validation'
+import { TARGET_GEOGRAPHY_TYPE_OPTIONS } from '@/constants'
 
 const Title = ({ title }: { title: string }) => {
   return (
@@ -101,13 +102,13 @@ const Scope = ({ data }: ScopeProps) => {
           <div>
             <p className='text-neutral-700 text-sm'>Organization</p>
             <p className='text-neutral-800 font-bold'>
-              {data.diagnosticLead.organization ?? 'No information provided'}
+              {data.diagnosticLead.organization || 'No information provided'}
             </p>
           </div>
           <div>
             <p className='text-neutral-700 text-sm'>Job role</p>
             <p className='text-neutral-800 font-bold'>
-              {data.diagnosticLead.role ?? 'No information provided'}
+              {data.diagnosticLead.role || 'No information provided'}
             </p>
           </div>
         </div>
@@ -127,9 +128,13 @@ const Scope = ({ data }: ScopeProps) => {
             </p>
           </div>
           <div>
-            <p className='text-neutral-700 text-sm'>Grography type</p>
+            <p className='text-neutral-700 text-sm'>Target scale</p>
             <p className='text-neutral-800 font-bold'>
-              {data.diagnosticScope.geography.geographyType}
+              {data.diagnosticScope.geography.geographyType
+                ? TARGET_GEOGRAPHY_TYPE_OPTIONS[
+                    data.diagnosticScope.geography.geographyType
+                  ]
+                : 'No information provided'}
             </p>
           </div>
           <div>
@@ -139,7 +144,9 @@ const Scope = ({ data }: ScopeProps) => {
             </p>
           </div>
           <div>
-            <p className='text-neutral-700 text-sm'>GIS Link</p>
+            <p className='text-neutral-700 text-sm'>
+              Restoration boundary link
+            </p>
             {data.diagnosticScope.geography.gisUrl ? (
               <div className='flex items-center gap-2'>
                 <p className='text-neutral-800 font-bold underline decoration-primary-700 decoration-dotted'>
