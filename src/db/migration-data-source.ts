@@ -28,7 +28,7 @@ const MigrationDataSource = new DataSource({
   migrations: ['src/db/migrations/**/*.ts'],
   subscribers: [],
   ssl: {
-    rejectUnauthorized: true,
+    rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
   },
 })
 
