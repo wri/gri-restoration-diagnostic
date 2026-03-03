@@ -26,10 +26,6 @@ export const AppDataSource = new DataSource({
   ],
   migrations: [],
   subscribers: [],
-  ssl: {
-    rejectUnauthorized:
-      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
-  },
 })
 
 // Initialize connection (for Next.js API routes)

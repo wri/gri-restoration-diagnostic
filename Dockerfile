@@ -28,6 +28,16 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Download AWS RDS root CA bundle for SSL database connections
+# --no-check-certificate: allows builds behind TLS-inspecting proxies (e.g. Zscaler)
+RUN apk add --no-cache --allow-untrusted wget ca-certificates && \
+    wget --no-check-certificate -q \
+      https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
+      -O /app/global-bundle.pem && \
+    apk del wget
+
+ENV NODE_EXTRA_CA_CERTS=/app/global-bundle.pem
+
 # Copy only necessary files from builder
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
