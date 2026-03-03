@@ -68,7 +68,7 @@ const mockLead = {
 const mockRegion = {
   id: 'region-123',
   regionName: 'USA - California',
-  geographyType: 'state',
+  geographyType: TargetGeographyType.NATIONAL,
   countries: 'USA',
   subRegion: 'California',
   scope: 'Regional',
@@ -394,7 +394,7 @@ describe('POST /api/assessments', () => {
       
       expect(mockRegionRepository.create).toHaveBeenCalledWith({
         regionName: 'USA - California',
-        geographyType: 'state',
+        geographyType: TargetGeographyType.NATIONAL,
         countries: 'USA',
         subRegion: 'California',
         scope: 'Regional',
