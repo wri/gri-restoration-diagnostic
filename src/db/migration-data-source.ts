@@ -27,6 +27,9 @@ const MigrationDataSource = new DataSource({
   ],
   migrations: ['src/db/migrations/**/*.ts'],
   subscribers: [],
+  ssl: {
+    rejectUnauthorized: true,
+  },
 })
 
 export default MigrationDataSource
