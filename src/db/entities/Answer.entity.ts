@@ -4,7 +4,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  // OneToMany,  // On hold - was used for strategies relation
+  OneToMany,
   JoinColumn,
   Index,
   PrimaryColumn,

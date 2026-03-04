@@ -2,6 +2,8 @@ import { AppDataSource, initializeDatabase } from '../data-source'
 import { Question, Theme } from '../entities/Question.entity'
 import { Answer, AnswerValue } from '../entities/Answer.entity'
 import { Assessment } from '../entities/Assessment.entity'
+import { Contributor } from '../entities/Contributor.entity'
+import { AnswerContributor } from '../entities/AnswerContributor.entity'
 import { AnswerStatus } from '@/types/answer.types'
 
 /**
@@ -365,5 +367,126 @@ export async function getCompleteQuestionData(
   return {
     question,
     answer
+  }
+}
+
+/**
+ * Get all contributors for an assessment
+ */
+export async function getContributorsByAssessment(assessmentId: string) {
+  await initializeDatabase()
+  const contributorRepo = AppDataSource.getRepository(Contributor)
+  
+  return contributorRepo.find({
+    where: { assessmentId },
+    order: { name: 'ASC' }
+  })
+}
+
+/**
+ * Get contributors for a specific answer
+ */
+export async function getContributorsByAnswer(answerId: string) {
+  await initializeDatabase()
+  const answerContributorRepo = AppDataSource.getRepository(AnswerContributor)
+  
+  const associations = await answerContributorRepo.find({
+    where: { answerId },
+    relations: ['contributor']
+  })
+  
+  return associations.map(ac => ac.contributor)
+}
+
+/**
+ * Get contributors for all answers in an assessment (bulk fetch)
+ */
+export async function getContributorsForAllAnswers(assessmentId: string) {
+  await initializeDatabase()
+  const answerContributorRepo = AppDataSource.getRepository(AnswerContributor)
+  
+  // Get all answers for this assessment first
+  const answerRepo = AppDataSource.getRepository(Answer)
+  const answers = await answerRepo.find({
+    where: { assessmentId },
+    select: ['id']
+  })
+  
+  const answerIds = answers.map(a => a.id)
+  if (answerIds.length === 0) return new Map<string, Contributor[]>()
+  
+  // Fetch all associations in one query
+  const associations = await answerContributorRepo
+    .createQueryBuilder('ac')
+    .innerJoinAndSelect('ac.contributor', 'contributor')
+    .where('ac.answer_id IN (:...answerIds)', { answerIds })
+    .getMany()
+  
+  // Group by answer ID
+  const result = new Map<string, Contributor[]>()
+  for (const assoc of associations) {
+    const existing = result.get(assoc.answerId) || []
+    existing.push(assoc.contributor)
+    result.set(assoc.answerId, existing)
+  }
+  
+  return result
+}
+
+/**
+ * Create a new contributor for an assessment
+ * Returns existing if name already exists
+ */
+export async function createContributor(assessmentId: string, name: string) {
+  await initializeDatabase()
+  const contributorRepo = AppDataSource.getRepository(Contributor)
+  
+  // Check if already exists (case-insensitive)
+  const existing = await contributorRepo.findOne({
+    where: { assessmentId, name }
+  })
+  
+  if (existing) {
+    return existing
+  }
+  
+  // Create new
+  const contributor = contributorRepo.create({
+    assessmentId,
+    name
+  })
+  
+  return contributorRepo.save(contributor)
+}
+
+/**
+ * Delete a contributor from the assessment pool
+ * Cascade deletes all answer associations
+ */
+export async function deleteContributor(contributorId: string) {
+  await initializeDatabase()
+  const contributorRepo = AppDataSource.getRepository(Contributor)
+  
+  await contributorRepo.delete({ id: contributorId })
+}
+
+/**
+ * Set contributors for an answer (replaces existing)
+ */
+export async function setAnswerContributors(answerId: string, contributorIds: string[]) {
+  await initializeDatabase()
+  const answerContributorRepo = AppDataSource.getRepository(AnswerContributor)
+  
+  // Delete existing associations
+  await answerContributorRepo.delete({ answerId })
+  
+  // Create new associations
+  if (contributorIds.length > 0) {
+    const associations = contributorIds.map(contributorId => ({
+      answerId,
+      contributorId
+    }))
+    
+    await answerContributorRepo.insert(associations)
   }
 }
