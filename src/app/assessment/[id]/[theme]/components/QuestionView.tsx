@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
 import { GuidanceSidebar } from './GuidanceSidebar'
-import { useAutoSave } from '@/hooks/useAutoSave'
+import { useAutoSave, type AutoSaveStatus } from '@/hooks/useAutoSave'
 import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, GoBackIcon } from '@/components/icons'
+import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Button, InlineMessage, Modal, Tag } from '@worldresources/wri-design-systems'
@@ -25,6 +26,7 @@ interface QuestionViewProps {
   prevTheme: string | null
   nextTheme: string | null
   allowDataSharing: boolean
+  onSaveStatusChange?: (status: AutoSaveStatus) => void
 }
 
 export function QuestionView({
@@ -38,6 +40,7 @@ export function QuestionView({
   prevTheme,
   nextTheme,
   allowDataSharing,
+  onSaveStatusChange,
 }: QuestionViewProps) {
   const router = useRouter()
   
@@ -61,6 +64,7 @@ export function QuestionView({
     currentAnswer?.status === AnswerStatus.COMPLETE,
   )
   const [showCompleteWarning, setShowCompleteWarning] = useState(false)
+  const [showProgressNotSavedModal, setShowProgressNotSavedModal] = useState(false)
   const [isNextOrPrev, setIsNextOrPrev] = useState<'next' | 'prev' | ''>('')
   
   // Auto-save function
@@ -98,9 +102,17 @@ export function QuestionView({
   }, [assessmentId, currentAnswer, allowDataSharing])
   
   // Auto-save hook
+  const handleAutoSaveStatusChange = useCallback((status: AutoSaveStatus) => {
+    onSaveStatusChange?.(status)
+    if (status === 'error') {
+      setShowProgressNotSavedModal(true)
+    }
+  }, [onSaveStatusChange])
+
   const { save } = useAutoSave({
     onSave: saveAnswer,
-    debounceMs: 1000
+    debounceMs: 1000,
+    onStatusChange: handleAutoSaveStatusChange,
   })
   
   // Handle answer selection (immediate save)
@@ -416,6 +428,24 @@ export function QuestionView({
             />
           </>
         }
+      />
+
+      <ProgressNotSavedModal
+        open={showProgressNotSavedModal}
+        onCancel={() => {
+          setShowProgressNotSavedModal(false)
+          // Retry the last save
+          save({
+            questionId: currentQuestion.id,
+            value: selectedAnswer,
+            rationale,
+            notes,
+            status: isVisuallyMarkedAsComplete ? AnswerStatus.COMPLETE : AnswerStatus.IN_PROGRESS,
+          }, true)
+        }}
+        onLeavePageAnyway={() => {
+          setShowProgressNotSavedModal(false)
+        }}
       />
         
     </>
