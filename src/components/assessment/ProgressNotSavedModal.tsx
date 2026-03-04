@@ -43,8 +43,7 @@ export function ProgressNotSavedModal({
           <Button
             label='Continue anyway'
             onClick={onLeavePageAnyway}
-            variant='borderless'
-            size='small'
+            variant='outline'
           />
         </>
       }

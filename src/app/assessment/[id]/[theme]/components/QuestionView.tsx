@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
@@ -101,8 +101,14 @@ export function QuestionView({
     return result
   }, [assessmentId, currentAnswer, allowDataSharing])
   
+  // Ref to track current save status synchronously (for navigation guards)
+  const saveStatusRef = useRef<AutoSaveStatus>('idle')
+  // Stores a deferred navigation callback when user tries to leave while saving
+  const pendingNavigationRef = useRef<(() => void) | null>(null)
+
   // Auto-save hook
   const handleAutoSaveStatusChange = useCallback((status: AutoSaveStatus) => {
+    saveStatusRef.current = status
     onSaveStatusChange?.(status)
     if (status === 'error') {
       setShowProgressNotSavedModal(true)
@@ -114,6 +120,27 @@ export function QuestionView({
     debounceMs: 1000,
     onStatusChange: handleAutoSaveStatusChange,
   })
+
+  // Browser-level navigation guard (tab close, refresh, external links)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveStatusRef.current === 'saving') {
+        e.preventDefault()
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  // Wraps a navigation action: if saving, defers it and shows modal; otherwise executes immediately
+  const guardedNavigate = useCallback((navigateFn: () => void) => {
+    if (saveStatusRef.current === 'saving') {
+      pendingNavigationRef.current = navigateFn
+      setShowProgressNotSavedModal(true)
+    } else {
+      navigateFn()
+    }
+  }, [])
   
   // Handle answer selection (immediate save)
   const handleAnswerChange = useCallback((value: AnswerValue) => {
@@ -152,7 +179,7 @@ export function QuestionView({
   }, [currentQuestion?.id, selectedAnswer, rationale, save])
   
   // Handle question selection
-  const handleQuestionSelect = useCallback((code: string) => {
+  const executeQuestionSelect = useCallback((code: string) => {
     const question = questions.find(q => q.questionCode === code)
     if (question) {
       router.push(`/assessment/${assessmentId}/${theme.toLowerCase()}?questionCode=${code}`)
@@ -165,14 +192,18 @@ export function QuestionView({
       setIsVisuallyMarkedAsComplete(answer?.status === AnswerStatus.COMPLETE)
     }
   }, [questions, answersCache, assessmentId, theme, router])
+
+  const handleQuestionSelect = useCallback((code: string) => {
+    guardedNavigate(() => executeQuestionSelect(code))
+  }, [guardedNavigate, executeQuestionSelect])
   
   // Handle theme navigation
   const handleThemeChange = useCallback((direction: 'prev' | 'next') => {
     const targetTheme = direction === 'prev' ? prevTheme : nextTheme
     if (targetTheme) {
-      router.push(`/assessment/${assessmentId}/${targetTheme}`)
+      guardedNavigate(() => router.push(`/assessment/${assessmentId}/${targetTheme}`))
     }
-  }, [assessmentId, prevTheme, nextTheme, router])
+  }, [assessmentId, prevTheme, nextTheme, router, guardedNavigate])
   
   // Handle "Save and continue"
   const handleSaveAndContinue = useCallback(async (markAsComplete?: boolean) => {
@@ -295,7 +326,7 @@ export function QuestionView({
               variant="borderless" 
               className="text-neutral-700"
               leftIcon={<ChevronLeft className="w-3 h-3" />}
-              onClick={() => router.push(`/assessment/${assessmentId}`)}
+              onClick={() => guardedNavigate(() => router.push(`/assessment/${assessmentId}`))}
               style={{ paddingLeft: '0' }}
             >
               <span className="underline underline-offset-1">Back to overview</span>
@@ -434,6 +465,7 @@ export function QuestionView({
         open={showProgressNotSavedModal}
         onCancel={() => {
           setShowProgressNotSavedModal(false)
+          pendingNavigationRef.current = null
           // Retry the last save
           save({
             questionId: currentQuestion.id,
@@ -445,6 +477,11 @@ export function QuestionView({
         }}
         onLeavePageAnyway={() => {
           setShowProgressNotSavedModal(false)
+          // Execute the deferred navigation if one was pending
+          if (pendingNavigationRef.current) {
+            pendingNavigationRef.current()
+            pendingNavigationRef.current = null
+          }
         }}
       />
         
