@@ -22,7 +22,8 @@
  */
 
 import { parse } from 'csv-parse/sync'
-import { readFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { dirname } from 'path'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
 import { Diagnostic } from '../../db/entities/Diagnostic.entity'
@@ -149,6 +150,8 @@ async function importQuestionsFromCSV(
         strategyExamples: sanitizeText(row['Examples of strategies to address gap in key factor']),
         keySuccessFactor: row['Key Factor'] || question.keySuccessFactor,
         minimalKeySuccessFactor: row.Minimal || question.minimalKeySuccessFactor,
+        enablingCondition: row['Enabling condition'] || question.enablingCondition,
+        theme: (row.Theme as Question['theme']) || question.theme,
       }
       
       // Track what changed
@@ -269,6 +272,39 @@ async function importQuestionsFromCSV(
     } else {
       await queryRunner.commitTransaction()
       console.log('\n✅ Transaction committed\n')
+
+      // Auto-export updated questions to JSON translation file
+      if (changes.length > 0 || options.force) {
+        console.log(`📤 Syncing ${language} translations to JSON...\n`)
+        const allQuestions = await queryRunner.manager.find(Question, {
+          where: { diagnosticId: diagnostic.id },
+          order: { sortOrder: 'ASC' },
+        })
+
+        const json: Record<string, Record<string, unknown>> = {}
+        allQuestions.forEach((q) => {
+          json[q.questionCode] = {
+            questionText: q.questionText,
+            definition: q.definition,
+            considerations: q.considerations,
+            followUpQuestions: q.followUpQuestions,
+            strategyExamples: q.strategyExamples,
+            keySuccessFactor: q.keySuccessFactor,
+            minimalKeySuccessFactor: q.minimalKeySuccessFactor,
+            enablingCondition: q.enablingCondition,
+            theme: q.theme,
+            lastUpdated: new Date().toISOString(),
+          }
+        })
+
+        const jsonFilePath = `src/i18n/translations/questions-${language}.json`
+        const dir = dirname(jsonFilePath)
+        if (!existsSync(dir)) {
+          mkdirSync(dir, { recursive: true })
+        }
+        writeFileSync(jsonFilePath, JSON.stringify(json, null, 2), 'utf-8')
+        console.log(`✅ Exported ${allQuestions.length} questions to ${jsonFilePath}\n`)
+      }
     }
     
   } catch (error) {

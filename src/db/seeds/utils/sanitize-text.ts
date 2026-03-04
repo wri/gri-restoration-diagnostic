@@ -63,8 +63,45 @@ function convertFromWindows1252(buffer: Buffer): string {
 }
 
 /**
+ * Validate whether a buffer contains well-formed UTF-8 byte sequences.
+ * Walks through raw bytes to check multi-byte sequence structure.
+ * Note: U+FFFD (EF BF BD) IS valid UTF-8 and will pass this check.
+ */
+function isValidUtf8(buffer: Buffer): boolean {
+  let i = 0
+  while (i < buffer.length) {
+    const byte = buffer[i]
+    if (byte <= 0x7F) {
+      i++
+    } else if (byte >= 0xC2 && byte <= 0xDF) {
+      if (i + 1 >= buffer.length || buffer[i + 1] < 0x80 || buffer[i + 1] > 0xBF) return false
+      i += 2
+    } else if (byte >= 0xE0 && byte <= 0xEF) {
+      if (i + 2 >= buffer.length) return false
+      if (byte === 0xE0 && (buffer[i + 1] < 0xA0 || buffer[i + 1] > 0xBF)) return false
+      else if (byte === 0xED && (buffer[i + 1] < 0x80 || buffer[i + 1] > 0x9F)) return false
+      else if (buffer[i + 1] < 0x80 || buffer[i + 1] > 0xBF) return false
+      if (buffer[i + 2] < 0x80 || buffer[i + 2] > 0xBF) return false
+      i += 3
+    } else if (byte >= 0xF0 && byte <= 0xF4) {
+      if (i + 3 >= buffer.length) return false
+      if (byte === 0xF0 && (buffer[i + 1] < 0x90 || buffer[i + 1] > 0xBF)) return false
+      else if (byte === 0xF4 && (buffer[i + 1] < 0x80 || buffer[i + 1] > 0x8F)) return false
+      else if (buffer[i + 1] < 0x80 || buffer[i + 1] > 0xBF) return false
+      if (buffer[i + 2] < 0x80 || buffer[i + 2] > 0xBF) return false
+      if (buffer[i + 3] < 0x80 || buffer[i + 3] > 0xBF) return false
+      i += 4
+    } else {
+      return false
+    }
+  }
+  return true
+}
+
+/**
  * Decode a CSV file buffer with smart encoding detection.
- * Tries UTF-8 first, falls back to Windows-1252 if invalid UTF-8 sequences detected.
+ * Uses byte-level UTF-8 validation (not U+FFFD presence) to detect encoding.
+ * Falls back to Windows-1252 only when actual invalid byte sequences are found.
  * 
  * @param buffer - Raw file buffer
  * @param encoding - Optional explicit encoding ('utf-8' | 'windows-1252')
@@ -75,19 +112,19 @@ export function decodeCSVBuffer(buffer: Buffer, encoding?: 'utf-8' | 'windows-12
     return convertFromWindows1252(buffer)
   }
   
-  // Default: try UTF-8 first
-  const utf8Result = buffer.toString('utf-8')
-  
-  // Check for BOM (skip it if present)
-  const content = utf8Result.charCodeAt(0) === 0xFEFF ? utf8Result.slice(1) : utf8Result
-  
-  // If no replacement characters, it's valid UTF-8
-  if (!content.includes('\uFFFD')) {
+  // Validate actual byte-level UTF-8 structure
+  if (isValidUtf8(buffer)) {
+    const utf8Result = buffer.toString('utf-8')
+    // Strip BOM if present
+    const content = utf8Result.charCodeAt(0) === 0xFEFF ? utf8Result.slice(1) : utf8Result
+    if (content.includes('\uFFFD')) {
+      console.warn('⚠️  CSV contains U+FFFD replacement characters (likely corrupted bullet points) — these will be stripped during sanitization')
+    }
     return content
   }
   
   // Fallback: treat as Windows-1252
-  console.warn('⚠️  CSV contains invalid UTF-8 sequences, falling back to Windows-1252 decoding')
+  console.warn('⚠️  CSV contains invalid UTF-8 byte sequences, falling back to Windows-1252 decoding')
   return convertFromWindows1252(buffer)
 }
 
@@ -102,6 +139,8 @@ export function convertWindows1252ToUtf8(buffer: Buffer): string {
 export function sanitizeText(text: string | null | undefined): string | null {
   if (!text) return null
   return text
+    .replace(/\uFFFD/g, '')
+    .replace(/ï¿½/g, '')
     .replace(/•/g, '\n')
     .replace(/[""]/g, '"')
     .replace(/['']/g, "'")
@@ -118,6 +157,8 @@ export function sanitizeText(text: string | null | undefined): string | null {
 export function sanitizeQuestionText(text: string | null | undefined): string {
   if (!text) return ''
   return text
+    .replace(/\uFFFD/g, '')
+    .replace(/ï¿½/g, '')
     .replace(/^[\s]*[•\-*]\s*/, '')
     .replace(/^[\s]*\d+[.)]\s*/, '')
     .replace(/[""]/g, '"')
@@ -129,6 +170,8 @@ export function parseFollowUpQuestions(text: string | null | undefined): string 
   if (!text) return null
   
   const lines = text
+    .replace(/\uFFFD/g, '')
+    .replace(/ï¿½/g, '')
     .replace(/•/g, '\n')
     .split('\n')
     .map(line => line.replace(/^[\s]*[\-•*]\s*/, '').trim())
