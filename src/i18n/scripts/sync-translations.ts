@@ -19,6 +19,7 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs'
 import { dirname } from 'path'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
+import { Diagnostic } from '../../db/entities/Diagnostic.entity'
 
 interface QuestionTranslationJSON {
   [questionCode: string]: {
@@ -103,12 +104,27 @@ async function importFromJSON(language: string = 'en'): Promise<void> {
   await queryRunner.startTransaction()
   
   try {
+    // Resolve the target diagnostic
+    const diagnostic = await queryRunner.manager.findOne(Diagnostic, {
+      where: { version: 'v1.0.0', language }
+    })
+    
+    if (!diagnostic) {
+      throw new Error(`Diagnostic v1.0.0 (${language}) not found`)
+    }
+    
     let updated = 0
     let skipped = 0
     
     for (const [questionCode, data] of Object.entries(json)) {
+      // Skip meta keys (e.g., _meta, _structure, _note)
+      if (questionCode.startsWith('_')) {
+        console.log(`⏭️  Skipping meta key: ${questionCode}`)
+        continue
+      }
+      
       const question = await queryRunner.manager.findOne(Question, {
-        where: { questionCode },
+        where: { questionCode, diagnosticId: diagnostic.id },
       })
       
       if (!question) {

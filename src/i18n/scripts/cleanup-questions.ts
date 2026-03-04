@@ -4,13 +4,11 @@
  * 
  * Usage:
  *   npm run i18n:cleanup -- --dry-run
- *   npm run i18n:cleanup -- --orphaned
  *   npm run i18n:cleanup -- --duplicates
  *   npm run i18n:cleanup
  * 
  * Features:
- * - Removes orphaned translations (translations without parent questions)
- * - Removes duplicate translations (keeps most recent)
+ * - Removes duplicate questions (keeps most recent)
  * - Shows database statistics
  */
 
@@ -19,14 +17,12 @@ import { Question } from '../../db/entities/Question.entity'
 
 interface CleanupOptions {
   dryRun: boolean
-  orphaned: boolean
   duplicates: boolean
 }
 
 async function cleanupQuestions(options: CleanupOptions) {
   console.log('\n🧹 Starting database cleanup...\n')
   console.log(`Dry run: ${options.dryRun ? 'YES' : 'NO'}`)
-  console.log(`Check orphaned: ${options.orphaned ? 'YES' : 'ALL'}`)
   console.log(`Check duplicates: ${options.duplicates ? 'YES' : 'ALL'}\n`)
 
   // Initialize DB
@@ -70,15 +66,15 @@ async function cleanupQuestions(options: CleanupOptions) {
       console.log('✅ All questions have required fields')
     }
 
-    // Find duplicate question codes
+    // Find duplicate question codes (scoped by diagnostic)
     const duplicateCodes = await queryRunner.manager.query(`
-      SELECT question_code, COUNT(*) as count
+      SELECT diagnostic_id, question_code, COUNT(*) as count
       FROM question
-      GROUP BY question_code
+      GROUP BY diagnostic_id, question_code
       HAVING COUNT(*) > 1
     `)
 
-    if (duplicateCodes.length > 0 && (options.duplicates || (!options.orphaned && !options.duplicates))) {
+    if (duplicateCodes.length > 0) {
       console.log('\n' + '='.repeat(60))
       console.log('DUPLICATE QUESTION CODES')
       console.log('='.repeat(60))
@@ -86,11 +82,11 @@ async function cleanupQuestions(options: CleanupOptions) {
       
       for (const dup of duplicateCodes) {
         const duplicates = await questionRepo.find({
-          where: { questionCode: dup.question_code },
+          where: { questionCode: dup.question_code, diagnosticId: dup.diagnostic_id },
           order: { createdAt: 'DESC' }
         })
         
-        console.log(`\n   ${dup.question_code}: ${dup.count} copies`)
+        console.log(`\n   ${dup.question_code} (diagnostic: ${dup.diagnostic_id}): ${dup.count} copies`)
         duplicates.forEach((q, idx) => {
           console.log(`     ${idx === 0 ? '✓' : '✗'} ID: ${q.id} | Created: ${q.createdAt}`)
         })
@@ -147,7 +143,6 @@ function parseArgs() {
   const args = process.argv.slice(2)
   const options: CleanupOptions = {
     dryRun: args.includes('--dry-run'),
-    orphaned: args.includes('--orphaned'),
     duplicates: args.includes('--duplicates'),
   }
   

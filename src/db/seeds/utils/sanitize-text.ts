@@ -46,11 +46,10 @@ const WINDOWS_1252_MAP: Record<number, string> = {
 }
 
 /**
- * Convert a file buffer from Windows-1252 encoding to a proper UTF-8 string.
- * Handles the 0x80-0x9F byte range that differs between Windows-1252 and ISO-8859-1/UTF-8.
- * All other bytes are treated as Latin-1 (which maps 1:1 with Unicode code points).
+ * Convert a buffer from Windows-1252 encoding to UTF-8.
+ * Private helper function used by decodeCSVBuffer.
  */
-export function convertWindows1252ToUtf8(buffer: Buffer): string {
+function convertFromWindows1252(buffer: Buffer): string {
   let result = ''
   for (let i = 0; i < buffer.length; i++) {
     const byte = buffer[i]
@@ -61,6 +60,43 @@ export function convertWindows1252ToUtf8(buffer: Buffer): string {
     }
   }
   return result
+}
+
+/**
+ * Decode a CSV file buffer with smart encoding detection.
+ * Tries UTF-8 first, falls back to Windows-1252 if invalid UTF-8 sequences detected.
+ * 
+ * @param buffer - Raw file buffer
+ * @param encoding - Optional explicit encoding ('utf-8' | 'windows-1252')
+ * @returns Decoded string content
+ */
+export function decodeCSVBuffer(buffer: Buffer, encoding?: 'utf-8' | 'windows-1252'): string {
+  if (encoding === 'windows-1252') {
+    return convertFromWindows1252(buffer)
+  }
+  
+  // Default: try UTF-8 first
+  const utf8Result = buffer.toString('utf-8')
+  
+  // Check for BOM (skip it if present)
+  const content = utf8Result.charCodeAt(0) === 0xFEFF ? utf8Result.slice(1) : utf8Result
+  
+  // If no replacement characters, it's valid UTF-8
+  if (!content.includes('\uFFFD')) {
+    return content
+  }
+  
+  // Fallback: treat as Windows-1252
+  console.warn('⚠️  CSV contains invalid UTF-8 sequences, falling back to Windows-1252 decoding')
+  return convertFromWindows1252(buffer)
+}
+
+/**
+ * Legacy export for backward compatibility.
+ * @deprecated Use decodeCSVBuffer instead
+ */
+export function convertWindows1252ToUtf8(buffer: Buffer): string {
+  return convertFromWindows1252(buffer)
 }
 
 export function sanitizeText(text: string | null | undefined): string | null {
@@ -106,7 +142,7 @@ export function parseFollowUpQuestions(text: string | null | undefined): string 
   for (const line of lines) {
     const lowerLine = line.toLowerCase()
     let cleanedQuestion = line
-      .replace(/^if\s*['""]?(yes|no)['""]?,?\s*(then\s*)?/i, '')
+      .replace(/^if\s*['""\u201C\u201D]?\s*(yes|no)\s*['""\u201C\u201D,]*\s*(then\s*)?/i, '')
       .replace(/[""]/g, '"')
       .replace(/['']/g, "'")
       .trim()

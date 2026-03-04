@@ -16,6 +16,8 @@ Import question translations from CSV files.
 - Shows detailed diff of changes
 - Transactional (all-or-nothing)
 - Dry-run mode for preview
+- **Multi-language support** via `--language` flag (default: en)
+- **Smart encoding detection** (UTF-8 first, fallback to Windows-1252)
 - **Optional cleanup: removes questions not in CSV** (use with `--cleanup --force`)
 
 **Usage:**
@@ -24,11 +26,17 @@ Import question translations from CSV files.
 # Preview changes without applying them
 npm run i18n:import-csv -- --file docs/resources/questions.csv --dry-run
 
-# Import and apply changes
+# Import and apply changes (English, default)
 npm run i18n:import-csv -- --file docs/resources/questions.csv
+
+# Import Spanish questions
+npm run i18n:import-csv -- --file docs/resources/questions-es.csv --language es
 
 # Force update even if no changes detected
 npm run i18n:import-csv -- --file docs/resources/questions.csv --force
+
+# Explicit encoding for Windows-1252 files
+npm run i18n:import-csv -- --file docs/resources/questions.csv --encoding windows-1252
 
 # Import AND remove questions not in CSV (pristine database)
 npm run i18n:import-csv -- --file docs/resources/questions.csv --cleanup --dry-run
@@ -285,16 +293,23 @@ The CSV `id` column maps to database question codes:
 
 All scripts use the same sanitization utilities from `src/db/seeds/utils/sanitize-text.ts`:
 
+- **Encoding Detection:** Smart detection tries UTF-8 first, falls back to Windows-1252 if needed
 - **Bullets:** Converts `•` to newlines, removes list prefixes
 - **Quotes:** Normalizes smart quotes to standard quotes  
 - **Whitespace:** Trims and normalizes spacing
-- **Follow-up Questions:** Parses into structured JSON:
+- **Follow-up Questions:** Parses into structured **JSON string** (not object):
   ```json
-  {
-    "if yes": ["Question 1", "Question 2"],
-    "if no": ["Question 3"]
-  }
+  "{\"if yes\":[\"Question 1\",\"Question 2\"],\"if no\":[\"Question 3\"]}"
   ```
+  
+## Database Schema
+
+**Important:** There is no `QuestionTranslation` entity. Translations are stored directly in the `question` table, scoped by `diagnostic_id`.
+
+- **`diagnostic` table:** Contains `version` + `language` (unique together), e.g., `v1.0.0/en`, `v1.0.0/es`
+- **`question` table:** Contains question content, linked to one `diagnostic` via `diagnostic_id`
+- **Multi-language:** Each diagnostic owns its own set of 31 questions
+- **`followUpQuestions` field:** Stored as a **JSON string**, not an object
 
 ## Error Handling
 

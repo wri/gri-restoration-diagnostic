@@ -3,9 +3,11 @@
  * Import Question Translations from CSV
  * 
  * Usage:
+ *   npm run i18n:import-csv -- --file path/to/file.csv
  *   npm run i18n:import-csv -- --file path/to/file.csv --language en
- *   npm run i18n:import-csv -- --file path/to/file.csv --language en --dry-run
- *   npm run i18n:import-csv -- --file path/to/file.csv --language en --force
+ *   npm run i18n:import-csv -- --file path/to/file.csv --language es --dry-run
+ *   npm run i18n:import-csv -- --file path/to/file.csv --force
+ *   npm run i18n:import-csv -- --file path/to/file.csv --encoding windows-1252
  *   npm run i18n:import-csv -- --file path/to/file.csv --cleanup --force
  * 
  * Features:
@@ -15,13 +17,16 @@
  * - Generates diff report
  * - Transactional (all or nothing)
  * - Optional cleanup: removes questions in DB not present in CSV
+ * - Supports multiple languages via --language flag (default: en)
+ * - Smart encoding detection (UTF-8 first, fallback to Windows-1252)
  */
 
 import { parse } from 'csv-parse/sync'
 import { readFileSync } from 'fs'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
-import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions, convertWindows1252ToUtf8 } from '../../db/seeds/utils/sanitize-text'
+import { Diagnostic } from '../../db/entities/Diagnostic.entity'
+import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions, decodeCSVBuffer } from '../../db/seeds/utils/sanitize-text'
 
 interface CSVRow {
   id: string
@@ -55,10 +60,15 @@ const QUESTION_CODE_MAP: { [key: number]: string } = {
 
 async function importQuestionsFromCSV(
   filePath: string,
-  options: { dryRun?: boolean; force?: boolean; cleanup?: boolean } = {}
+  options: { dryRun?: boolean; force?: boolean; cleanup?: boolean; language?: string; encoding?: 'utf-8' | 'windows-1252' } = {}
 ) {
+  const language = options.language || 'en'
+  const encoding = options.encoding
+  
   console.log('\n📥 Starting CSV import...\n')
   console.log(`File: ${filePath}`)
+  console.log(`Language: ${language}`)
+  console.log(`Encoding: ${encoding || 'auto-detect'}`)
   console.log(`Dry run: ${options.dryRun ? 'YES' : 'NO'}`)
   console.log(`Force: ${options.force ? 'YES' : 'NO'}`)
   console.log(`Cleanup: ${options.cleanup ? 'YES' : 'NO'}\n`)
@@ -68,9 +78,9 @@ async function importQuestionsFromCSV(
   const queryRunner = dataSource.createQueryRunner()
   
   try {
-    // Read and parse CSV (handle Windows-1252 encoded files)
+    // Read and parse CSV (with smart encoding detection)
     const rawBuffer = readFileSync(filePath)
-    const fileContent = convertWindows1252ToUtf8(rawBuffer)
+    const fileContent = decodeCSVBuffer(rawBuffer, encoding)
     const rows: CSVRow[] = parse(fileContent, {
       columns: true,
       skip_empty_lines: true,
@@ -82,6 +92,28 @@ async function importQuestionsFromCSV(
     // Start transaction
     await queryRunner.connect()
     await queryRunner.startTransaction()
+    
+    // Resolve the target diagnostic
+    const diagnostic = await queryRunner.manager.findOne(Diagnostic, {
+      where: { version: 'v1.0.0', language }
+    })
+    
+    if (!diagnostic) {
+      console.error(`❌ No diagnostic found for v1.0.0 (${language}).`)
+      console.error(`   Create the diagnostic first, then re-run this import.`)
+      console.error(`   Currently available diagnostics:`)
+      const available = await queryRunner.manager.find(Diagnostic, { 
+        select: ['language', 'version'],
+        order: { version: 'DESC', language: 'ASC' }
+      })
+      available.forEach(d => console.error(`     - ${d.version} (${d.language})`))
+      await queryRunner.rollbackTransaction()
+      await queryRunner.release()
+      await dataSource.destroy()
+      process.exit(1)
+    }
+    
+    console.log(`✅ Resolved diagnostic: ${diagnostic.id} (${diagnostic.version}/${diagnostic.language})\n`)
     
     const changes: Change[] = []
     let processed = 0
@@ -97,9 +129,9 @@ async function importQuestionsFromCSV(
         continue
       }
       
-      // Find existing question by code
+      // Find existing question by code (scoped to this diagnostic)
       const question = await queryRunner.manager.findOne(Question, {
-        where: { questionCode },
+        where: { questionCode, diagnosticId: diagnostic.id },
       })
       
       if (!question) {
@@ -204,8 +236,9 @@ async function importQuestionsFromCSV(
           .filter(code => code !== undefined)
       )
       
-      // Find all questions in database
+      // Find all questions in database (scoped to this diagnostic)
       const allDbQuestions = await queryRunner.manager.find(Question, {
+        where: { diagnosticId: diagnostic.id },
         order: { questionCode: 'ASC' }
       })
       
@@ -251,11 +284,30 @@ async function importQuestionsFromCSV(
 // CLI Argument Parsing
 function parseArgs() {
   const args = process.argv.slice(2)
-  const options: { file?: string; dryRun?: boolean; force?: boolean; cleanup?: boolean } = {}
+  const options: { 
+    file?: string; 
+    dryRun?: boolean; 
+    force?: boolean; 
+    cleanup?: boolean;
+    language?: string;
+    encoding?: 'utf-8' | 'windows-1252'
+  } = {}
   
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--file' && args[i + 1]) {
       options.file = args[i + 1]
+      i++
+    } else if (args[i] === '--language' && args[i + 1]) {
+      options.language = args[i + 1]
+      i++
+    } else if (args[i] === '--encoding' && args[i + 1]) {
+      const enc = args[i + 1]
+      if (enc === 'utf-8' || enc === 'windows-1252') {
+        options.encoding = enc
+      } else {
+        console.error(`❌ Invalid encoding: ${enc}. Must be 'utf-8' or 'windows-1252'`)
+        process.exit(1)
+      }
       i++
     } else if (args[i] === '--dry-run') {
       options.dryRun = true
@@ -271,19 +323,21 @@ function parseArgs() {
 
 // Main execution
 if (require.main === module) {
-  const { file, dryRun, force, cleanup } = parseArgs()
+  const { file, dryRun, force, cleanup, language, encoding } = parseArgs()
   
   if (!file) {
     console.error('❌ Error: --file parameter is required')
     console.log('\nUsage:')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv --language es')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv --dry-run')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv --force')
+    console.log('  npm run i18n:import-csv -- --file path/to/file.csv --encoding windows-1252')
     console.log('  npm run i18n:import-csv -- --file path/to/file.csv --cleanup --force')
     process.exit(1)
   }
   
-  importQuestionsFromCSV(file, { dryRun, force, cleanup })
+  importQuestionsFromCSV(file, { dryRun, force, cleanup, language, encoding })
     .then(() => {
       console.log('✅ Import completed successfully')
       process.exit(0)

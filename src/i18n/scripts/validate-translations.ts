@@ -18,6 +18,14 @@ import { readFileSync, readdirSync, existsSync } from 'fs'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
 
+const EXPECTED_CODES = [
+  'M01','M02','M03','M04','M05','M06','M07','M08',
+  'E01','E02','E03','E04','E05','E06','E07','E08','E09','E10','E11','E12','E13',
+  'I01','I02','I03','I04','I05','I06','I07','I08','I09','I10'
+]
+
+const REQUIRED_FIELDS = ['questionText', 'definition', 'keySuccessFactor', 'theme']
+
 async function validateTranslations(options: { questionsOnly?: boolean; ci?: boolean } = {}) {
   const errors: string[] = []
   const warnings: string[] = []
@@ -81,12 +89,43 @@ async function validateTranslations(options: { questionsOnly?: boolean; ci?: boo
           try {
             const content = readFileSync(`${translationsDir}/${file}`, 'utf-8')
             const json = JSON.parse(content)
-            const keys = Object.keys(json)
+            const keys = Object.keys(json).filter(k => !k.startsWith('_')) // Skip meta keys
             
             if (keys.length === 0) {
-              warnings.push(`${file}: Empty translation file`)
+              warnings.push(`${file}: Empty translation file (no question codes)`)
             } else {
-              console.log(`\n✅ ${file}: Valid JSON with ${keys.length} entries`)
+              console.log(`\n✅ ${file}: Valid JSON with ${keys.length} question(s)`)
+              
+              // Check for missing expected codes
+              const missingCodes = EXPECTED_CODES.filter(c => !keys.includes(c))
+              if (missingCodes.length > 0) {
+                warnings.push(`${file}: Missing ${missingCodes.length} question code(s): ${missingCodes.slice(0, 5).join(', ')}${missingCodes.length > 5 ? '...' : ''}`)
+              }
+              
+              // Check for unexpected codes
+              const unexpectedCodes = keys.filter(k => !EXPECTED_CODES.includes(k))
+              if (unexpectedCodes.length > 0) {
+                warnings.push(`${file}: Unexpected ${unexpectedCodes.length} question code(s): ${unexpectedCodes.slice(0, 5).join(', ')}${unexpectedCodes.length > 5 ? '...' : ''}`)
+              }
+              
+              // Validate required fields for each question
+              keys.forEach(code => {
+                const question = json[code]
+                if (typeof question !== 'object' || question === null) {
+                  errors.push(`${file}/${code}: Invalid question structure (not an object)`)
+                  return
+                }
+                
+                const missingFields = REQUIRED_FIELDS.filter(field => !question[field] || question[field].trim() === '')
+                if (missingFields.length > 0) {
+                  const errMsg = `${file}/${code}: Missing required field(s): ${missingFields.join(', ')}`
+                  if (options.ci) {
+                    errors.push(errMsg)
+                  } else {
+                    warnings.push(errMsg)
+                  }
+                }
+              })
             }
           } catch (error) {
             errors.push(`${file}: Invalid JSON - ${error}`)
