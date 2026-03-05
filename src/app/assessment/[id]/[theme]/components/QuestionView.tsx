@@ -9,7 +9,7 @@ import { useAutoSave, type AutoSaveStatus } from '@/hooks/useAutoSave'
 import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, GoBackIcon } from '@/components/icons'
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
-import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
+import type { PlainQuestion, PlainAnswer, PlainContributor } from './ThemePageLayout'
 import { Button, InlineMessage, Modal, Tag } from '@worldresources/wri-design-systems'
 import { Box } from '@chakra-ui/react'
 import { FactorPaginationContainer } from '@/components/assessment/FactorPaginationContainer'
@@ -27,6 +27,8 @@ interface QuestionViewProps {
   prevTheme: string | null
   nextTheme: string | null
   allowDataSharing: boolean
+  allContributors: PlainContributor[]
+  initialContributorsByAnswer: Array<[string, string[]]>
   onSaveStatusChange?: (status: AutoSaveStatus) => void
 }
 
@@ -41,6 +43,8 @@ export function QuestionView({
   prevTheme,
   nextTheme,
   allowDataSharing,
+  allContributors: initialAllContributors,
+  initialContributorsByAnswer,
   onSaveStatusChange,
 }: QuestionViewProps) {
   const router = useRouter()
@@ -48,6 +52,12 @@ export function QuestionView({
   // Reconstruct Map from serialized array (Maps cannot be passed from Server to Client Components)
   const [answersCache, setAnswersCache] = useState(() => 
     new Map<string, PlainAnswer>(initialAnswers)
+  )
+  
+  // Contributor state
+  const [allContributors, setAllContributors] = useState<PlainContributor[]>(initialAllContributors)
+  const [contributorsByAnswer, setContributorsByAnswer] = useState(() =>
+    new Map<string, string[]>(initialContributorsByAnswer)
   )
   
   // Current question state
@@ -66,6 +76,67 @@ export function QuestionView({
   )
   const [showCompleteWarning, setShowCompleteWarning] = useState(false)
   const [showProgressNotSavedModal, setShowProgressNotSavedModal] = useState(false)
+  
+  const currentContributorIds = contributorsByAnswer.get(currentAnswer?.id || '') || []
+  
+  // Handler: Create contributor
+  const handleContributorCreate = useCallback(async (name: string) => {
+    const response = await fetch(`/api/assessments/${assessmentId}/contributors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to create contributor')
+    }
+    
+    const { contributor } = await response.json()
+    
+    // Add to pool
+    setAllContributors(prev => [...prev, contributor].sort((a, b) => 
+      a.name.localeCompare(b.name)
+    ))
+    
+    return contributor
+  }, [assessmentId])
+  
+  // Handler: Update contributors for answer
+  const handleContributorsChange = useCallback(async (contributorIds: string[]) => {
+    if (!currentAnswer?.id) return
+    
+    // Optimistic update
+    setContributorsByAnswer(prev => {
+      const updated = new Map(prev)
+      updated.set(currentAnswer.id, contributorIds)
+      return updated
+    })
+    
+    // Save to API
+    try {
+      const response = await fetch(
+        `/api/assessments/${assessmentId}/answers/${currentAnswer.id}/contributors`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contributorIds })
+        }
+      )
+      
+      if (!response.ok) {
+        throw new Error('Failed to save contributors')
+      }
+    } catch (error) {
+      console.error('Failed to save contributors:', error)
+      // Revert optimistic update
+      setContributorsByAnswer(prev => {
+        const updated = new Map(prev)
+        const current = contributorsByAnswer.get(currentAnswer.id) || []
+        updated.set(currentAnswer.id, current)
+        return updated
+      })
+    }
+  }, [assessmentId, currentAnswer, contributorsByAnswer])
   
   // Auto-save function
   const saveAnswer = useCallback(async (data: {
@@ -212,6 +283,7 @@ export function QuestionView({
       setRationale(answer?.rationale || '')
       setNotes(answer?.notes || '')
       setIsVisuallyMarkedAsComplete(answer?.status === AnswerStatus.COMPLETE)
+      // Contributors are loaded from state, no need to update here
     }
   }, [questions, answersCache, assessmentId, theme, router])
 
@@ -394,6 +466,12 @@ export function QuestionView({
             onAnswerChange={handleAnswerChange}
             onRationaleChange={handleRationaleChange}
             isVisuallyMarkedAsComplete={isVisuallyMarkedAsComplete}
+            assessmentId={assessmentId}
+            answerId={currentAnswer?.id}
+            contributors={currentContributorIds}
+            allContributors={allContributors}
+            onContributorsChange={handleContributorsChange}
+            onContributorCreate={handleContributorCreate}
           />
 
           {allowMarkAsComplete && !isVisuallyMarkedAsComplete ? (
