@@ -122,20 +122,21 @@ Table question {
 }
 
 Table answer {
-  id varchar [pk, note: 'UUID v4']
+  id varchar [pk, note: 'UUID v4 - Composite PK part 1']
+  updated_at timestamp [pk, note: 'Composite PK part 2 - enables history tracking']
   assessment_id varchar [not null]
   question_id varchar [not null]
   value answer_value_enum [null, note: 'yes, partly, no, na - null if unanswered']
   rationale text [null, note: 'Rich text answer explanation/justification']
   notes text [null, note: 'Notes tab content - general notes about question']
   created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
   status answer_status_enum [not null, default: 'not_started']
+  
+  Note: 'Uses composite PK (id, updated_at) to maintain edit history. Multiple rows can share the same id.'
   
   Indexes {
     assessment_id
     question_id
-    (assessment_id, question_id) [unique]
     status
   }
 }

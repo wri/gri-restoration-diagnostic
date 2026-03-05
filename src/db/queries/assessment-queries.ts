@@ -405,14 +405,15 @@ export async function getContributorsForAllAnswers(assessmentId: string) {
   await initializeDatabase()
   const answerContributorRepo = AppDataSource.getRepository(AnswerContributor)
   
-  // Get all answers for this assessment first
+  // Get distinct answer IDs for this assessment (Answer table has composite PK with updated_at)
   const answerRepo = AppDataSource.getRepository(Answer)
-  const answers = await answerRepo.find({
-    where: { assessmentId },
-    select: ['id']
-  })
+  const answerIds = await answerRepo
+    .createQueryBuilder('answer')
+    .select('DISTINCT answer.id', 'id')
+    .where('answer.assessment_id = :assessmentId', { assessmentId })
+    .getRawMany()
+    .then(rows => rows.map(row => row.id))
   
-  const answerIds = answers.map(a => a.id)
   if (answerIds.length === 0) return new Map<string, Contributor[]>()
   
   // Fetch all associations in one query
@@ -435,13 +436,13 @@ export async function getContributorsForAllAnswers(assessmentId: string) {
 
 /**
  * Create a new contributor for an assessment
- * Returns existing if name already exists
+ * Returns existing if name already exists (case-sensitive)
  */
 export async function createContributor(assessmentId: string, name: string) {
   await initializeDatabase()
   const contributorRepo = AppDataSource.getRepository(Contributor)
   
-  // Check if already exists (case-insensitive)
+  // Check if already exists (case-sensitive)
   const existing = await contributorRepo.findOne({
     where: { assessmentId, name }
   })
@@ -462,31 +463,37 @@ export async function createContributor(assessmentId: string, name: string) {
 /**
  * Delete a contributor from the assessment pool
  * Cascade deletes all answer associations
+ * Returns true if deleted, false if not found
  */
-export async function deleteContributor(contributorId: string) {
+export async function deleteContributor(contributorId: string, assessmentId: string) {
   await initializeDatabase()
   const contributorRepo = AppDataSource.getRepository(Contributor)
   
-  await contributorRepo.delete({ id: contributorId })
+  const result = await contributorRepo.delete({ id: contributorId, assessmentId })
+  return (result.affected ?? 0) > 0
 }
 
 /**
  * Set contributors for an answer (replaces existing)
+ * Atomic operation wrapped in transaction
  */
 export async function setAnswerContributors(answerId: string, contributorIds: string[]) {
   await initializeDatabase()
-  const answerContributorRepo = AppDataSource.getRepository(AnswerContributor)
   
-  // Delete existing associations
-  await answerContributorRepo.delete({ answerId })
-  
-  // Create new associations
-  if (contributorIds.length > 0) {
-    const associations = contributorIds.map(contributorId => ({
-      answerId,
-      contributorId
-    }))
+  await AppDataSource.manager.transaction(async (transactionalEntityManager) => {
+    const answerContributorRepo = transactionalEntityManager.getRepository(AnswerContributor)
     
-    await answerContributorRepo.insert(associations)
-  }
+    // Delete existing associations
+    await answerContributorRepo.delete({ answerId })
+    
+    // Create new associations
+    if (contributorIds.length > 0) {
+      const associations = contributorIds.map(contributorId => ({
+        answerId,
+        contributorId
+      }))
+      
+      await answerContributorRepo.insert(associations)
+    }
+  })
 }

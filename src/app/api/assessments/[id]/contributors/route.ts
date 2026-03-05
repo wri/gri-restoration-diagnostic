@@ -75,7 +75,7 @@ export async function DELETE(
   await initializeDatabase()
   const { deleteContributor } = await import('@/db/queries/assessment-queries')
   
-  await params // get params to satisfy Next.js requirement
+  const { id: assessmentId } = await params
   
   try {
     const body = await request.json()
@@ -88,7 +88,15 @@ export async function DELETE(
       )
     }
     
-    await deleteContributor(contributorId)
+    const deleted = await deleteContributor(contributorId, assessmentId)
+    
+    if (!deleted) {
+      return NextResponse.json(
+        { success: false, error: 'Contributor not found in this assessment' },
+        { status: 404 }
+      )
+    }
+    
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Failed to delete contributor:', error)
