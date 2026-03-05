@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { validateSessionCookie } from '@/utils/session'
 import { PasswordPrompt } from '@/components/assessment/PasswordPrompt'
 import FromPreparationModal from '@/components/assessment/Overview/FromPreparationModal'
+import RedirectToPreparation from '@/components/assessment/DiagnosticPreparation/RedirectToPreparation'
 
 export default async function AssessmentPage({
   params,
@@ -44,6 +45,16 @@ export default async function AssessmentPage({
   const assessment = await getAssessmentById(id)
   if (!assessment) {
     return notFound()
+  }
+
+  // 5 is the last step of the preparation
+  if (assessment.preparationStep !== '6') {
+    return (
+      <RedirectToPreparation
+        assessmentId={id}
+        step={assessment.preparationStep}
+      />
+    )
   }
 
   const questionsAnswersData = await getQuestionsWithAnswers(assessment.id)

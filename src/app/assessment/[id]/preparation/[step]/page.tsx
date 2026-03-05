@@ -4,11 +4,11 @@ import Guidance from '@/components/assessment/DiagnosticPreparation/Guidance'
 import Steps from '@/components/assessment/DiagnosticPreparation/Steps'
 import { steps } from '@/components/assessment/DiagnosticPreparation/utils'
 import { Button } from '@worldresources/wri-design-systems'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 const PreparationPage = () => {
   const params = useParams()
+  const router = useRouter()
 
   const assessmentId = params.id as string
   const activeStep = Number(params.step)
@@ -19,9 +19,13 @@ const PreparationPage = () => {
     return (
       <div className='flex flex-col items-center justify-center h-[calc(100vh-48px-56px)] gap-4'>
         Step not found
-        <Link href={`/assessment/${assessmentId}/preparation/1`}>
-          <Button>Back to first step</Button>
-        </Link>
+        <Button
+          onClick={() =>
+            router.push(`/assessment/${assessmentId}/preparation/1`)
+          }
+        >
+          Back to first step
+        </Button>
       </div>
     )
 
@@ -34,7 +38,7 @@ const PreparationPage = () => {
           assessmentId={assessmentId}
         />
       </aside>
-      <main className='flex-1 overflow-y-auto pt-8 w-[560px] px-14 max-h-[calc(100vh-48px-56px)]'>
+      <main className='flex-1 overflow-y-auto py-8 w-[560px] px-14 max-h-[calc(100vh-48px-56px)]'>
         {steps[activeStep - 1]?.component}
       </main>
       <aside className='w-[320px] flex-shrink-0'>

@@ -43,6 +43,7 @@ export async function GET(
         restorationGoals: assessment.restorationGoals ?? '',
         engagementStrategy: assessment.engagementStrategy ?? '',
         materials: assessment.materials ?? '',
+        preparationStep: assessment.preparationStep ?? '1',
       }
     },
   )
@@ -96,58 +97,48 @@ export async function POST(
           ecosystems: JSON.stringify(body.ecosystems),
         })
 
-        const savedRegion = await regionRepository.save(region)
-
-        return savedRegion
+        await regionRepository.save(region)
       }
 
-      if (body.step === 2) {
-        const updatedAssessment = assessmentRepository.create({
-          ...assessment,
+      let updatedAssessmentData = {
+        ...assessment,
+        preparationStep: (body.step + 1).toString(),
+      }
+
+      if (body.step === 2 && body.timeHorizon) {
+        updatedAssessmentData = {
+          ...updatedAssessmentData,
           timeHorizon: body.timeHorizon,
-        })
-
-        const savedAssessment =
-          await assessmentRepository.save(updatedAssessment)
-
-        return savedAssessment
+        }
       }
 
-      if (body.step === 3) {
-        const updatedAssessment = assessmentRepository.create({
-          ...assessment,
+      if (body.step === 3 && body.restorationGoals) {
+        updatedAssessmentData = {
+          ...updatedAssessmentData,
           restorationGoals: body.restorationGoals,
-        })
-
-        const savedAssessment =
-          await assessmentRepository.save(updatedAssessment)
-
-        return savedAssessment
+        }
       }
 
-      if (body.step === 4) {
-        const updatedAssessment = assessmentRepository.create({
-          ...assessment,
+      if (body.step === 4 && body.engagementStrategy) {
+        updatedAssessmentData = {
+          ...updatedAssessmentData,
           engagementStrategy: body.engagementStrategy,
-        })
-
-        const savedAssessment =
-          await assessmentRepository.save(updatedAssessment)
-
-        return savedAssessment
+        }
       }
 
-      if (body.step === 5) {
-        const updatedAssessment = assessmentRepository.create({
-          ...assessment,
+      if (body.step === 5 && body.materials) {
+        updatedAssessmentData = {
+          ...updatedAssessmentData,
           materials: body.materials,
-        })
-
-        const savedAssessment =
-          await assessmentRepository.save(updatedAssessment)
-
-        return savedAssessment
+        }
       }
+
+      const updatedAssessment = assessmentRepository.create({
+        ...updatedAssessmentData,
+      })
+      const savedAssessment = await assessmentRepository.save(updatedAssessment)
+
+      return savedAssessment
     },
   )
 

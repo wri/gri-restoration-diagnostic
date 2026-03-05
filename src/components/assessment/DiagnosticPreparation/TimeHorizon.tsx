@@ -111,11 +111,7 @@ const TimeHorizon = () => {
         </Button>
         <Button
           variant='borderless'
-          onClick={() =>
-            router.push(
-              `/assessment/${assessmentId}/preparation/${activeStep + 1}`,
-            )
-          }
+          onClick={onSubmit}
           disabled={isSubmitting}
           loading={isSubmitting}
         >

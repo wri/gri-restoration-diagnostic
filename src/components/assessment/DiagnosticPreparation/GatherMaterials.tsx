@@ -196,9 +196,7 @@ const GatherMaterials = () => {
           </Button>
           <Button
             variant='borderless'
-            onClick={() =>
-              router.push(`/assessment/${assessmentId}?isFromPreparation=true`)
-            }
+            onClick={onSubmit}
             disabled={isSubmitting}
             loading={isSubmitting}
           >

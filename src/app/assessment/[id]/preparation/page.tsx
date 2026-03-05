@@ -2,15 +2,15 @@
 
 import { ChecklistIcon, ScopeIcon } from '@/components/icons'
 import { Button, Tag } from '@worldresources/wri-design-systems'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 const PreparationPage = () => {
   const params = useParams()
+  const router = useRouter()
   const assessmentId = params.id as string
 
   return (
-    <div className='mx-auto w-full max-w-[580px] pt-16 px-5'>
+    <div className='mx-auto w-full max-w-[580px] pt-16 pb-20 px-5'>
       <div className='p-8 border border-neutral-400 rounded-lg bg-white mb-6'>
         <h1 className='text-3xl font-bold text-neutral-800'>
           Prepare for the diagnostic
@@ -57,9 +57,10 @@ const PreparationPage = () => {
         </div>
       </div>
 
-      <Link href={`/assessment/${assessmentId}/preparation/1`}>
-        <Button label='Start preparation' />
-      </Link>
+      <Button
+        label='Start preparation'
+        onClick={() => router.push(`/assessment/${assessmentId}/preparation/1`)}
+      />
     </div>
   )
 }
