@@ -352,7 +352,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
@@ -379,7 +379,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
@@ -406,7 +406,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
@@ -431,7 +431,13 @@ const TargetGeography = () => {
           <InlineMessage
             variant='error'
             label={`${errorsLength > 1 ? 'There are' : 'There is'} ${errorsLength} error${errorsLength > 1 ? 's' : ''} in the form`}
-            caption={getErrorList().join(' ')}
+            caption={
+              <div>
+                {getErrorList().map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
+            }
             size='full-width'
           />
         </div>
