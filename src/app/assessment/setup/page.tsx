@@ -29,7 +29,7 @@ import {
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import type { AssessmentCreatedResponse } from '@/types/api.types'
 import Image from 'next/image'
-import { Box, Text } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const externalLinks = {
