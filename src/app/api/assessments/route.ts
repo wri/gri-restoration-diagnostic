@@ -89,11 +89,25 @@ export async function POST(request: NextRequest) {
           })
           lead = await leadRepository.save(lead)
         } else {
-          // Update demographic fields if provided
-          if (body.gender !== undefined) lead.gender = body.gender || null
-          if (body.ageRange !== undefined) lead.ageRange = body.ageRange || null
-          if (body.identity !== undefined) lead.identity = body.identity || null
-          lead = await leadRepository.save(lead)
+          // Update demographic fields only if provided and changed
+          let hasChanges = false
+          
+          if (body.gender !== undefined && lead.gender !== (body.gender || null)) {
+            lead.gender = body.gender || null
+            hasChanges = true
+          }
+          if (body.ageRange !== undefined && lead.ageRange !== (body.ageRange || null)) {
+            lead.ageRange = body.ageRange || null
+            hasChanges = true
+          }
+          if (body.identity !== undefined && lead.identity !== (body.identity || null)) {
+            lead.identity = body.identity || null
+            hasChanges = true
+          }
+          
+          if (hasChanges) {
+            lead = await leadRepository.save(lead)
+          }
         }
 
         // 2. Create Region (geography information)

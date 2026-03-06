@@ -375,9 +375,9 @@ describe('POST /api/assessments', () => {
         email: 'john.doe@example.com',
         organization: 'Test Organization',
         role: 'Project Lead',
-        gender: undefined,
-        ageRange: undefined,
-        identity: undefined
+        gender: null,
+        ageRange: null,
+        identity: null
       });
       
       expect(mockLeadRepository.save).toHaveBeenCalled();
@@ -393,8 +393,8 @@ describe('POST /api/assessments', () => {
       
       expect(mockLeadRepository.findOne).toHaveBeenCalled();
       expect(mockLeadRepository.create).not.toHaveBeenCalled();
-      // Lead is saved to update demographic fields even if they're undefined
-      expect(mockLeadRepository.save).toHaveBeenCalled();
+      // Lead should NOT be saved when no demographic fields are provided
+      expect(mockLeadRepository.save).not.toHaveBeenCalled();
     });
 
     it('should create lead with demographic fields when provided', async () => {
@@ -452,6 +452,58 @@ describe('POST /api/assessments', () => {
       expect(saveCall.gender).toBe('male');
       expect(saveCall.ageRange).toBe('35-44');
       expect(saveCall.identity).toBe('local');
+    });
+
+    it('should not save lead when demographic fields match existing values', async () => {
+      const existingLead = { 
+        ...mockLead, 
+        id: 'existing-lead-123',
+        gender: 'female',
+        ageRange: '25-34',
+        identity: 'indigenous'
+      };
+      mockLeadRepository.findOne.mockResolvedValue(existingLead);
+      
+      const formDataWithSameDemographics = {
+        ...validFormData,
+        gender: 'female',
+        ageRange: '25-34',
+        identity: 'indigenous'
+      };
+      const request = createMockRequest(formDataWithSameDemographics);
+      
+      await POST(request);
+      
+      expect(mockLeadRepository.findOne).toHaveBeenCalled();
+      expect(mockLeadRepository.create).not.toHaveBeenCalled();
+      // No save should occur since values haven't changed
+      expect(mockLeadRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should save lead when only some demographic fields change', async () => {
+      const existingLead = { 
+        ...mockLead, 
+        id: 'existing-lead-123',
+        gender: 'female',
+        ageRange: '25-34',
+        identity: 'indigenous'
+      };
+      mockLeadRepository.findOne.mockResolvedValue(existingLead);
+      mockLeadRepository.save.mockResolvedValue({ ...existingLead, ageRange: '35-44' });
+      
+      const formDataWithPartialChange = {
+        ...validFormData,
+        gender: 'female', // unchanged
+        ageRange: '35-44', // changed
+        identity: 'indigenous' // unchanged
+      };
+      const request = createMockRequest(formDataWithPartialChange);
+      
+      await POST(request);
+      
+      expect(mockLeadRepository.save).toHaveBeenCalled();
+      const saveCall = mockLeadRepository.save.mock.calls[0][0];
+      expect(saveCall.ageRange).toBe('35-44');
     });
   });
 
