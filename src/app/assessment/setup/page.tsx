@@ -205,9 +205,7 @@ export default function SetupAssessmentPage() {
                       height={480}
                     />
                   </div>
-                  
-                  {/* TODO: add this new component text strings into the i18n translations that goes under the "downloads". 
-                  Remove other "preparationGuide", "spreadsheet" src/i18n/translations/en.json */}
+
                   <div className='my-4 px-4 py-3 border border-neutral-300 rounded-lg bg-white'>
                     <div className='flex items-center justify-between gap-4'>
                       <div className='flex-1'>
@@ -277,8 +275,6 @@ export default function SetupAssessmentPage() {
                     Add the details of the person who will coordinate and oversee this diagnostic. This may be you or another member of your team.
                   </p>
 
-                  {/* TODO: include these strings in the i18n files 
-                    src/i18n/translations/en.json */}
                   <InlineMessage
                     label="Answering on behalf of the diagnostic lead"
                     caption="If you are entering details for someone else, please provide this information with their knowledge and consent. Where possible, we recommend that the diagnostic lead creates the diagnostic to ensure continuity."
