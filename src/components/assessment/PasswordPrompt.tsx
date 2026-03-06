@@ -10,6 +10,7 @@ import {
   TextInput,
 } from '@worldresources/wri-design-systems'
 import { Box, Text } from '@chakra-ui/react'
+import { useTranslations } from '@/i18n/useTranslations'
 
 interface PasswordPromptProps {
   assessmentId: string
@@ -18,6 +19,7 @@ interface PasswordPromptProps {
 export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
   const searchParams = useSearchParams()
   const returnTo = searchParams.get('returnTo')
+  const t = useTranslations()
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -50,16 +52,22 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
     const remainingSeconds = seconds % 60
 
     if (minutes > 0) {
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`
+      const minuteKey = minutes === 1 ? 'passwordPrompt.time.minuteSingular' : 'passwordPrompt.time.minutePlural'
+      const secondKey = remainingSeconds === 1 ? 'passwordPrompt.time.secondSingular' : 'passwordPrompt.time.secondPlural'
+      const minuteText = t(minuteKey, { count: String(minutes) })
+      const secondText = t(secondKey, { count: String(remainingSeconds) })
+      return `${minuteText} ${secondText}`
     }
-    return `${seconds} second${seconds !== 1 ? 's' : ''}`
-  }, [])
+    
+    const secondKey = seconds === 1 ? 'passwordPrompt.time.secondSingular' : 'passwordPrompt.time.secondPlural'
+    return t(secondKey, { count: String(seconds) })
+  }, [t])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!password) {
-      setError('Password is required')
+      setError(t('passwordPrompt.errors.required'))
       return
     }
 
@@ -86,14 +94,14 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
         const retryAfterSeconds = data.retryAfter || 900 // Default to 15 minutes
         setRetryAfter(retryAfterSeconds)
         setIsRateLimited(true)
-        setError(`Too many failed attempts. Please try again in ${formatRetryTime(retryAfterSeconds)}.`)
+        setError(t('passwordPrompt.errors.rateLimited', { time: formatRetryTime(retryAfterSeconds) }))
         setIsLoading(false)
         return
       }
 
       if (response.status === 401) {
         setError(
-          'The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.',
+          t('passwordPrompt.errors.incorrect'),
         )
         setIsLoading(false)
         return
@@ -101,7 +109,7 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
 
       if (!response.ok) {
         setError(
-          'An error occurred while authenticating. Please try again later.',
+          t('passwordPrompt.errors.generic'),
         )
         setIsLoading(false)
         return
@@ -140,7 +148,7 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
     } catch (error) {
       console.warn(error);
       setError(
-        'Unable to connect to the server. Please check your connection and try again.',
+        t('passwordPrompt.errors.network'),
       )
       setIsLoading(false)
     }
@@ -178,18 +186,18 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
                   marginBottom={3} 
                   textAlign='left'
                   lineHeight={'short'}>
-                  Enter password to access the diagnostic
+                  {t('passwordPrompt.title')}
                 </Text>
 
                 <Box marginBottom={error ? 3 : 5}>
                   {isRateLimited ? (
                     <TextInput
-                        caption="Too many attempts"
+                        caption={t('passwordPrompt.tooManyAttempts')}
                         disabled
                       /> 
                     ) : (
                     <Password
-                      label='Password'
+                      label={t('passwordPrompt.passwordLabel')}
                       onChange={handlePasswordChange}
                       hideValidations
                       required
@@ -210,14 +218,14 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
                 {isRateLimited && retryAfter > 0 && (
                   <Box marginBottom={3}>
                     <Text fontSize='sm' color='neutral.700'>
-                      Time remaining: {formatRetryTime(retryAfter)}
+                      {t('passwordPrompt.timeRemaining', { time: formatRetryTime(retryAfter) })}
                     </Text>
                   </Box>
                 )}
 
                 <Button
                   type='submit'
-                  label={isLoading ? 'Authenticating...' : 'Resume diagnostic'}
+                  label={isLoading ? t('passwordPrompt.submitting') : t('passwordPrompt.submitButton')}
                   disabled={isLoading || !password || isRateLimited}
                   className='w-full'
                 />
