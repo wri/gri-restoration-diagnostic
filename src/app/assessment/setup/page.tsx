@@ -15,11 +15,7 @@ import {
   RadioList,
 } from '@worldresources/wri-design-systems'
 import {
-  InfoIcon,
-  ListIcon,
   DownloadIcon,
-  CalendarIcon,
-  ChevronDownIcon,
 } from '@/components/icons'
 import {
   useAssessmentSetupForm,
@@ -33,7 +29,7 @@ import {
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import type { AssessmentCreatedResponse } from '@/types/api.types'
 import Image from 'next/image'
-import { Box, Collapsible, Text } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const externalLinks = {
