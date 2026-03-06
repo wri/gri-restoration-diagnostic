@@ -33,7 +33,7 @@ import { Box, Text } from '@chakra-ui/react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const externalLinks = {
-  offlineDownload: 'https://gfw.atlassian.net/browse/RD-74',
+  offlineDownload: 'https://files.wri.org/d8/s3fs-public/guide-restoration-opportunities-assessment-methodology.pdf',
   tos: 'https://www.wri.org/about/wri-data-platforms-tos',
   privacy: 'https://www.wri.org/about/privacy-policy',
 }
@@ -252,15 +252,23 @@ export default function SetupAssessmentPage() {
 
                   <hr className='my-6' />
 
-                  <Title title='Diagnostic title' required />
-
-                  <TextInput
-                    caption='Include a descriptive title for your diagnostic. This will be shown to anyone that accesses the diagnostic.'
-                    placeholder='Enter a diagnostic title'
-                    required
-                    {...register('title', assessmentFormRules.title)}
-                    errorMessage={errors.title?.message}
-                  />
+                  <Box 
+                    css={{
+                      '& label': {
+                        fontSize: 'xl',
+                        fontWeight: '600',
+                        color: getThemedColor('neutral', 700)
+                      }
+                    }}>
+                    <TextInput
+                      label='Diagnostic title'
+                      caption='Include a descriptive title for your diagnostic. This will be shown to anyone that accesses the diagnostic.'
+                      placeholder='Enter a diagnostic title'
+                      required
+                      {...register('title', assessmentFormRules.title)}
+                      errorMessage={errors.title?.message}
+                    />
+                  </Box>
 
                   <hr className='my-6' />
 
@@ -396,7 +404,7 @@ export default function SetupAssessmentPage() {
                   >
                     <p className='text-neutral-800 font-normal'>
                       <span className='text-error-500'>*</span> I agree
-                      to WRI&apos;s <a className='underline' href={externalLinks.tos} target='_blank'>Terms of Service</a> and <a className='underline' href={externalLinks.privacy} target="_blank">Privacy Policy</a>&nbsp;
+                      to WRI&apos;s <a className='underline' rel='noopener noreferrer' href={externalLinks.tos} target='_blank'>Terms of Service</a> and <a className='underline' rel='noopener noreferrer' href={externalLinks.privacy} target="_blank">Privacy Policy</a>&nbsp;
                       so I can save and manage my progress.
                     </p>
                   </Checkbox>

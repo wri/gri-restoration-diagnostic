@@ -83,9 +83,9 @@ export async function POST(request: NextRequest) {
             email: normalizedEmail,
             organization: body.organization,
             role: body.role,
-            gender: body.gender,
-            ageRange: body.ageRange,
-            identity: body.identity,
+            gender: body.gender || null,
+            ageRange: body.ageRange || null,
+            identity: body.identity || null,
           })
           lead = await leadRepository.save(lead)
         } else {
