@@ -16,7 +16,7 @@ const defaultFormValues: AssessmentSetupFormData = {
   gisUrl: '',
   ecosystems: [],
   terms: false,
-  allowDataSharing: true,
+  allowDataSharing: false,
 }
 
 /**

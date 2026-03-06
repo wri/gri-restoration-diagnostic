@@ -60,7 +60,7 @@
         "getStarted": "Get started",
         "getStartedDescription": "Enter some basic details about this diagnostic to get started.",
         "diagnosticLead": "Diagnostic lead",
-        "diagnosticLeadDescription": "Please enter details for the primary person responsible for this diagnostic.",
+        "diagnosticLeadDescription": "Add the details of the person who will coordinate and oversee this diagnostic. This may be you or another member of your team.",
         "geography": "Geography",
         "geographyDescription": "Enter details about the location of your restoration project."
       },
