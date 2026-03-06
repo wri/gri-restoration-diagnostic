@@ -38,18 +38,6 @@ const externalLinks = {
   privacy: 'https://www.wri.org/about/privacy-policy',
 }
 
-const Title = ({ title, required = false }: { title: string, required?: boolean }) => {
-  return (
-    <Text className='text-xl font-bold' style={{
-      color: getThemedColor('neutral', 800),
-      ...(required ? { display: 'flex', marginLeft: '4px'} : {})
-    }}>
-      {required && (<Box as="span" color={getThemedColor('error', 500)} mr='4px' fontSize="16px">*</Box>)}
-      {title}
-    </Text>
-  )
-}
-
 export default function SetupAssessmentPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
