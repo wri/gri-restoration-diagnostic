@@ -11,6 +11,8 @@ import {
   Modal,
   InlineMessage,
   getThemedColor,
+  Select,
+  RadioList,
 } from '@worldresources/wri-design-systems'
 import {
   InfoIcon,
@@ -23,6 +25,11 @@ import {
   useAssessmentSetupForm,
   assessmentFormRules,
 } from '@/hooks/useAssessmentSetupForm'
+import {
+  genderOptions,
+  ageRangeOptions,
+  identityOptions,
+} from '@/constants/setup-assessment'
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import type { AssessmentCreatedResponse } from '@/types/api.types'
 import Image from 'next/image'
@@ -315,8 +322,65 @@ export default function SetupAssessmentPage() {
                       />
                     </div>
 
-                    {/* HERE GOES DEMOGRAPHIC INFORMATION */}
-                    {/* END_OF DEMOGRAPHIC INFORMATION */}
+                    {/* Demographic Information Section */}
+                    <div className='flex flex-col gap-6 mb-6'>
+                      <div className='flex flex-col gap-2'>
+                        <h3 className='text-lg font-bold text-neutral-800'>
+                          Demographic information
+                        </h3>
+                        <p className='text-sm text-neutral-600'>
+                          The following questions are used for aggregated reporting only and do not affect participation.
+                        </p>
+                      </div>
+
+                      <Controller
+                        name='gender'
+                        control={control}
+                        rules={assessmentFormRules.gender}
+                        render={({ field }) => (
+                          <Select
+                            label='Gender (optional)'
+                            placeholder='Please select'
+                            items={genderOptions}
+                            value={field.value ? [field.value] : []}
+                            onChange={(value) => field.onChange(value[0] || '')}
+                            errorMessage={errors.gender?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name='ageRange'
+                        control={control}
+                        rules={assessmentFormRules.ageRange}
+                        render={({ field }) => (
+                          <Select
+                            label='Age range (optional)'
+                            placeholder='Please select'
+                            items={ageRangeOptions}
+                            value={field.value ? [field.value] : []}
+                            onChange={(value) => field.onChange(value[0] || '')}
+                            errorMessage={errors.ageRange?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name='identity'
+                        control={control}
+                        rules={assessmentFormRules.identity}
+                        render={({ field }) => (
+                          <RadioList
+                            label='Does the diagnostic lead identify as part of any of the following groups? (optional)'
+                            name='identity'
+                            radios={identityOptions}
+                            defaultValue={field.value}
+                            onCheckedChange={(_, selectedValue) => field.onChange(selectedValue)}
+                            errorMessage={errors.identity?.message}
+                          />
+                        )}
+                      />
+                    </div>
                    
                   </div>
                 </div>

@@ -83,7 +83,16 @@ export async function POST(request: NextRequest) {
             email: normalizedEmail,
             organization: body.organization,
             role: body.role,
+            gender: body.gender,
+            ageRange: body.ageRange,
+            identity: body.identity,
           })
+          lead = await leadRepository.save(lead)
+        } else {
+          // Update demographic fields if provided
+          if (body.gender !== undefined) lead.gender = body.gender || null
+          if (body.ageRange !== undefined) lead.ageRange = body.ageRange || null
+          if (body.identity !== undefined) lead.identity = body.identity || null
           lead = await leadRepository.save(lead)
         }
 
