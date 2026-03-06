@@ -71,19 +71,44 @@ export async function POST(request: NextRequest) {
         const diagnosticRepository =
           transactionalEntityManager.getRepository(Diagnostic)
 
-        // 1. Create Lead (user information for this assessment)
-        // Each assessment gets its own Lead record to capture org/role at time of creation
-        const lead = leadRepository.create({
-          jobTitle: body.jobTitle,
-          name: body.fullName,
-          email: normalizedEmail,
-          organization: body.organization,
-          role: body.role,
-          gender: body.gender || null,
-          ageRange: body.ageRange || null,
-          identity: body.identity || null,
+        // 1. Create or find Lead (user information)
+        let lead = await leadRepository.findOne({
+          where: { email: normalizedEmail },
         })
-        const savedLead = await leadRepository.save(lead)
+
+        if (!lead) {
+          lead = leadRepository.create({
+            jobTitle: body.jobTitle,
+            name: body.fullName,
+            email: normalizedEmail,
+            organization: body.organization,
+            role: body.role,
+            gender: body.gender || null,
+            ageRange: body.ageRange || null,
+            identity: body.identity || null,
+          })
+          lead = await leadRepository.save(lead)
+        } else {
+          // Update demographic fields only if provided and changed
+          let hasChanges = false
+          
+          if (body.gender !== undefined && lead.gender !== (body.gender || null)) {
+            lead.gender = body.gender || null
+            hasChanges = true
+          }
+          if (body.ageRange !== undefined && lead.ageRange !== (body.ageRange || null)) {
+            lead.ageRange = body.ageRange || null
+            hasChanges = true
+          }
+          if (body.identity !== undefined && lead.identity !== (body.identity || null)) {
+            lead.identity = body.identity || null
+            hasChanges = true
+          }
+          
+          if (hasChanges) {
+            lead = await leadRepository.save(lead)
+          }
+        }
 
         // 2. Create Region (geography information)
         const region = regionRepository.create({
@@ -114,7 +139,7 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(password, 10)
 
         const assessment = assessmentRepository.create({
-          leadId: savedLead.id,
+          leadId: lead.id,
           regionId: savedRegion.id,
           diagnosticId: diagnostic.id,
           passwordHash: passwordHash,

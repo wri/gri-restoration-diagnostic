@@ -17,7 +17,6 @@ import {
 import {
   DownloadIcon,
 } from '@/components/icons'
-import { AccessDetailsModal } from '@/components/assessment/AccessDetailsModal'
 import {
   useAssessmentSetupForm,
   assessmentFormRules,
@@ -32,9 +31,12 @@ import type { AssessmentCreatedResponse } from '@/types/api.types'
 import Image from 'next/image'
 import { Box } from '@chakra-ui/react'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { externalLinks } from '@/constants/external-links'
 
-
+const externalLinks = {
+  offlineDownload: 'https://files.wri.org/d8/s3fs-public/guide-restoration-opportunities-assessment-methodology.pdf',
+  tos: 'https://www.wri.org/about/wri-data-platforms-tos',
+  privacy: 'https://www.wri.org/about/privacy-policy',
+}
 
 export default function SetupAssessmentPage() {
   const router = useRouter()
@@ -45,9 +47,6 @@ export default function SetupAssessmentPage() {
     error?: string
     stack?: string
   } | null>(null)
-  const [showAccessModal, setShowAccessModal] = useState(false)
-  const [createdAssessmentId, setCreatedAssessmentId] = useState<string | null>(null)
-  const [assessmentPassword, setAssessmentPassword] = useState<string | null>(null)
 
   const isDev = process.env.NODE_ENV === 'development'
 
@@ -77,9 +76,9 @@ export default function SetupAssessmentPage() {
       const result: AssessmentCreatedResponse = await response.json()
 
       if (result.success && result.assessmentId && result.password) {
-        setCreatedAssessmentId(result.assessmentId)
-        setAssessmentPassword(result.password)
-        setShowAccessModal(true)
+        router.push(
+          `/assessment/${result.assessmentId}/created?token=${encodeURIComponent(result.password)}`,
+        )
       } else {
         setError({
           message: result.message || 'Failed to create assessment',
@@ -95,12 +94,6 @@ export default function SetupAssessmentPage() {
       })
     } finally {
       setIsSubmitting(false)
-    }
-  }
-
-  const handleContinueAssessment = () => {
-    if (createdAssessmentId) {
-      router.push(`/assessment/${createdAssessmentId}/preparation`)
     }
   }
 
@@ -252,12 +245,7 @@ export default function SetupAssessmentPage() {
                       '& label': {
                         fontSize: 'xl',
                         fontWeight: '600',
-                        color: getThemedColor('neutral', 800),
-                        marginBottom: '2'
-                      },
-                      '& span': {
-                        fontSize: 'lg',
-                        color: getThemedColor('neutral', 800)
+                        color: getThemedColor('neutral', 700)
                       }
                     }}>
                     <TextInput
@@ -339,7 +327,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.gender}
                         render={({ field }) => (
                           <Select
-                            label='Gender (Optional)'
+                            label='Gender (optional)'
                             placeholder='Please select'
                             items={genderOptions}
                             value={field.value ? [field.value] : []}
@@ -355,7 +343,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.ageRange}
                         render={({ field }) => (
                           <Select
-                            label='Age range (Optional)'
+                            label='Age range (optional)'
                             placeholder='Please select'
                             items={ageRangeOptions}
                             value={field.value ? [field.value] : []}
@@ -371,7 +359,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.identity}
                         render={({ field }) => (
                           <RadioList
-                            label='Does the diagnostic lead identify as part of any of the following groups? (Optional)'
+                            label='Does the diagnostic lead identify as part of any of the following groups? (optional)'
                             name='identity'
                             radios={identityOptions}
                             defaultValue={field.value}
@@ -454,15 +442,6 @@ export default function SetupAssessmentPage() {
           </div>
         </div>
       </form>
-
-      {showAccessModal && createdAssessmentId && assessmentPassword && (
-        <AccessDetailsModal
-          open={showAccessModal}
-          assessmentId={createdAssessmentId}
-          password={assessmentPassword}
-          onContinue={handleContinueAssessment}
-        />
-      )}
     </>
   )
 }
