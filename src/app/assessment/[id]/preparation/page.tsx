@@ -1,5 +1,6 @@
 'use client'
 
+import { PREPARATION_STEPS } from '@/components/assessment/DiagnosticPreparation/utils'
 import { ChecklistIcon, ScopeIcon } from '@/components/icons'
 import { Button, Tag } from '@worldresources/wri-design-systems'
 import { useParams, useRouter } from 'next/navigation'
@@ -59,7 +60,11 @@ const PreparationPage = () => {
 
       <Button
         label='Start preparation'
-        onClick={() => router.push(`/assessment/${assessmentId}/preparation/1`)}
+        onClick={() =>
+          router.push(
+            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TARGET_GEOGRAPHY}`,
+          )
+        }
       />
     </div>
   )

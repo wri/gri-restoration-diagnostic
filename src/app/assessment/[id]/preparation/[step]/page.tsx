@@ -2,32 +2,25 @@
 
 import Guidance from '@/components/assessment/DiagnosticPreparation/Guidance'
 import Steps from '@/components/assessment/DiagnosticPreparation/Steps'
-import { steps } from '@/components/assessment/DiagnosticPreparation/utils'
-import { Button } from '@worldresources/wri-design-systems'
-import { useParams, useRouter } from 'next/navigation'
+import {
+  PREPARATION_STEPS,
+  steps,
+} from '@/components/assessment/DiagnosticPreparation/utils'
+import { redirect, useParams } from 'next/navigation'
 
 const PreparationPage = () => {
   const params = useParams()
-  const router = useRouter()
 
   const assessmentId = params.id as string
-  const activeStep = Number(params.step)
+  const activeStep = params.step as string
 
-  const stepData = steps[activeStep - 1]
+  const stepData = steps.find((s) => s.id === activeStep)
 
-  if (!stepData)
-    return (
-      <div className='flex flex-col items-center justify-center h-[calc(100vh-48px-56px)] gap-4'>
-        Step not found
-        <Button
-          onClick={() =>
-            router.push(`/assessment/${assessmentId}/preparation/1`)
-          }
-        >
-          Back to first step
-        </Button>
-      </div>
+  if (!stepData) {
+    return redirect(
+      `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TARGET_GEOGRAPHY}`,
     )
+  }
 
   return (
     <div className='mx-auto flex max-w-[1280px] overflow-hidden'>
@@ -39,7 +32,7 @@ const PreparationPage = () => {
         />
       </aside>
       <main className='flex-1 overflow-y-auto py-8 w-[560px] px-14 max-h-[calc(100vh-48px-56px)]'>
-        {steps[activeStep - 1]?.component}
+        {stepData.component}
       </main>
       <aside className='w-[320px] flex-shrink-0'>
         <Guidance steps={steps} activeStep={activeStep} />

@@ -7,9 +7,11 @@ const Guidance = ({
   activeStep,
 }: {
   steps: StepProps[]
-  activeStep: number
+  activeStep: string
 }) => {
-  const activeStepData = steps[activeStep - 1]
+  const activeStepData = steps.find((s) => s.id === activeStep)
+
+  if (!activeStepData) return null
 
   return (
     <div className='border border-l-neutral-300 bg-white max-h-[calc(100vh-48px-56px)] overflow-y-auto'>

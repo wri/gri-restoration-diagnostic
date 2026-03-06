@@ -1,3 +1,5 @@
+'use client'
+
 import Loader from '@/components/ui/Loader'
 import { COUNTRIES, TARGET_GEOGRAPHY_TYPE_OPTIONS } from '@/constants'
 import { assessmentFormRules } from '@/hooks/useAssessmentSetupForm'
@@ -18,6 +20,7 @@ import {
   freshwaterEcosystems,
   marineEcosystems,
   terrestrialEcosystems,
+  PREPARATION_STEPS,
 } from './utils'
 import Link from 'next/link'
 
@@ -70,7 +73,8 @@ const TargetGeography = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const assessmentId = params.id as string
-  const activeStep = Number.isNaN(params.step) ? 1 : Number(params.step)
+  const activeStep =
+    (params.step as string) || PREPARATION_STEPS.TARGET_GEOGRAPHY
 
   const getAssessmentData = async () => {
     setIsLoading(true)
@@ -158,7 +162,9 @@ const TargetGeography = () => {
     if (result.success) {
       setAssessmentData(result.data)
 
-      router.push(`/assessment/${assessmentId}/preparation/${activeStep + 1}`)
+      router.push(
+        `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TIME_HORIZON}`,
+      )
     }
   }
 
