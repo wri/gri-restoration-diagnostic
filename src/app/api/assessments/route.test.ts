@@ -673,7 +673,7 @@ describe('POST /api/assessments', () => {
     it('should include error details in development mode', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
       
       AppDataSource.transaction.mockRejectedValue(new Error('Detailed error'));
       
@@ -684,14 +684,14 @@ describe('POST /api/assessments', () => {
       expect(data.error).toBe('Detailed error');
       expect(data.stack).toBeDefined();
       
-      process.env.NODE_ENV = originalEnv;
+      (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
       consoleErrorSpy.mockRestore();
     });
 
     it('should not expose error stack in production', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
       
       AppDataSource.transaction.mockRejectedValue(new Error('Production error'));
       
@@ -701,7 +701,7 @@ describe('POST /api/assessments', () => {
       
       expect(data.stack).toBeUndefined();
       
-      process.env.NODE_ENV = originalEnv;
+      (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
       consoleErrorSpy.mockRestore();
     });
 
