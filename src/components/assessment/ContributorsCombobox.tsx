@@ -30,7 +30,6 @@ export function ContributorsCombobox({
   disabled = false,
 }: ContributorsComboboxProps) {
   const [inputValue, setInputValue] = useState('')
-  const [isCreating, setIsCreating] = useState(false)
   
   const selectedContributors = allContributors.filter(c => 
     selectedContributorIds.includes(c.id)
@@ -83,18 +82,15 @@ export function ContributorsCombobox({
   }
   
   const handleCreate = async () => {
-    if (!inputValue.trim() || isCreating) return
+    if (!inputValue.trim()) return
     
-    setIsCreating(true)
     try {
-      const newContributor = await onContributorCreate(inputValue.trim())
-      // Add to selection
-      onContributorsChange([...selectedContributorIds, newContributor.id])
+      await onContributorCreate(inputValue.trim())
+      // Contributor is already added optimistically, just clear input
       setInputValue('')
     } catch (error) {
       console.error('Failed to create contributor:', error)
-    } finally {
-      setIsCreating(false)
+      // Error already tracked in parent component
     }
   }
   
@@ -197,7 +193,7 @@ export function ContributorsCombobox({
                         },
                       }}
                     >
-                      {isCreating && isCreateItem ? 'Creating...' : item.label}
+                      {item.label}
                       {!isCreateItem && <Combobox.ItemIndicator />}
                     </Combobox.Item>
                   )
