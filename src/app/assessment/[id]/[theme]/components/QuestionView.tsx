@@ -86,35 +86,53 @@ export function QuestionView({
       return currentAnswer
     }
     
-    // Create a new answer with minimal data
-    const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        questionId: currentQuestion.id,
-        value: selectedAnswer,
-        rationale: rationale || '',
-        notes: notes || '',
-        status: AnswerStatus.IN_PROGRESS,
-        allowDataSharing,
-      })
-    })
-    
-    if (!response.ok) {
-      throw new Error('Failed to create answer')
+    // If there's already a pending creation, await it instead of creating duplicate
+    if (pendingAnswerCreationRef.current) {
+      return pendingAnswerCreationRef.current
     }
     
-    const result = await response.json()
-    const newAnswer = result.answer
+    // Create a new answer with minimal data
+    const creationPromise = (async () => {
+      const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId: currentQuestion.id,
+          value: selectedAnswer,
+          rationale: rationale || '',
+          notes: notes || '',
+          status: AnswerStatus.IN_PROGRESS,
+          allowDataSharing,
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to create answer')
+      }
+      
+      const result = await response.json()
+      const newAnswer = result.answer
+      
+      // Update local cache
+      setAnswersCache(prev => {
+        const updated = new Map(prev)
+        updated.set(currentQuestion.id, newAnswer)
+        return updated
+      })
+      
+      return newAnswer
+    })()
     
-    // Update local cache
-    setAnswersCache(prev => {
-      const updated = new Map(prev)
-      updated.set(currentQuestion.id, newAnswer)
-      return updated
-    })
+    // Store the promise so concurrent calls can await it
+    pendingAnswerCreationRef.current = creationPromise
     
-    return newAnswer
+    try {
+      const result = await creationPromise
+      return result
+    } finally {
+      // Clear the ref after completion (success or failure)
+      pendingAnswerCreationRef.current = null
+    }
   }, [assessmentId, currentQuestion, currentAnswer, selectedAnswer, rationale, notes, allowDataSharing])
   
   // Handler: Create contributor (optimistic)
@@ -323,6 +341,8 @@ export function QuestionView({
   const saveStatusRef = useRef<AutoSaveStatus>('idle')
   // Track contributor creation errors separately
   const contributorErrorRef = useRef<boolean>(false)
+  // Track pending answer creation to prevent race conditions
+  const pendingAnswerCreationRef = useRef<Promise<PlainAnswer> | null>(null)
   // Stores a deferred navigation callback when user tries to leave while saving
   const pendingNavigationRef = useRef<(() => void) | null>(null)
   const pendingCompleteGuardNavigationRef = useRef<(() => void) | null>(null)
@@ -613,8 +633,6 @@ export function QuestionView({
             onAnswerChange={handleAnswerChange}
             onRationaleChange={handleRationaleChange}
             isVisuallyMarkedAsComplete={isVisuallyMarkedAsComplete}
-            assessmentId={assessmentId}
-            answerId={currentAnswer?.id}
             contributors={currentContributorIds}
             allContributors={allContributors}
             onContributorsChange={handleContributorsChange}

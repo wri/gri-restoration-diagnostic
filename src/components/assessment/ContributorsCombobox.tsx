@@ -12,8 +12,6 @@ export interface PlainContributor {
 }
 
 interface ContributorsComboboxProps {
-  assessmentId: string
-  answerId: string | undefined
   selectedContributorIds: string[]
   allContributors: PlainContributor[]
   onContributorsChange: (contributorIds: string[]) => void
