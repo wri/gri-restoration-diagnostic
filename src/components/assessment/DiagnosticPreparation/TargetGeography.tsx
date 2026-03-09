@@ -352,7 +352,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
@@ -379,7 +379,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
@@ -406,7 +406,7 @@ const TargetGeography = () => {
                 name: 'all',
                 type: 'checkbox',
               }}
-              defaultValue={
+              defaultValues={
                 assessmentData.ecosystems
                   ? JSON.parse(assessmentData.ecosystems)
                   : []
