@@ -242,7 +242,12 @@ export default function SetupAssessmentPage() {
                       '& label': {
                         fontSize: 'xl',
                         fontWeight: '600',
-                        color: getThemedColor('neutral', 700)
+                        color: getThemedColor('neutral', 800),
+                        marginBottom: '2'
+                      },
+                      '& span': {
+                        fontSize: 'lg',
+                        color: getThemedColor('neutral', 800)
                       }
                     }}>
                     <TextInput
