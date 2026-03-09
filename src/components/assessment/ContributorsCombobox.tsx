@@ -3,9 +3,17 @@
 import { useState, useMemo } from 'react'
 import { Combobox, Portal, createListCollection } from '@chakra-ui/react'
 import { Tag, getThemedColor } from '@worldresources/wri-design-systems'
-import { PlainContributor } from '@/types/answer.types'
+
+export interface PlainContributor {
+  id: string
+  name: string
+  assessmentId: string
+  createdAt: Date | string
+}
 
 interface ContributorsComboboxProps {
+  assessmentId: string
+  answerId: string | undefined
   selectedContributorIds: string[]
   allContributors: PlainContributor[]
   onContributorsChange: (contributorIds: string[]) => void
@@ -14,6 +22,7 @@ interface ContributorsComboboxProps {
 }
 
 export function ContributorsCombobox({
+  answerId,
   selectedContributorIds,
   allContributors,
   onContributorsChange,
@@ -85,15 +94,14 @@ export function ContributorsCombobox({
     }
   }
   
-  const handleValueChange = (details: { value: string[] }) => {
+  const handleValueChange = async (details: { value: string[] }) => {
     // Check if CREATE_NEW was selected
     if (details.value.includes('CREATE_NEW')) {
-      handleCreate() // Fire async, creates and auto-selects in parent
-      // Don't call onContributorsChange - the create handler already updates selection
+      await handleCreate()
       return
     }
     
-    // Normal selection - parent now handles answer creation if needed
+    // Normal selection
     onContributorsChange(details.value)
   }
   
@@ -114,14 +122,13 @@ export function ContributorsCombobox({
       
       <Combobox.Root
         multiple
-        closeOnSelect={true}
-        openOnClick
+        closeOnSelect={false}
         inputValue={inputValue}
         value={selectedContributorIds}
         collection={collection}
         onValueChange={handleValueChange}
         onInputValueChange={handleInputValueChange}
-        disabled={disabled}
+        disabled={disabled || !answerId}
       >
         <Combobox.Control>
           <Combobox.Input
@@ -142,10 +149,15 @@ export function ContributorsCombobox({
               }
             }}
           />
+          <Combobox.Trigger />
         </Combobox.Control>
         
         <Portal>
-          <Combobox.Positioner>
+          <Combobox.Positioner
+            css={{
+              top: '-22px !important',
+            }}
+          >
             <Combobox.Content
               css={{
                 maxHeight: '240px',
@@ -187,31 +199,28 @@ export function ContributorsCombobox({
                   )
                 })}
               </Combobox.ItemGroup>
-              {inputValue.trim() !== '' && (
-                <Combobox.Empty
-                  css={{
-                    padding: '8px 12px',
-                    fontSize: '14px',
-                    color: 'slate.500',
-                  }}
-                >
-                  No contributors found
-                </Combobox.Empty>
-              )}
+              <Combobox.Empty
+                css={{
+                  padding: '8px 12px',
+                  fontSize: '14px',
+                  color: 'slate.500',
+                }}
+              >
+                No contributors found
+              </Combobox.Empty>
             </Combobox.Content>
           </Combobox.Positioner>
         </Portal>
       </Combobox.Root>
       
-      {/* Selected contributors as tags - Column layout */}
+      {/* Selected contributors as tags - Grid layout with 5 per row */}
       {selectedContributors.length > 0 && (
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, auto)',
             gap: '0.5rem',
-            marginTop: '12px',
-            alignItems: 'flex-start',
+            justifyContent: 'start',
           }}
         >
           {selectedContributors.map((contributor) => (
@@ -225,6 +234,12 @@ export function ContributorsCombobox({
             />
           ))}
         </div>
+      )}
+      
+      {!answerId && (
+        <p className="text-sm text-slate-500 italic">
+          Answer the question first to add contributors
+        </p>
       )}
     </div>
   )

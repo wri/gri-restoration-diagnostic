@@ -39,6 +39,13 @@ export interface PlainAnswer {
   strategies: string | null
 }
 
+export interface PlainContributor {
+  id: string
+  name: string
+  assessmentId: string
+  createdAt: Date | string
+}
+
 interface ThemePageLayoutProps {
   assessmentId: string
   theme: 'Motivate' | 'Enable' | 'Implement'
