@@ -40,15 +40,15 @@ export function FollowUpQuestions({ followUpQuestions, selectedAnswer }: FollowU
           <li key={index}>{question}</li>
         ))}
       </ul>
-      <div>
-        {/* Out of scope: <Button 
+      {/* Out of scope: <div>
+        <Button 
           variant="secondary"
           size="small"
           leftIcon={<PlusIcon />}
           style={{ borderRadius: '8px' }}>
           add custom topic
-        </Button> */}
-      </div>
+        </Button>
+      </div> */}
     </div>
   )
 }
