@@ -20,8 +20,6 @@ interface QuestionContentProps {
   onRationaleChange: (value: string) => void
   onStrategysChange: (value: string) => void
   isVisuallyMarkedAsComplete: boolean
-  assessmentId: string
-  answerId: string | undefined
   contributors: string[]
   allContributors: PlainContributor[]
   onContributorsChange: (contributorIds: string[]) => void
@@ -37,8 +35,6 @@ export function QuestionContent({
   onRationaleChange,
   onStrategysChange,
   isVisuallyMarkedAsComplete,
-  assessmentId,
-  answerId,
   contributors,
   allContributors,
   onContributorsChange,
@@ -109,8 +105,6 @@ export function QuestionContent({
       {!hideRationale && !isVisuallyMarkedAsComplete && (
         <div className="mt-8">
           <ContributorsCombobox
-            assessmentId={assessmentId}
-            answerId={answerId}
             selectedContributorIds={contributors}
             allContributors={allContributors}
             onContributorsChange={onContributorsChange}

@@ -79,9 +79,83 @@ export function QuestionView({
   const [showProgressNotSavedModal, setShowProgressNotSavedModal] = useState(false)
   
   const currentContributorIds = contributorsByAnswer.get(currentAnswer?.id || '') || []
-
+  
+  // Helper: Ensure an answer exists for the current question (creates if needed)
+  const ensureAnswerExists = useCallback(async () => {
+    // If answer already exists, return it
+    if (currentAnswer?.id) {
+      return currentAnswer
+    }
+    
+    // If there's already a pending creation, await it instead of creating duplicate
+    if (pendingAnswerCreationRef.current) {
+      return pendingAnswerCreationRef.current
+    }
+    
+    // Create a new answer with minimal data
+    const creationPromise = (async () => {
+      const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId: currentQuestion.id,
+          value: selectedAnswer,
+          rationale: rationale || '',
+          notes: notes || '',
+          status: AnswerStatus.IN_PROGRESS,
+          allowDataSharing,
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to create answer')
+      }
+      
+      const result = await response.json()
+      const newAnswer = result.answer
+      
+      // Update local cache
+      setAnswersCache(prev => {
+        const updated = new Map(prev)
+        updated.set(currentQuestion.id, newAnswer)
+        return updated
+      })
+      
+      return newAnswer
+    })()
+    
+    // Store the promise so concurrent calls can await it
+    pendingAnswerCreationRef.current = creationPromise
+    
+    try {
+      const result = await creationPromise
+      return result
+    } finally {
+      // Clear the ref after completion (success or failure)
+      pendingAnswerCreationRef.current = null
+    }
+  }, [assessmentId, currentQuestion, currentAnswer, selectedAnswer, rationale, notes, allowDataSharing])
+  
   // Handler: Create contributor (optimistic)
   const handleContributorCreate = useCallback(async (name: string) => {
+    // Ensure an answer exists first
+    let answerToUse = currentAnswer
+    if (!answerToUse) {
+      try {
+        answerToUse = await ensureAnswerExists()
+      } catch (error) {
+        console.error('Failed to create answer for contributor:', error)
+        contributorErrorRef.current = true
+        throw error
+      }
+    }
+    
+    // Defensive check (should never happen after ensureAnswerExists)
+    if (!answerToUse) {
+      contributorErrorRef.current = true
+      throw new Error('No answer available for contributor')
+    }
+    
     // Generate temporary ID for optimistic update
     const tempId = crypto.randomUUID()
     const tempContributor: PlainContributor = {
@@ -96,15 +170,13 @@ export function QuestionView({
       a.name.localeCompare(b.name)
     ))
     
-    // Optimistically add to current answer's contributors
-    if (currentAnswer?.id) {
-      setContributorsByAnswer(prev => {
-        const updated = new Map(prev)
-        const current = prev.get(currentAnswer.id) || []
-        updated.set(currentAnswer.id, [...current, tempId])
-        return updated
-      })
-    }
+    // Optimistically add to answer's contributors
+    setContributorsByAnswer(prev => {
+      const updated = new Map(prev)
+      const current = prev.get(answerToUse!.id) || []
+      updated.set(answerToUse!.id, [...current, tempId])
+      return updated
+    })
     
     // Fire API request in background
     try {
@@ -137,23 +209,22 @@ export function QuestionView({
         return updated
       })
       
-      // Now fire the association PUT request with the real ID
-      if (currentAnswer?.id) {
-        const contributorIds = [...(contributorsByAnswer.get(currentAnswer.id) || [])]
-          .map(id => id === tempId ? contributor.id : id)
-        
-        const associationResponse = await fetch(
-          `/api/assessments/${assessmentId}/answers/${currentAnswer.id}/contributors`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contributorIds })
-          }
-        )
-        
-        if (!associationResponse.ok) {
-          throw new Error('Failed to associate contributor')
+      // Fire the association PUT request with the real ID
+      // Read from ref to get the latest state (avoids stale closure from useCallback deps)
+      const contributorIds = [...(contributorsByAnswerRef.current.get(answerToUse.id) || [])]
+        .map(id => id === tempId ? contributor.id : id)
+      
+      const associationResponse = await fetch(
+        `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contributorIds })
         }
+      )
+      
+      if (!associationResponse.ok) {
+        throw new Error('Failed to associate contributor')
       }
       
       contributorErrorRef.current = false
@@ -179,23 +250,38 @@ export function QuestionView({
     
     // Return temp contributor immediately for UI feedback
     return tempContributor
-  }, [assessmentId, currentAnswer, contributorsByAnswer])
+  }, [assessmentId, currentAnswer, ensureAnswerExists])
   
   // Handler: Update contributors for answer
   const handleContributorsChange = useCallback(async (contributorIds: string[]) => {
-    if (!currentAnswer?.id) return
+    // Ensure an answer exists first
+    let answerToUse = currentAnswer
+    if (!answerToUse) {
+      try {
+        answerToUse = await ensureAnswerExists()
+      } catch (error) {
+        console.error('Failed to create answer for contributors:', error)
+        return
+      }
+    }
+    
+    // Defensive check (should never happen after ensureAnswerExists)
+    if (!answerToUse) {
+      console.error('No answer available for contributors')
+      return
+    }
     
     // Optimistic update
     setContributorsByAnswer(prev => {
       const updated = new Map(prev)
-      updated.set(currentAnswer.id, contributorIds)
+      updated.set(answerToUse!.id, contributorIds)
       return updated
     })
     
     // Save to API
     try {
       const response = await fetch(
-        `/api/assessments/${assessmentId}/answers/${currentAnswer.id}/contributors`,
+        `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -211,12 +297,12 @@ export function QuestionView({
       // Revert optimistic update
       setContributorsByAnswer(prev => {
         const updated = new Map(prev)
-        const current = contributorsByAnswer.get(currentAnswer.id) || []
-        updated.set(currentAnswer.id, current)
+        const current = contributorsByAnswer.get(answerToUse!.id) || []
+        updated.set(answerToUse!.id, current)
         return updated
       })
     }
-  }, [assessmentId, currentAnswer, contributorsByAnswer])
+  }, [assessmentId, currentAnswer, contributorsByAnswer, ensureAnswerExists])
   
   // Auto-save function
   const saveAnswer = useCallback(async (data: {
@@ -257,6 +343,13 @@ export function QuestionView({
   const saveStatusRef = useRef<AutoSaveStatus>('idle')
   // Track contributor creation errors separately
   const contributorErrorRef = useRef<boolean>(false)
+  // Track pending answer creation to prevent race conditions
+  const pendingAnswerCreationRef = useRef<Promise<PlainAnswer> | null>(null)
+  // Keep a ref to the latest contributorsByAnswer for use in async callbacks (avoids stale closures)
+  const contributorsByAnswerRef = useRef(contributorsByAnswer)
+  useEffect(() => {
+    contributorsByAnswerRef.current = contributorsByAnswer
+  }, [contributorsByAnswer])
   // Stores a deferred navigation callback when user tries to leave while saving
   const pendingNavigationRef = useRef<(() => void) | null>(null)
   const pendingCompleteGuardNavigationRef = useRef<(() => void) | null>(null)
@@ -268,7 +361,7 @@ export function QuestionView({
     // Don't show modal immediately on error - wait for navigation attempt
   }, [onSaveStatusChange])
 
-  const { save } = useAutoSave({
+  const { save, clearError } = useAutoSave({
     onSave: saveAnswer,
     debounceMs: 1000,
     onStatusChange: handleAutoSaveStatusChange,
@@ -570,8 +663,6 @@ export function QuestionView({
             strategies={strategies}
             onStrategysChange={handleStrategysChange}
             isVisuallyMarkedAsComplete={isVisuallyMarkedAsComplete}
-            assessmentId={assessmentId}
-            answerId={currentAnswer?.id}
             contributors={currentContributorIds}
             allContributors={allContributors}
             onContributorsChange={handleContributorsChange}
@@ -672,11 +763,18 @@ export function QuestionView({
 
       <ProgressNotSavedModal
         open={showProgressNotSavedModal}
-        onCancel={() => {
+        onDismiss={() => {
           setShowProgressNotSavedModal(false)
           contributorErrorRef.current = false
           pendingNavigationRef.current = null
-          // Retry the last save
+        }}
+        onLeavePageAnyway={() => {
+          setShowProgressNotSavedModal(false)
+          contributorErrorRef.current = false
+          // Clear the error state so future navigations aren't blocked
+          clearError()
+          saveStatusRef.current = 'idle'
+          // Fire-and-forget save attempt (best-effort)
           save({
             questionId: currentQuestion.id,
             value: selectedAnswer,
@@ -684,11 +782,7 @@ export function QuestionView({
             notes,
             strategies,
             status: isVisuallyMarkedAsComplete ? AnswerStatus.COMPLETE : AnswerStatus.IN_PROGRESS,
-          }, true)
-        }}
-        onLeavePageAnyway={() => {
-          setShowProgressNotSavedModal(false)
-          contributorErrorRef.current = false
+          }, true).catch(() => { /* best-effort */ })
           // Execute the deferred navigation if one was pending
           if (pendingNavigationRef.current) {
             pendingNavigationRef.current()
