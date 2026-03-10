@@ -45,7 +45,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
         <div className="collapsibles-container pb-16">
           <Collapsible title="Definition" defaultOpen>
             {question.definition ? (
-              <Text className="prose prose-sm max-w-none">{question.definition}</Text>
+              <Text className="prose prose-sm max-w-none whitespace-pre-line">{question.definition}</Text>
             ) : (
               <Text className="text-slate-400 italic">No definition available.</Text>
             )}
@@ -53,7 +53,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
           
           <Collapsible title="Considerations">
             {question.considerations ? (
-              <Text className="prose prose-sm max-w-none">{question.considerations}</Text>
+              <Text className="prose prose-sm max-w-none whitespace-pre-line">{question.considerations}</Text>
             ) : (
               <Text className="text-slate-400 italic">No considerations available.</Text>
             )}
@@ -61,7 +61,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
           
           <Collapsible title="Example Strategies">
             {question.strategyExamples ? (
-              <Text className="prose prose-sm max-w-none">{question.strategyExamples}</Text>
+              <Text className="prose prose-sm max-w-none whitespace-pre-line">{question.strategyExamples}</Text>
             ) : (
               <Text className="text-slate-400 italic">No example strategies available.</Text>
             )}

@@ -34,19 +34,22 @@ export function FollowUpQuestions({ followUpQuestions, selectedAnswer }: FollowU
   
   return (
     <div className="space-y-2">
+      <p className="text-sm text-slate-600">
+        Topics to include
+      </p>
       <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
         {questions.map((question, index) => (
           <li key={index}>{question}</li>
         ))}
       </ul>
       <div>
-        <Button 
+        {/* Out of scope: <Button 
           variant="secondary"
           size="small"
           leftIcon={<PlusIcon />}
           style={{ borderRadius: '8px' }}>
           add custom topic
-        </Button>
+        </Button> */}
       </div>
     </div>
   )
