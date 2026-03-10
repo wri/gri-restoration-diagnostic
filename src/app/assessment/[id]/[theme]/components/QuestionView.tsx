@@ -102,6 +102,7 @@ export function QuestionView({
           value: selectedAnswer,
           rationale: rationale || '',
           notes: notes || '',
+          strategies: strategies || '[]',
           status: AnswerStatus.IN_PROGRESS,
           allowDataSharing,
         })
@@ -134,7 +135,16 @@ export function QuestionView({
       // Clear the ref after completion (success or failure)
       pendingAnswerCreationRef.current = null
     }
-  }, [assessmentId, currentQuestion, currentAnswer, selectedAnswer, rationale, notes, allowDataSharing])
+  }, [
+    assessmentId,
+    currentQuestion,
+    currentAnswer,
+    selectedAnswer,
+    rationale,
+    notes,
+    strategies,
+    allowDataSharing,
+  ])
   
   // Handler: Create contributor (optimistic)
   const handleContributorCreate = useCallback(async (name: string) => {
