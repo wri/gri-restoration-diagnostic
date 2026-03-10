@@ -63,11 +63,6 @@ const StrategiesReadOnlyModal = ({
             <p className='font-bold mb-1'>Deadline</p>
             <p>{formatDeadline(strategy.deadline) || 'N/A'}</p>
           </div>
-
-          <div className='mb-6'>
-            <p className='font-bold mb-1'>Responsibility</p>
-            <p>{strategy.responsibility || 'N/A'}</p>
-          </div>
         </div>
       }
     />

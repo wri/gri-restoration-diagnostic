@@ -29,7 +29,6 @@ interface Data {
   description: string
   scale: string
   deadline: string
-  responsibility: string
   priority: string
 }
 
@@ -95,14 +94,6 @@ const StrategicPlan = ({ assessmentId, questions }: StrategicPlanProps) => {
                         {row.deadline ? (
                           <p className='text-neutral-700 text-xs'>
                             Deadline {formatDeadline(row.deadline)}
-                          </p>
-                        ) : (
-                          ''
-                        )}
-
-                        {row.responsibility ? (
-                          <p className='text-neutral-700 text-xs'>
-                            Owner: {row.responsibility}
                           </p>
                         ) : (
                           ''

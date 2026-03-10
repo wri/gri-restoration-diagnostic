@@ -31,7 +31,6 @@ const Strategies = ({
         description: '',
         scale: '',
         deadline: '',
-        responsibility: '',
         priority: '',
       },
     ]
@@ -151,20 +150,6 @@ const Strategies = ({
                     defaultValue={strategy.deadline}
                     onChange={(value: string) =>
                       updateStrategy(strategy.id, 'deadline', value)
-                    }
-                  />
-                </div>
-                <div>
-                  <TextInput
-                    label='Responsibility'
-                    placeholder='Type to search or add new'
-                    value={strategy.responsibility}
-                    onChange={(e) =>
-                      updateStrategy(
-                        strategy.id,
-                        'responsibility',
-                        e.target.value,
-                      )
                     }
                   />
                 </div>

@@ -10,6 +10,5 @@ export type Strategy = {
   description: string
   scale: string
   deadline: string
-  responsibility: string
   priority: string
 }

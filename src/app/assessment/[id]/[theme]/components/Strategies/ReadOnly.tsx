@@ -52,14 +52,6 @@ const StrategiesReadOnly = ({
                     ) : (
                       ''
                     )}
-
-                    {row.responsibility ? (
-                      <p className='text-neutral-700 text-xs'>
-                        {row.responsibility}
-                      </p>
-                    ) : (
-                      ''
-                    )}
                   </div>
                 </div>
               </TableCell>
