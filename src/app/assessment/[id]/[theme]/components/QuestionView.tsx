@@ -532,11 +532,6 @@ export function QuestionView({
     }, true)
   }
   
-  // Calculate current question position within theme for Tag display
-  const currentIndex = questions.findIndex(q => q.questionCode === currentQuestionCode)
-  const questionPosition = currentIndex + 1
-  const totalQuestions = questions.length
-  
   const allowMarkAsComplete =
     selectedAnswer !== null && hasRichTextContent(rationale)
 
