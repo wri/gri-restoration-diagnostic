@@ -36,6 +36,7 @@ export interface PlainAnswer {
   createdAt: Date
   updatedAt: Date
   status: AnswerStatus
+  strategies: string | null
 }
 
 export interface PlainContributor {

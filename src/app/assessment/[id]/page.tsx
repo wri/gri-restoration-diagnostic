@@ -80,6 +80,7 @@ export default async function AssessmentPage({
       updatedAt: qa.answer?.updatedAt ?? qa.createdAt,
       value: qa.answer?.value ?? '',
       status: qa.answer?.status ?? '',
+      strategies: qa.answer?.strategies ?? '',
     },
   }))
 
@@ -119,7 +120,7 @@ export default async function AssessmentPage({
       <div className='w-full max-w-screen-1100 p-4 mx-auto flex flex-col gap-10'>
         <Scope data={scopeData} />
         <KeySuccessFactors assessmentId={id} questions={questions} />
-        <StrategicPlan />
+        <StrategicPlan assessmentId={id} questions={questions} />
         <FromPreparationModal
           autoOpen={isFromPreparation === 'true'}
           assessmentId={id}

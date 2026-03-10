@@ -8,13 +8,17 @@ import type { PlainQuestion, PlainContributor } from './ThemePageLayout'
 import { ContributorsCombobox } from '@/components/assessment/ContributorsCombobox'
 import AnswerOptionsResponse from '@/components/assessment/AnswerOptionsResponse'
 import { hasRichTextContent } from '@/utils/validation'
+import Strategies from './Strategies'
+import StrategiesReadOnly from './Strategies/ReadOnly'
 
 interface QuestionContentProps {
   question: PlainQuestion
   selectedAnswer: AnswerValue | null
   rationale: string
+  strategies: string
   onAnswerChange: (value: AnswerValue) => void
   onRationaleChange: (value: string) => void
+  onStrategysChange: (value: string) => void
   isVisuallyMarkedAsComplete: boolean
   assessmentId: string
   answerId: string | undefined
@@ -28,8 +32,10 @@ export function QuestionContent({
   question,
   selectedAnswer,
   rationale,
+  strategies,
   onAnswerChange,
   onRationaleChange,
+  onStrategysChange,
   isVisuallyMarkedAsComplete,
   assessmentId,
   answerId,
@@ -112,6 +118,15 @@ export function QuestionContent({
           />
         </div>
       )}
+      
+      {/* Strategies - Edit mode */}
+      {!hideRationale && !isVisuallyMarkedAsComplete && (
+        <Strategies
+          question={question}
+          strategies={strategies}
+          onStrategysChange={onStrategysChange}
+        />
+      )}
 
       {isVisuallyMarkedAsComplete && hasRichTextContent(rationale) ? (
         <div>
@@ -138,6 +153,15 @@ export function QuestionContent({
           </ul>
         </div>
       )}
+
+      {isVisuallyMarkedAsComplete &&
+        strategies &&
+        JSON.parse(strategies).length > 0 && (
+          <StrategiesReadOnly
+            strategies={strategies}
+            keySuccessFactor={question.keySuccessFactor}
+          />
+        )}
     </section>
   )
 }

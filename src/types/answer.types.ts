@@ -3,3 +3,13 @@ export enum AnswerStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETE = 'complete',
 }
+
+export type Strategy = {
+  id: string
+  title: string
+  description: string
+  scale: string
+  deadline: string
+  responsibility: string
+  priority: string
+}

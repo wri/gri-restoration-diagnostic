@@ -71,6 +71,7 @@ export function QuestionView({
   )
   const [rationale, setRationale] = useState(currentAnswer?.rationale || '')
   const [notes, setNotes] = useState(currentAnswer?.notes || '')
+  const [strategies, setStrategies] = useState(currentAnswer?.strategies || '[]')
   const [isVisuallyMarkedAsComplete, setIsVisuallyMarkedAsComplete] = useState(
     currentAnswer?.status === AnswerStatus.COMPLETE,
   )
@@ -78,7 +79,7 @@ export function QuestionView({
   const [showProgressNotSavedModal, setShowProgressNotSavedModal] = useState(false)
   
   const currentContributorIds = contributorsByAnswer.get(currentAnswer?.id || '') || []
-  
+
   // Handler: Create contributor (optimistic)
   const handleContributorCreate = useCallback(async (name: string) => {
     // Generate temporary ID for optimistic update
@@ -223,6 +224,7 @@ export function QuestionView({
     value: AnswerValue | null
     rationale?: string
     notes?: string
+    strategies?: string
     status: AnswerStatus
   }) => {
     const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
@@ -293,11 +295,11 @@ export function QuestionView({
     }
   }, [])
 
-  // TODO - add the check for strategies
   const shouldTriggerCompleteGuard =
     !isVisuallyMarkedAsComplete &&
     selectedAnswer !== null &&
-    hasRichTextContent(rationale)
+    hasRichTextContent(rationale) &&
+    (strategies ? JSON.parse(strategies).length > 0 : false)
 
   const navigateWithCompleteGuard = useCallback(
     (navigateFn: () => void) => {
@@ -322,9 +324,10 @@ export function QuestionView({
       value,
       rationale,
       notes,
+      strategies,
       status: AnswerStatus.IN_PROGRESS,
     }, true) // Immediate save for answer selection
-  }, [currentQuestion?.id, rationale, notes, save])
+  }, [currentQuestion?.id, rationale, notes, strategies, save])
   
   // Handle rationale change (debounced save)
   const handleRationaleChange = useCallback((value: string) => {
@@ -334,9 +337,10 @@ export function QuestionView({
       value: selectedAnswer,
       rationale: value,
       notes,
+      strategies,
       status: AnswerStatus.IN_PROGRESS,
     }, false) // Debounced save for text input
-  }, [currentQuestion?.id, selectedAnswer, notes, save])
+  }, [currentQuestion?.id, selectedAnswer, notes, strategies, save])
   
   // Handle notes change (debounced save)
   const handleNotesChange = useCallback((value: string) => {
@@ -346,9 +350,23 @@ export function QuestionView({
       value: selectedAnswer,
       rationale,
       notes: value,
+      strategies,
       status: AnswerStatus.IN_PROGRESS,
     }, false) // Debounced save for text input
-  }, [currentQuestion?.id, selectedAnswer, rationale, save])
+  }, [currentQuestion?.id, selectedAnswer, rationale, strategies, save])
+  
+  const handleStrategysChange = useCallback((value: string) => {
+    setStrategies(value)
+
+    save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale,
+      notes,
+      strategies: value,
+      status: AnswerStatus.IN_PROGRESS,
+    }, false) // Debounced save for text input
+  }, [currentQuestion?.id, selectedAnswer, rationale, notes, save])
   
   // Handle question selection
   const executeQuestionSelect = useCallback((code: string) => {
@@ -361,6 +379,7 @@ export function QuestionView({
       setSelectedAnswer(answer?.value || null)
       setRationale(answer?.rationale || '')
       setNotes(answer?.notes || '')
+      setStrategies(answer?.strategies || '[]')
       setIsVisuallyMarkedAsComplete(answer?.status === AnswerStatus.COMPLETE)
       // Contributors are loaded from state, no need to update here
     }
@@ -435,6 +454,7 @@ export function QuestionView({
       value: selectedAnswer,
       rationale,
       notes,
+      strategies,
       status: AnswerStatus.COMPLETE,
     }, true)
   }
@@ -445,7 +465,9 @@ export function QuestionView({
   const totalQuestions = questions.length
   
   const allowMarkAsComplete =
-    selectedAnswer !== null && hasRichTextContent(rationale)
+    selectedAnswer !== null &&
+    hasRichTextContent(rationale) &&
+    (strategies ? JSON.parse(strategies).length > 0 : false)
 
   const markCompleteAndContinue = async () => {
     await save({
@@ -453,6 +475,7 @@ export function QuestionView({
       value: selectedAnswer,
       rationale,
       notes,
+      strategies,
       status: AnswerStatus.COMPLETE,
     }, true)
 
@@ -544,6 +567,8 @@ export function QuestionView({
             rationale={rationale}
             onAnswerChange={handleAnswerChange}
             onRationaleChange={handleRationaleChange}
+            strategies={strategies}
+            onStrategysChange={handleStrategysChange}
             isVisuallyMarkedAsComplete={isVisuallyMarkedAsComplete}
             assessmentId={assessmentId}
             answerId={currentAnswer?.id}
@@ -556,7 +581,7 @@ export function QuestionView({
           {allowMarkAsComplete && !isVisuallyMarkedAsComplete ? (
             <Box
               css={{
-                mt: '8',
+                mt: '20',
                 '& p': {
                   ml: 0,
                 },
@@ -657,6 +682,7 @@ export function QuestionView({
             value: selectedAnswer,
             rationale,
             notes,
+            strategies,
             status: isVisuallyMarkedAsComplete ? AnswerStatus.COMPLETE : AnswerStatus.IN_PROGRESS,
           }, true)
         }}
