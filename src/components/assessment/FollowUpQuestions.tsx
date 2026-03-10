@@ -1,8 +1,6 @@
 'use client'
 
 import type { AnswerValue } from '@/db/entities/Answer.entity'
-import { Button } from '@worldresources/wri-design-systems';
-import { PlusIcon } from '../icons';
 
 interface FollowUpQuestionsProps {
   followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null
