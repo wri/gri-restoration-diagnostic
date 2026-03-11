@@ -114,7 +114,7 @@ export function ContributorsCombobox({
       
       <Combobox.Root
         multiple
-        closeOnSelect={false}
+        closeOnSelect={true}
         openOnClick
         inputValue={inputValue}
         value={selectedContributorIds}
@@ -142,15 +142,10 @@ export function ContributorsCombobox({
               }
             }}
           />
-          <Combobox.Trigger />
         </Combobox.Control>
         
         <Portal>
-          <Combobox.Positioner
-            css={{
-              top: '-22px !important',
-            }}
-          >
+          <Combobox.Positioner>
             <Combobox.Content
               css={{
                 maxHeight: '240px',
@@ -215,7 +210,7 @@ export function ContributorsCombobox({
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
-            marginTop: '0.75rem',
+            marginTop: '12px',
             alignItems: 'flex-start',
           }}
         >

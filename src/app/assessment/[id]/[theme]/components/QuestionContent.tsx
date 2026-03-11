@@ -85,9 +85,6 @@ export function QuestionContent({
             <h3 className="text-xl font-bold text-slate-900 mb-2">
               Rationale
             </h3>
-            <p className="text-sm text-slate-600">
-              Topics to include
-            </p>
           </div>
                 
           {/* Follow-up questions */}
