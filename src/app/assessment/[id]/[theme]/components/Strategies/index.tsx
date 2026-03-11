@@ -72,11 +72,11 @@ const Strategies = ({
           Examples of strategies for this factor:
         </p>
         {question.strategyExamples ? (
-          <Text className='prose prose-sm max-w-none whitespace-pre-wrap text-neutral-800'>
+          <Text className='prose prose-sm max-w-none whitespace-pre-wrap'>
             {question.strategyExamples}
           </Text>
         ) : (
-          <Text className='text-neutral-700 italic'>
+          <Text className='text-slate-400 italic'>
             No example strategies available.
           </Text>
         )}
@@ -123,7 +123,7 @@ const Strategies = ({
               <div className='mb-5'>
                 <p className='text-neutral-900'>
                   Description{' '}
-                  <span className='text-neutral-700'>(Optional)</span>
+                  <span className='text-neutral-700 text-sm'>(optional)</span>
                 </p>
                 <div className='mt-1'>
                   <ChakraRichTextEditor
@@ -138,7 +138,7 @@ const Strategies = ({
               <div className='grid grid-cols-2 gap-5'>
                 <div className='flex flex-col'>
                   <Select
-                    label='Scale (Optional)'
+                    label='Scale (optional)'
                     placeholder='Select scale'
                     items={SCALE_OPTIONS}
                     onChange={(vals) =>
@@ -150,7 +150,7 @@ const Strategies = ({
                 <div className='flex flex-col mt-1.5'>
                   <p className='text-neutral-900'>
                     Deadline{' '}
-                    <span className='text-neutral-700'>(Optional)</span>
+                    <span className='text-neutral-700 text-sm'>(optional)</span>
                   </p>
                   <DatePicker
                     defaultValue={strategy.deadline}
@@ -179,7 +179,7 @@ const Strategies = ({
                 </div>
                 <div className='flex flex-col'>
                   <Select
-                    label='Priority (Optional)'
+                    label='Priority (optional)'
                     placeholder='Select priority'
                     items={PRIORITY_OPTIONS}
                     onChange={(vals) =>

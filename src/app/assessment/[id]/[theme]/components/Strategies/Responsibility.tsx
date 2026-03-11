@@ -134,9 +134,7 @@ export function Responsibility({
 
   return (
     <div>
-      <p className='text-neutral-900 mb-1.5'>
-        Responsibility <span className='text-neutral-700'>(Optional)</span>
-      </p>
+      <p className='text-neutral-900 mb-1.5'>Responsibility (optional)</p>
 
       <Combobox.Root
         multiple

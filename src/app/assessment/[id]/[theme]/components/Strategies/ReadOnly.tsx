@@ -6,7 +6,7 @@ import {
   Tag,
 } from '@worldresources/wri-design-systems'
 import { useState } from 'react'
-import { formatDeadline, sortStrategies } from './utils'
+import { formatDeadline } from './utils'
 import StrategiesReadOnlyModal from './ReadOnlyModal'
 
 const StrategiesReadOnly = ({
@@ -100,9 +100,13 @@ const StrategiesReadOnly = ({
             )
           }}
           onSortColumn={({ key, order }) => {
-            strategiesData.sort((a, b) =>
-              sortStrategies(a, b, key as string, order),
-            )
+            strategiesData.sort((a, b) => {
+              const aValue = a[key as keyof Strategy] || ''
+              const bValue = b[key as keyof Strategy] || ''
+              return order === 'asc'
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue)
+            })
           }}
         />
       </div>

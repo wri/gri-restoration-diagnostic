@@ -58,7 +58,7 @@ const StrategiesAboutModal = ({
           <div className='mb-3'>
             <p className='font-bold mb-1'>Prioritizing strategies</p>
             <p>
-              Because resources are limited, strategies should be prioritized.
+              Because resources are limited, strategies should be prioritised.
               Consider the urgency of the gap, dependencies between actions (for
               example land tenure before incentives), feasibility, cost, time to
               impact, and the scale of implementation.
@@ -71,7 +71,7 @@ const StrategiesAboutModal = ({
             </p>
           </div>
           <InlineMessage
-            label='Important note'
+            label='Importat note'
             caption={
               <div>
                 <p className='mb-2'>
@@ -81,16 +81,15 @@ const StrategiesAboutModal = ({
                   Results should be validated with relevant stakeholders.
                 </p>
                 <p>
-                  For further guidance, consult the{' '}
+                  For further guidance, consult the ROAM methodology or visit{' '}
                   <Link
-                    href='https://www.wri.org/research/restoration-opportunities-assessment-methodology-roam'
+                    href='www.forestlandscaperestoration.org'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='underline'
                   >
-                    Restoration Opportunities Assessment Methodology (ROAM)
+                    www.forestlandscaperestoration.org
                   </Link>
-                  .
                 </p>
               </div>
             }
