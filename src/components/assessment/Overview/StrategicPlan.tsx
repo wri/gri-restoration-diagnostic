@@ -9,7 +9,7 @@ import {
   TableRow,
   Tag,
 } from '@worldresources/wri-design-systems'
-import { Strategy } from '@/types/answer.types'
+import { PlainContributor, Strategy } from '@/types/answer.types'
 import { formatDeadline } from '@/app/assessment/[id]/[theme]/components/Strategies/utils'
 import { useState } from 'react'
 import StrategiesReadOnlyModal from '@/app/assessment/[id]/[theme]/components/Strategies/ReadOnlyModal'
@@ -18,6 +18,7 @@ import Link from 'next/link'
 interface StrategicPlanProps {
   assessmentId: string
   questions: Questions[]
+  allContributors: PlainContributor[]
 }
 
 interface Data {
@@ -29,10 +30,15 @@ interface Data {
   description: string
   scale: string
   deadline: string
+  responsibility: string
   priority: string
 }
 
-const StrategicPlan = ({ assessmentId, questions }: StrategicPlanProps) => {
+const StrategicPlan = ({
+  assessmentId,
+  questions,
+  allContributors,
+}: StrategicPlanProps) => {
   const [strategyDetails, setStrategyDetails] = useState<Data | undefined>()
 
   const orderedQuestions = questions
@@ -80,59 +86,79 @@ const StrategicPlan = ({ assessmentId, questions }: StrategicPlanProps) => {
                 { key: 'scale', label: 'Scale', sortable: true },
               ]}
               data={data}
-              renderRow={(row: Data) => (
-                <TableRow key={row.id}>
-                  <TableCell>
-                    <div>
-                      <p
-                        className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
-                        onClick={() => setStrategyDetails(row)}
+              renderRow={(row: Data) => {
+                const responsibilities = row.responsibility
+                  ? JSON.parse(row.responsibility)
+                  : []
+                const selectedContributors = allContributors.filter((c) =>
+                  responsibilities.includes(c.id),
+                )
+
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      <div>
+                        <p
+                          className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
+                          onClick={() => setStrategyDetails(row)}
+                        >
+                          {row.title || 'No title'}
+                        </p>
+                        <div className='flex gap-2 items-center'>
+                          {row.deadline ? (
+                            <p className='text-neutral-700 text-xs'>
+                              Deadline {formatDeadline(row.deadline)}
+                            </p>
+                          ) : (
+                            ''
+                          )}
+
+                          {row.responsibility ? (
+                            <p className='text-neutral-700 text-xs'>
+                              Owned by{' '}
+                              {selectedContributors
+                                .map((c) => c.name)
+                                .join(', ')}
+                            </p>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className='w-[300px]'>
+                      <Link
+                        href={`/assessment/${assessmentId}/${row.theme.toLowerCase()}?questionCode=${row.questionCode}`}
+                        className='text-neutral-800 underline decoration-dotted cursor-pointer'
                       >
-                        {row.title || 'No title'}
-                      </p>
-                      <div className='flex gap-2 items-center'>
-                        {row.deadline ? (
-                          <p className='text-neutral-700 text-xs'>
-                            Deadline {formatDeadline(row.deadline)}
-                          </p>
+                        {row.keySuccessFactor}
+                      </Link>
+                    </TableCell>
+                    <TableCell className='w-28'>
+                      <div className='flex'>
+                        {row.priority ? (
+                          <Tag
+                            label={
+                              row.priority.charAt(0).toUpperCase() +
+                              row.priority.slice(1)
+                            }
+                            variant={
+                              row.priority === 'low'
+                                ? 'success'
+                                : row.priority === 'medium'
+                                  ? 'warning'
+                                  : 'error'
+                            }
+                          />
                         ) : (
-                          ''
+                          '--'
                         )}
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className='w-[300px]'>
-                    <Link
-                      href={`/assessment/${assessmentId}/${row.theme.toLowerCase()}?questionCode=${row.questionCode}`}
-                      className='text-neutral-800 underline decoration-dotted cursor-pointer'
-                    >
-                      {row.keySuccessFactor}
-                    </Link>
-                  </TableCell>
-                  <TableCell className='w-28'>
-                    <div className='flex'>
-                      {row.priority ? (
-                        <Tag
-                          label={
-                            row.priority.charAt(0).toUpperCase() +
-                            row.priority.slice(1)
-                          }
-                          variant={
-                            row.priority === 'low'
-                              ? 'success'
-                              : row.priority === 'medium'
-                                ? 'warning'
-                                : 'error'
-                          }
-                        />
-                      ) : (
-                        '--'
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className='w-56'>{row.scale || '--'}</TableCell>
-                </TableRow>
-              )}
+                    </TableCell>
+                    <TableCell className='w-56'>{row.scale || '--'}</TableCell>
+                  </TableRow>
+                )
+              }}
               onSortColumn={({ key, order }) => {
                 data.sort((a, b) => {
                   const aValue = a[key as keyof Data] || ''
@@ -160,6 +186,7 @@ const StrategicPlan = ({ assessmentId, questions }: StrategicPlanProps) => {
         strategy={strategyDetails}
         keySuccessFactor={strategyDetails?.keySuccessFactor || ''}
         onClose={() => setStrategyDetails(undefined)}
+        allContributors={allContributors}
       />
     </>
   )

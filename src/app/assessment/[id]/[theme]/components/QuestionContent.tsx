@@ -4,12 +4,13 @@ import { AnswerOptions } from '@/components/assessment/AnswerOptions'
 import { FollowUpQuestions } from '@/components/assessment/FollowUpQuestions'
 import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEditor'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
-import type { PlainQuestion, PlainContributor } from './ThemePageLayout'
+import type { PlainQuestion } from './ThemePageLayout'
 import { ContributorsCombobox } from '@/components/assessment/ContributorsCombobox'
 import AnswerOptionsResponse from '@/components/assessment/AnswerOptionsResponse'
 import { hasRichTextContent } from '@/utils/validation'
 import Strategies from './Strategies'
 import StrategiesReadOnly from './Strategies/ReadOnly'
+import { PlainContributor } from '@/types/answer.types'
 
 interface QuestionContentProps {
   question: PlainQuestion
@@ -24,6 +25,7 @@ interface QuestionContentProps {
   allContributors: PlainContributor[]
   onContributorsChange: (contributorIds: string[]) => void
   onContributorCreate: (name: string) => Promise<PlainContributor>
+  assessmentId: string
 }
 
 export function QuestionContent({
@@ -39,6 +41,7 @@ export function QuestionContent({
   allContributors,
   onContributorsChange,
   onContributorCreate,
+  assessmentId,
 }: QuestionContentProps) {
   const hideRationale = selectedAnswer === 'na'
   
@@ -119,6 +122,8 @@ export function QuestionContent({
           question={question}
           strategies={strategies}
           onStrategysChange={onStrategysChange}
+          allContributors={allContributors}
+          assessmentId={assessmentId}
         />
       )}
 
@@ -154,6 +159,7 @@ export function QuestionContent({
           <StrategiesReadOnly
             strategies={strategies}
             keySuccessFactor={question.keySuccessFactor}
+            allContributors={allContributors}
           />
         )}
     </section>

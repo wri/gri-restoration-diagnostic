@@ -8,16 +8,21 @@ import DatePicker from '@/components/ui/DatePicker'
 import clsx from 'clsx'
 import { PRIORITY_OPTIONS, SCALE_OPTIONS } from '@/constants'
 import StrategiesAboutModal from './AboutModal'
-import { Strategy } from '@/types/answer.types'
+import { PlainContributor, Strategy } from '@/types/answer.types'
+import { Responsibility } from './Responsibility'
 
 const Strategies = ({
   question,
   strategies,
   onStrategysChange,
+  allContributors,
+  assessmentId,
 }: {
   question: PlainQuestion
   strategies: string
   onStrategysChange: (value: string) => void
+  allContributors: PlainContributor[]
+  assessmentId: string
 }) => {
   const [showAboutModal, setShowAboutModal] = useState(false)
   const newStrategies: Strategy[] = strategies ? JSON.parse(strategies) : []
@@ -31,6 +36,7 @@ const Strategies = ({
         description: '',
         scale: '',
         deadline: '',
+        responsibility: '',
         priority: '',
       },
     ]
@@ -151,6 +157,24 @@ const Strategies = ({
                     onChange={(value: string) =>
                       updateStrategy(strategy.id, 'deadline', value)
                     }
+                  />
+                </div>
+                <div>
+                  <Responsibility
+                    selectedContributorIds={
+                      strategy.responsibility
+                        ? JSON.parse(strategy.responsibility)
+                        : []
+                    }
+                    allContributors={allContributors}
+                    onContributorsChange={(ids) =>
+                      updateStrategy(
+                        strategy.id,
+                        'responsibility',
+                        JSON.stringify(ids),
+                      )
+                    }
+                    assessmentId={assessmentId}
                   />
                 </div>
                 <div className='flex flex-col'>

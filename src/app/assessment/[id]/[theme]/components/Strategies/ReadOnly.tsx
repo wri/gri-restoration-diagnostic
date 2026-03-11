@@ -1,4 +1,4 @@
-import { Strategy } from '@/types/answer.types'
+import { PlainContributor, Strategy } from '@/types/answer.types'
 import {
   Table,
   TableCell,
@@ -12,9 +12,11 @@ import StrategiesReadOnlyModal from './ReadOnlyModal'
 const StrategiesReadOnly = ({
   strategies,
   keySuccessFactor,
+  allContributors,
 }: {
   strategies: string
   keySuccessFactor: string
+  allContributors: PlainContributor[]
 }) => {
   const [strategyDetails, setStrategyDetails] = useState<Strategy | undefined>()
 
@@ -34,51 +36,69 @@ const StrategiesReadOnly = ({
             { key: 'scale', label: 'Scale', sortable: true },
           ]}
           data={strategiesData}
-          renderRow={(row: Strategy) => (
-            <TableRow key={row.id}>
-              <TableCell>
-                <div>
-                  <p
-                    className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
-                    onClick={() => setStrategyDetails(row)}
-                  >
-                    {row.title || 'No title'}
-                  </p>
-                  <div className='flex gap-2 items-center'>
-                    {row.deadline ? (
-                      <p className='text-neutral-700 text-xs'>
-                        Due {formatDeadline(row.deadline)}
-                      </p>
+          renderRow={(row: Strategy) => {
+            const responsibilities = row.responsibility
+              ? JSON.parse(row.responsibility)
+              : []
+            const selectedContributors = allContributors.filter((c) =>
+              responsibilities.includes(c.id),
+            )
+
+            return (
+              <TableRow key={row.id}>
+                <TableCell>
+                  <div>
+                    <p
+                      className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
+                      onClick={() => setStrategyDetails(row)}
+                    >
+                      {row.title || 'No title'}
+                    </p>
+                    <div className='flex gap-2 items-center'>
+                      {row.deadline ? (
+                        <p className='text-neutral-700 text-xs'>
+                          Due {formatDeadline(row.deadline)}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+
+                      {row.responsibility ? (
+                        <p className='text-neutral-700 text-xs'>
+                          Owned by{' '}
+                          {selectedContributors.map((c) => c.name).join(', ')}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className='w-28'>
+                  <div className='flex'>
+                    {row.priority ? (
+                      <Tag
+                        label={
+                          row.priority.charAt(0).toUpperCase() +
+                          row.priority.slice(1)
+                        }
+                        variant={
+                          row.priority === 'low'
+                            ? 'success'
+                            : row.priority === 'medium'
+                              ? 'warning'
+                              : 'error'
+                        }
+                      />
                     ) : (
-                      ''
+                      '--'
                     )}
                   </div>
-                </div>
-              </TableCell>
-              <TableCell className='w-28'>
-                <div className='flex'>
-                  {row.priority ? (
-                    <Tag
-                      label={
-                        row.priority.charAt(0).toUpperCase() +
-                        row.priority.slice(1)
-                      }
-                      variant={
-                        row.priority === 'low'
-                          ? 'success'
-                          : row.priority === 'medium'
-                            ? 'warning'
-                            : 'error'
-                      }
-                    />
-                  ) : (
-                    '--'
-                  )}
-                </div>
-              </TableCell>
-              <TableCell className='w-56'>{row.scale || '--'}</TableCell>
-            </TableRow>
-          )}
+                </TableCell>
+                <TableCell className='w-56'>{row.scale || '--'}</TableCell>
+              </TableRow>
+            )
+          }}
           onSortColumn={({ key, order }) => {
             strategiesData.sort((a, b) => {
               const aValue = a[key as keyof Strategy] || ''
@@ -95,6 +115,7 @@ const StrategiesReadOnly = ({
         strategy={strategyDetails}
         keySuccessFactor={keySuccessFactor}
         onClose={() => setStrategyDetails(undefined)}
+        allContributors={allContributors}
       />
     </>
   )

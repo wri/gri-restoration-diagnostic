@@ -10,5 +10,13 @@ export type Strategy = {
   description: string
   scale: string
   deadline: string
+  responsibility: string
   priority: string
+}
+
+export interface PlainContributor {
+  id: string
+  name: string
+  assessmentId: string
+  createdAt: Date | string
 }

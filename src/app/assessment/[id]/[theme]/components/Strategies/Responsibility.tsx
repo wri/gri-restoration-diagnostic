@@ -9,47 +9,50 @@ interface ContributorsComboboxProps {
   selectedContributorIds: string[]
   allContributors: PlainContributor[]
   onContributorsChange: (contributorIds: string[]) => void
-  onContributorCreate: (name: string) => Promise<PlainContributor>
   disabled?: boolean
+  assessmentId: string
 }
 
-export function ContributorsCombobox({
+export function Responsibility({
   selectedContributorIds,
   allContributors,
   onContributorsChange,
-  onContributorCreate,
   disabled = false,
+  assessmentId,
 }: ContributorsComboboxProps) {
   const [inputValue, setInputValue] = useState('')
-  
-  const selectedContributors = allContributors.filter(c => 
-    selectedContributorIds.includes(c.id)
+  const [localAllContributors, setLocalAllContributors] =
+    useState(allContributors)
+
+  const selectedContributors = localAllContributors.filter((c) =>
+    selectedContributorIds.includes(c.id),
   )
-  
+
   // Filter available contributors by input (exclude already selected)
   const filteredContributors = useMemo(() => {
-    return allContributors.filter(c =>
-      c.name.toLowerCase().includes(inputValue.toLowerCase()) &&
-      !selectedContributorIds.includes(c.id)
+    return localAllContributors.filter(
+      (c) =>
+        c.name.toLowerCase().includes(inputValue.toLowerCase()) &&
+        !selectedContributorIds.includes(c.id),
     )
-  }, [allContributors, inputValue, selectedContributorIds])
-  
+  }, [localAllContributors, inputValue, selectedContributorIds])
+
   // Check if input matches any existing contributor exactly
   const exactMatch = useMemo(() => {
-    return allContributors.find(c => 
-      c.name.toLowerCase() === inputValue.trim().toLowerCase()
+    return localAllContributors.find(
+      (c) => c.name.toLowerCase() === inputValue.trim().toLowerCase(),
     )
-  }, [allContributors, inputValue])
-  
+  }, [localAllContributors, inputValue])
+
   const showCreateOption = inputValue.trim() !== '' && !exactMatch
-  
+
   // Build collection items for Combobox
   const collectionItems = useMemo(() => {
-    const items = filteredContributors.map(c => ({
+    const items = filteredContributors.map((c) => ({
       label: c.name,
       value: c.id,
     }))
-    
+
     // Add create option as synthetic item at the beginning
     if (showCreateOption) {
       items.unshift({
@@ -57,64 +60,85 @@ export function ContributorsCombobox({
         value: 'CREATE_NEW',
       })
     }
-    
+
     return items
   }, [filteredContributors, showCreateOption, inputValue])
-  
+
   const collection = useMemo(
     () => createListCollection({ items: collectionItems }),
-    [collectionItems]
+    [collectionItems],
   )
-  
+
   const handleDeselect = (contributorId: string) => {
     onContributorsChange(
-      selectedContributorIds.filter(id => id !== contributorId)
+      selectedContributorIds.filter((id) => id !== contributorId),
     )
   }
-  
+
   const handleCreate = async () => {
     if (!inputValue.trim()) return
-    
+
+    const name = inputValue.trim()
+    const tempId = crypto.randomUUID()
+    const tempContributor: PlainContributor = {
+      id: tempId,
+      name,
+      assessmentId,
+      createdAt: new Date().toISOString(),
+    }
+
+    setLocalAllContributors((prev) => [...prev, tempContributor])
+
     try {
-      await onContributorCreate(inputValue.trim())
-      // Contributor is already added optimistically, just clear input
+      const response = await fetch(
+        `/api/assessments/${assessmentId}/contributors`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        },
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to create contributor')
+      }
+
+      const { contributor } = await response.json()
+
+      onContributorsChange([...selectedContributorIds, contributor.id])
       setInputValue('')
+
+      setLocalAllContributors((prev) =>
+        prev.map((c) => (c.id === tempId ? contributor : c)),
+      )
     } catch (error) {
       console.error('Failed to create contributor:', error)
       // Error already tracked in parent component
     }
+
+    return name
   }
-  
-  const handleValueChange = (details: { value: string[] }) => {
+
+  const handleValueChange = async (details: { value: string[] }) => {
     // Check if CREATE_NEW was selected
     if (details.value.includes('CREATE_NEW')) {
-      handleCreate() // Fire async, creates and auto-selects in parent
-      // Don't call onContributorsChange - the create handler already updates selection
-      return
+      return await handleCreate() // Fire async, creates and auto-selects in parent
     }
-    
-    // Normal selection - parent now handles answer creation if needed
+
     onContributorsChange(details.value)
   }
-  
+
   const handleInputValueChange = (details: { inputValue: string }) => {
     setInputValue(details.inputValue)
   }
-  
+
   return (
     <div>
-      <div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">
-          Contributors
-        </h3>
-        <p className="text-sm text-slate-600 mb-4">
-          Add the full name of everyone involved in answering this question.
-        </p>
-      </div>
-      
+      <p className='text-neutral-900 mb-1.5'>Responsibility (optional)</p>
+
       <Combobox.Root
         multiple
-        closeOnSelect={false}
+        closeOnSelect
         openOnClick
         inputValue={inputValue}
         value={selectedContributorIds}
@@ -125,10 +149,10 @@ export function ContributorsCombobox({
       >
         <Combobox.Control>
           <Combobox.Input
-            placeholder="Type to search or add contributor"
+            placeholder='Type to search or add responsibility'
             css={{
               backgroundColor: 'white',
-              borderColor: 'neutral.300',
+              borderColor: 'neutral.700',
               borderRadius: '4px',
               padding: '8px 12px',
               fontSize: '14px',
@@ -139,12 +163,12 @@ export function ContributorsCombobox({
               '&:disabled': {
                 backgroundColor: 'neutral.100',
                 cursor: 'not-allowed',
-              }
+              },
             }}
           />
           <Combobox.Trigger />
         </Combobox.Control>
-        
+
         <Portal>
           <Combobox.Positioner
             css={{
@@ -174,7 +198,9 @@ export function ContributorsCombobox({
                         padding: '8px 12px',
                         cursor: 'pointer',
                         fontSize: '14px',
-                        color: isCreateItem ? getThemedColor('neutral', 600) : 'slate.900',
+                        color: isCreateItem
+                          ? getThemedColor('neutral', 600)
+                          : 'slate.900',
                         fontWeight: isCreateItem ? '500' : '400',
                         borderBottom: isCreateItem ? '1px solid' : 'none',
                         borderColor: isCreateItem ? 'slate.200' : 'transparent',
@@ -207,28 +233,29 @@ export function ContributorsCombobox({
           </Combobox.Positioner>
         </Portal>
       </Combobox.Root>
-      
+
       {/* Selected contributors as tags - Column layout */}
       {selectedContributors.length > 0 && (
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
             gap: '0.5rem',
-            marginTop: '0.75rem',
-            alignItems: 'flex-start',
+            alignItems: 'center',
+            flexWrap: 'wrap',
           }}
         >
-          {selectedContributors.map((contributor) => (
-            <Tag
-              closable
-              key={contributor.id}
-              label={contributor.name}
-              variant="info-white"
-              size="default"
-              onClose={() => handleDeselect(contributor.id)}
-            />
-          ))}
+          {selectedContributors
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((contributor) => (
+              <Tag
+                closable
+                key={contributor.id}
+                label={contributor.name}
+                variant='info-white'
+                size='default'
+                onClose={() => handleDeselect(contributor.id)}
+              />
+            ))}
         </div>
       )}
     </div>

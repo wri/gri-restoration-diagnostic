@@ -9,11 +9,11 @@ import { useAutoSave, type AutoSaveStatus } from '@/hooks/useAutoSave'
 import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, GoBackIcon } from '@/components/icons'
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
-import type { PlainQuestion, PlainAnswer, PlainContributor } from './ThemePageLayout'
+import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Button, InlineMessage, Modal, Tag } from '@worldresources/wri-design-systems'
 import { Box } from '@chakra-ui/react'
 import { FactorPaginationContainer } from '@/components/assessment/FactorPaginationContainer'
-import { AnswerStatus } from '@/types/answer.types'
+import { AnswerStatus, PlainContributor } from '@/types/answer.types'
 import { hasRichTextContent } from '@/utils/validation'
 
 interface QuestionViewProps {
@@ -147,7 +147,7 @@ export function QuestionView({
   ])
   
   // Handler: Create contributor (optimistic)
-  const handleContributorCreate = useCallback(async (name: string) => {
+  const handleContributorCreate = useCallback(async (name: string) => { 
     // Ensure an answer exists first
     let answerToUse = currentAnswer
     if (!answerToUse) {
@@ -677,6 +677,7 @@ export function QuestionView({
             allContributors={allContributors}
             onContributorsChange={handleContributorsChange}
             onContributorCreate={handleContributorCreate}
+            assessmentId={assessmentId}
           />
 
           {allowMarkAsComplete && !isVisuallyMarkedAsComplete ? (

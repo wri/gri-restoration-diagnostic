@@ -5,7 +5,7 @@ import { SubNavbar } from './SubNavbar'
 import { QuestionView } from './QuestionView'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { Theme } from '@/db/entities/Question.entity'
-import { AnswerStatus } from '@/types/answer.types'
+import { AnswerStatus, PlainContributor } from '@/types/answer.types'
 import type { AutoSaveStatus } from '@/hooks/useAutoSave'
 
 // Plain object interfaces for data passed from server
@@ -37,13 +37,6 @@ export interface PlainAnswer {
   updatedAt: Date
   status: AnswerStatus
   strategies: string | null
-}
-
-export interface PlainContributor {
-  id: string
-  name: string
-  assessmentId: string
-  createdAt: Date | string
 }
 
 interface ThemePageLayoutProps {
