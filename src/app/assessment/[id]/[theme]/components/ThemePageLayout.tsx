@@ -56,7 +56,7 @@ interface ThemePageLayoutProps {
   initialContributorsByAnswer: Array<[string, string[]]>
 }
 
-const NAVBAR_RENDERED_HEIGHT = 50;
+const NAVBAR_RENDERED_HEIGHT = 47
 
 export function ThemePageLayout({
   assessmentId,
@@ -81,7 +81,7 @@ export function ThemePageLayout({
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > NAVBAR_RENDERED_HEIGHT / 2)
+      setIsScrolled(window.scrollY > NAVBAR_RENDERED_HEIGHT)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -91,11 +91,11 @@ export function ThemePageLayout({
   }, [])
 
   return (
-    <div className={`min-h-screen flex flex-col bg-background-light gradient-bg duration-100 ${isScrolled ? '' : 'pt-[47px]'} `}>
+    <div className={`min-h-screen flex flex-col bg-background-light gradient-bg duration-100 transition-[padding] ${isScrolled ? '' : 'pt-[47px]'} `}>
       
       {/* Sub-navbar - Custom */}
       <header
-        className={`border-b border-slate-200 sticky bg-white z-40 transition-all duration-100 ${isScrolled ? 'top-0' : 'top-[47px]'}`}
+        className={`border-b border-slate-200 sticky bg-white z-40 transition-all duration-100 transition-[top] ${isScrolled ? 'top-0' : 'top-[47px]'}`}
       >
         <SubNavbar 
           saveStatus={saveStatus} 
