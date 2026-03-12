@@ -329,7 +329,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.gender}
                         render={({ field }) => (
                           <Select
-                            label='Gender (optional)'
+                            label='Gender (Optional)'
                             placeholder='Please select'
                             items={genderOptions}
                             value={field.value ? [field.value] : []}
@@ -345,7 +345,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.ageRange}
                         render={({ field }) => (
                           <Select
-                            label='Age range (optional)'
+                            label='Age range (Optional)'
                             placeholder='Please select'
                             items={ageRangeOptions}
                             value={field.value ? [field.value] : []}
@@ -361,7 +361,7 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.identity}
                         render={({ field }) => (
                           <RadioList
-                            label='Does the diagnostic lead identify as part of any of the following groups? (optional)'
+                            label='Does the diagnostic lead identify as part of any of the following groups? (Optional)'
                             name='identity'
                             radios={identityOptions}
                             defaultValue={field.value}
