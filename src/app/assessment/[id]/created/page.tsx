@@ -2,7 +2,7 @@
 
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Button, TextInput, Modal } from '@worldresources/wri-design-systems';
+import { Button, TextInput, Modal, Checkbox } from '@worldresources/wri-design-systems';
 import { CopyIcon } from '@/components/icons';
 import './styles.css';
 
@@ -17,6 +17,7 @@ export default function AssessmentCreatedPage() {
   const [passwordError, setPasswordError] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [passwordCopied, setPasswordCopied] = useState(false);
+  const [bothCopied, setBothCopied] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
@@ -127,6 +128,34 @@ export default function AssessmentCreatedPage() {
     }
   };
 
+  const handleCopyBoth = async () => {
+    const textToCopy = `${assessmentLink}\n${password}`;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(textToCopy);
+        setBothCopied(true);
+        setTimeout(() => setBothCopied(false), 2000);
+      } else {
+        // Fallback for browsers without Clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        const success = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!success) {
+          throw new Error('execCommand copy failed');
+        }
+        setBothCopied(true);
+        setTimeout(() => setBothCopied(false), 2000);
+      }
+    } catch (error) {
+      console.error('Failed to copy link and password:', error);
+    }
+  };
+
   const handleStartAssessment = () => {
     router.push(`/assessment/${assessmentId}/preparation`);
   };
@@ -161,8 +190,7 @@ export default function AssessmentCreatedPage() {
   return (
     <Modal
       open={true}
-      onClose={() => {}} // Empty function - blocking modal
-      size="xlarge"
+      size="medium"
       header="Save your access details"
       blocking={true}
       content={
@@ -172,59 +200,70 @@ export default function AssessmentCreatedPage() {
             you&apos;ll need to save both the diagnostic link and password.
           </p>
 
-          {/* diagnostic Link */}
-          <div className="flex gap-3 items-end">
-            <div className="flex-1 space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Assessment link</label>
-              <TextInput
-                value={assessmentLink}
-                disabled
-              />
-            </div>
-            <Button
-              label={linkCopied ? 'Copied!' : 'Copy'}
-              variant="secondary"
-              size="default"
-              leftIcon={<CopyIcon className="w-5 h-5" />}
-              onClick={handleCopyLink}
-            />
-          </div>
+          {/* input box */}
+          <div className="p-4 space-y-4 border border-slate-300 rounded-md">
+              {/* diagnostic Link */}
+              <div className="flex gap-1 items-end">
+                <div className="flex-1 space-y-0">
+                  <label className="block text-sm text-neutral-900">Diagnostic link</label>
+                  <TextInput
+                    value={assessmentLink}
+                    disabled
+                  />
+                </div>
+                <Button
+                  variant="borderless"
+                  size="default"
+                  padding="0 !important"
+                  leftIcon={<CopyIcon className="w-5 h-5" />}
+                  onClick={handleCopyLink}
+                />
+              </div>
 
-          {/* Password */}
-          <div className="flex gap-3 items-end">
-            <div className="flex-1 space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Password</label>
-              <TextInput
-                value={password}
-                disabled
-              />
-            </div>
-            <Button
-              label={passwordCopied ? 'Copied!' : 'Copy'}
-              variant="secondary"
-              size="default"
-              leftIcon={<CopyIcon className="w-5 h-5" />}
-              onClick={handleCopyPassword}
-            />
+              {/* Password */}
+              <div className="flex gap-1 items-end">
+                <div className="flex-1 space-y-0">
+                  <label className="block text-sm text-neutral-900">Password</label>
+                  <TextInput
+                    value={password}
+                    disabled
+                  />
+                </div>
+                <Button
+                  variant="borderless"
+                  size="default"
+                  padding="0 !important"
+                  leftIcon={<CopyIcon className="w-5 h-5" />}
+                  onClick={handleCopyPassword}
+                />
+              </div>
+
+              {/* Copy Both Button */}
+              <div className="pt-2">
+                <Button
+                  variant="secondary"
+                  leftIcon={<CopyIcon className="w-4 h-4" />}
+                  label={bothCopied ? 'Copied!' : 'Copy link & password'}
+                  onClick={handleCopyBoth}
+                />
+              </div>
           </div>
 
           {/* Confirmation Checkbox */}
-          <label className="flex items-start gap-3 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 cursor-pointer hover:border-primary-300 transition-all">
-            <input
-              type="checkbox"
+          <label className="flex items-start transition-all">
+            <Checkbox
+              name="Checkbox"
+              onCheckedChange={({checked}) => setConfirmed(Boolean(checked))}
               checked={confirmed}
-              onChange={(e) => setConfirmed(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-            />
-            <span className="text-sm text-gray-700 leading-relaxed font-medium">
+            >
               I&apos;ve saved the link and password securely, and understand that if I lose these I will not be able to access the assessment.
-            </span>
+            </Checkbox>
           </label>
 
           {/* Start Button */}
-          <div className="pt-4">
+          <div className="pt-2">
             <Button
-              label="Start assessment"
+              label="Continue"
               variant="primary"
               size="default"
               onClick={handleStartAssessment}
