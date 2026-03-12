@@ -84,7 +84,7 @@ export function ThemePageLayout({
       setIsScrolled(window.scrollY > NAVBAR_RENDERED_HEIGHT)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
