@@ -10,8 +10,8 @@ import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, GoBackIcon
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
-import { Button, InlineMessage, Modal, Tag } from '@worldresources/wri-design-systems'
-import { Box } from '@chakra-ui/react'
+import { Button, getThemedColor, InlineMessage, Modal } from '@worldresources/wri-design-systems'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import { FactorPaginationContainer } from '@/components/assessment/FactorPaginationContainer'
 import { AnswerStatus, PlainContributor } from '@/types/answer.types'
 import { hasRichTextContent } from '@/utils/validation'
@@ -628,23 +628,24 @@ export function QuestionView({
             {/* Right side: Status indicator + Mark complete/Edit factor button */}
             <div className="flex items-center gap-3">
               {/* Status Tag indicator */}
-              {currentAnswer?.status === AnswerStatus.COMPLETE ? (
-                <Tag 
-                  label='Complete' 
-                  variant='success' 
-                  icon={<CheckCircleIcon />} 
-                />
-              ) : currentAnswer?.status === AnswerStatus.IN_PROGRESS ? (
-                <div className="flex items-center gap-2 px-3 py-1">
-                  <InProgressIcon className="w-4 h-4" />
-                  <span className="text-sm text-neutral-700">In progress</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 px-3 py-1">
-                  <NotStartedIcon className="w-4 h-4" />
-                  <span className="text-sm text-neutral-700">Not started</span>
-                </div>
-              )}
+              <Flex align="center" justify="center" gap={2} px={3} py={1}>
+                {currentAnswer?.status === AnswerStatus.COMPLETE ? (
+                  <>
+                    <CheckCircleIcon css={{ width: '12px', height: '12px' }} />
+                    <Text fontSize="sm" color={getThemedColor("success", 900)}>Complete</Text>
+                  </>
+                ) : currentAnswer?.status === AnswerStatus.IN_PROGRESS ? (
+                  <>
+                    <InProgressIcon css={{ width: '12px', height: '12px' }} />
+                    <Text fontSize="sm" color={getThemedColor("primary", 800)}>In progress</Text>
+                  </>
+                ) : (
+                  <>
+                    <NotStartedIcon css={{ width: '12px', height: '12px' }} />
+                    <Text fontSize="sm" color={getThemedColor("neutral", 800)}>Not started</Text>
+                  </>
+                )}
+              </Flex>
               
               {/* Mark complete or Edit factor button */}
               {isVisuallyMarkedAsComplete ? (
