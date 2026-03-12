@@ -5,8 +5,11 @@ import Script from 'next/script';
 export function HotjarScript() {
   // More: https://gfw.atlassian.net/browse/RD-75
   // Production: 6664922, QA: 6664921
-  const environment = process.env.NODE_ENV;
-  const hjid = environment === 'production' ? '6664922' : '6664921';
+  const environment =
+    process.env.NEXT_PUBLIC_ENVIRONMENT || process.env.NODE_ENV || 'production';
+  const hjid =
+    process.env.NEXT_PUBLIC_HOTJAR_SITE_ID ||
+    (environment === 'production' ? '6664922' : '6664921');
 
   return (
     <Script
