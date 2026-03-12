@@ -6,7 +6,7 @@ import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
 import { GuidanceSidebar } from './GuidanceSidebar'
 import { useAutoSave, type AutoSaveStatus } from '@/hooks/useAutoSave'
-import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, GoBackIcon, CheckCircleIcon, InProgressIcon, NotStartedIcon } from '@/components/icons'
+import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, CheckCircleIcon, InProgressIcon, NotStartedIcon, EditIcon } from '@/components/icons'
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
@@ -650,8 +650,8 @@ export function QuestionView({
               {/* Mark complete or Edit factor button */}
               {isVisuallyMarkedAsComplete ? (
                 <Button
-                  leftIcon={<GoBackIcon />}
-                  variant='borderless'
+                  leftIcon={<EditIcon />}
+                  variant='secondary'
                   size='small'
                   onClick={() => setIsVisuallyMarkedAsComplete(false)}
                   label='Edit factor'
@@ -718,7 +718,7 @@ export function QuestionView({
                 label='This factor is marked as complete.'
                 size='full-width'
                 onActionClick={() => setIsVisuallyMarkedAsComplete(false)}
-                buttonLeftIcon={<GoBackIcon />}
+                buttonLeftIcon={<EditIcon />}
                 variant='success'
               />
             </div>
