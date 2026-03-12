@@ -100,7 +100,7 @@ export function FactorPaginationContainer({
       }}
     >
       {/* Previous Factor Card */}
-      {!hasPrevInTheme && !canGoPrevTheme ? <div>&nbsp;</div> : (<PaginationCard
+      {!hasPrevInTheme && !canGoPrevTheme ? <div aria-hidden>&nbsp;</div> : (<PaginationCard
         direction="left"
         label="Previous factor"
         factorName={prevFactorName}
@@ -119,7 +119,7 @@ export function FactorPaginationContainer({
       />)}
       
       {/* Next Factor Card */}
-      {!hasNextInTheme && !canGoNextTheme ? <div>&nbsp;</div> : (
+      {!hasNextInTheme && !canGoNextTheme ? <div aria-hidden>&nbsp;</div> : (
         <PaginationCard
           direction="right"
           label="Next factor"

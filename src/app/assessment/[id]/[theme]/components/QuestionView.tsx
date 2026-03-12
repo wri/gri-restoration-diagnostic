@@ -628,29 +628,27 @@ export function QuestionView({
             {/* Right side: Status indicator + Mark complete/Edit factor button */}
             <div className="flex items-center gap-3">
               {/* Status Tag indicator */}
-              <Flex align="center" justify="center" gap={2} px={3} py={1}>
-                {currentAnswer?.status === AnswerStatus.COMPLETE ? (
-                  <>
-                    <CheckCircleIcon css={{ width: '12px', height: '12px' }} />
-                    <Text fontSize="sm" color={getThemedColor("success", 900)}>Complete</Text>
-                  </>
-                ) : currentAnswer?.status === AnswerStatus.IN_PROGRESS ? (
-                  <>
-                    <InProgressIcon css={{ width: '12px', height: '12px' }} />
-                    <Text fontSize="sm" color={getThemedColor("primary", 800)}>In progress</Text>
-                  </>
-                ) : (
-                  <>
-                    <NotStartedIcon css={{ width: '12px', height: '12px' }} />
-                    <Text fontSize="sm" color={getThemedColor("neutral", 800)}>Not started</Text>
-                  </>
-                )}
-              </Flex>
+              {currentAnswer?.status === AnswerStatus.COMPLETE ? (
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("success", 900)}>
+                  <CheckCircleIcon boxSize="12px" />
+                  <Text fontSize="sm">Complete</Text>
+                </Flex>
+              ) : currentAnswer?.status === AnswerStatus.IN_PROGRESS ? (
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("primary", 800)}>
+                  <InProgressIcon boxSize="12px" />
+                  <Text fontSize="sm">In progress</Text>
+                </Flex>
+              ) : (
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("neutral", 800)}>
+                  <NotStartedIcon boxSize="12px" />
+                  <Text fontSize="sm">Not started</Text>
+                </Flex>
+              )}
               
               {/* Mark complete or Edit factor button */}
               {isVisuallyMarkedAsComplete ? (
                 <Button
-                  leftIcon={<EditIcon />}
+                  leftIcon={<EditIcon css={{ width: '12px', height: '12px' }} />}
                   variant='secondary'
                   size='small'
                   onClick={() => setIsVisuallyMarkedAsComplete(false)}
@@ -664,7 +662,7 @@ export function QuestionView({
                   onClick={markAsCompleteHandler}
                   disabled={!allowMarkAsComplete}
                 >
-                  Mark complete
+                  Complete
                 </Button>
               )}
             </div>
@@ -718,7 +716,7 @@ export function QuestionView({
                 label='This factor is marked as complete.'
                 size='full-width'
                 onActionClick={() => setIsVisuallyMarkedAsComplete(false)}
-                buttonLeftIcon={<EditIcon />}
+                buttonLeftIcon={<EditIcon css={{ width: '12px', height: '12px' }} />}
                 variant='success'
               />
             </div>
