@@ -654,7 +654,7 @@ export function QuestionView({
                   onClick={() => setIsVisuallyMarkedAsComplete(false)}
                   label='Edit factor'
                 />
-              ) : (
+              ) : currentAnswer?.status && currentAnswer.status !== AnswerStatus.NOT_STARTED ? (
                 <Button
                   leftIcon={<CheckIcon />}
                   variant='primary'
@@ -664,7 +664,7 @@ export function QuestionView({
                 >
                   Complete
                 </Button>
-              )}
+              ) : null}
             </div>
           </div>
 
