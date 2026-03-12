@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button, TextInput, Modal, Checkbox, IconButton } from '@worldresources/wri-design-systems';
-import { CheckIcon, CopyIcon } from '@/components/icons';
-import { Box } from '@chakra-ui/react';
+import { useState } from 'react'
+import { Button, TextInput, Modal, Checkbox, IconButton } from '@worldresources/wri-design-systems'
+import { CheckIcon, CopyIcon } from '@/components/icons'
+import { Box } from '@chakra-ui/react'
 
 interface AccessDetailsModalProps {
-  open: boolean;
-  assessmentId: string;
-  password: string;
-  onContinue: () => void;
+  open: boolean
+  assessmentId: string
+  password: string
+  onContinue: () => void
 }
 
 export function AccessDetailsModal({
@@ -18,100 +18,100 @@ export function AccessDetailsModal({
   password,
   onContinue,
 }: AccessDetailsModalProps) {
-  const [linkCopied, setLinkCopied] = useState(false);
-  const [passwordCopied, setPasswordCopied] = useState(false);
-  const [bothCopied, setBothCopied] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false)
+  const [passwordCopied, setPasswordCopied] = useState(false)
+  const [bothCopied, setBothCopied] = useState(false)
+  const [confirmed, setConfirmed] = useState(false)
 
   const assessmentLink = typeof window !== 'undefined' 
     ? `${window.location.origin}/assessment/${assessmentId}`
-    : `/assessment/${assessmentId}`;
+    : `/assessment/${assessmentId}`
 
   const handleCopyLink = async () => {
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(assessmentLink);
-        setLinkCopied(true);
-        setTimeout(() => setLinkCopied(false), 2000);
+        await navigator.clipboard.writeText(assessmentLink)
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
-        const textArea = document.createElement('textarea');
-        textArea.value = assessmentLink;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        const success = document.execCommand('copy');
-        document.body.removeChild(textArea);
+        const textArea = document.createElement('textarea')
+        textArea.value = assessmentLink
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.select()
+        const success = document.execCommand('copy')
+        document.body.removeChild(textArea)
         if (!success) {
-          throw new Error('execCommand copy failed');
+          throw new Error('execCommand copy failed')
         }
-        setLinkCopied(true);
-        setTimeout(() => setLinkCopied(false), 2000);
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
       }
     } catch (error) {
-      console.error('Failed to copy link:', error);
+      console.error('Failed to copy link:', error)
       // Still show copied feedback even if there's an error
       // User can manually copy from the input field
     }
-  };
+  }
 
   const handleCopyPassword = async () => {
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(password);
-        setPasswordCopied(true);
-        setTimeout(() => setPasswordCopied(false), 2000);
+        await navigator.clipboard.writeText(password)
+        setPasswordCopied(true)
+        setTimeout(() => setPasswordCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
-        const textArea = document.createElement('textarea');
-        textArea.value = password;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        const success = document.execCommand('copy');
-        document.body.removeChild(textArea);
+        const textArea = document.createElement('textarea')
+        textArea.value = password
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.select()
+        const success = document.execCommand('copy')
+        document.body.removeChild(textArea)
         if (!success) {
-          throw new Error('execCommand copy failed');
+          throw new Error('execCommand copy failed')
         }
-        setPasswordCopied(true);
-        setTimeout(() => setPasswordCopied(false), 2000);
+        setPasswordCopied(true)
+        setTimeout(() => setPasswordCopied(false), 2000)
       }
     } catch (error) {
-      console.error('Failed to copy password:', error);
+      console.error('Failed to copy password:', error)
       // Still show copied feedback even if there's an error
       // User can manually copy from the input field
     }
-  };
+  }
 
   const handleCopyBoth = async () => {
-    const textToCopy = `${assessmentLink}\n${password}`;
+    const textToCopy = `${assessmentLink}\n${password}`
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(textToCopy);
-        setBothCopied(true);
-        setTimeout(() => setBothCopied(false), 2000);
+        await navigator.clipboard.writeText(textToCopy)
+        setBothCopied(true)
+        setTimeout(() => setBothCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
-        const textArea = document.createElement('textarea');
-        textArea.value = textToCopy;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        const success = document.execCommand('copy');
-        document.body.removeChild(textArea);
+        const textArea = document.createElement('textarea')
+        textArea.value = textToCopy
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.select()
+        const success = document.execCommand('copy')
+        document.body.removeChild(textArea)
         if (!success) {
-          throw new Error('execCommand copy failed');
+          throw new Error('execCommand copy failed')
         }
-        setBothCopied(true);
-        setTimeout(() => setBothCopied(false), 2000);
+        setBothCopied(true)
+        setTimeout(() => setBothCopied(false), 2000)
       }
     } catch (error) {
-      console.error('Failed to copy link and password:', error);
+      console.error('Failed to copy link and password:', error)
     }
-  };
+  }
 
   return (
     <Modal
@@ -122,8 +122,8 @@ export function AccessDetailsModal({
       content={
         <div className="space-y-6">
           <p className="text-gray-700 leading-relaxed">
-            This diagnostic doesn&apos;t use accounts. To keep your progress secure and return later, 
-            you&apos;ll need to save both the diagnostic link and password.
+            This diagnostic doesn&apost use accounts. To keep your progress secure and return later, 
+            you&aposll need to save both the diagnostic link and password.
           </p>
 
           {/* input box */}
@@ -192,7 +192,7 @@ export function AccessDetailsModal({
               onCheckedChange={({checked}) => setConfirmed(Boolean(checked))}
               checked={confirmed}
             >
-              I&apos;ve saved the link and password securely, and understand that if I lose these I will not be able to access the assessment.
+              I&aposve saved the link and password securely, and understand that if I lose these I will not be able to access the assessment.
             </Checkbox>
           </label>
 
@@ -209,5 +209,5 @@ export function AccessDetailsModal({
         </div>
       }
     />
-  );
+  )
 }
