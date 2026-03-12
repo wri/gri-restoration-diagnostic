@@ -55,7 +55,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
             {question.considerations ? (
               <ul className="prose prose-sm max-w-none list-disc pl-5 space-y-2">
                 {question.considerations
-                  .split('\n')
+                  .split(/\r?\n/)
                   .filter(line => line.trim() !== '')
                   .map((line, index) => (
                     <li key={index}>{line.trim()}</li>
