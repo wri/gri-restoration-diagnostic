@@ -6,8 +6,7 @@ export function HotjarScript() {
   // More: https://gfw.atlassian.net/browse/RD-75
   // Production: 6664922, QA: 6664921
   const environment =
-    process.env.RD_APP_ENV || process.env.NEXT_PUBLIC_ENVIRONMENT || process.env.NODE_ENV || 'production';
-  console.log("🚀 ~ HotjarScript ~ environment:", environment)
+    process.env.NEXT_PUBLIC_ENVIRONMENT || process.env.NODE_ENV || 'production';
   const hjid =
     process.env.NEXT_PUBLIC_HOTJAR_SITE_ID ||
     (environment === 'production' ? '6664922' : '6664921');

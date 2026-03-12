@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-
 import localFont from 'next/font/local'
 import './globals.css'
 
@@ -7,7 +6,6 @@ import Providers from '@/components/Providers'
 import { Footer } from '@/components/Footer'
 import GlobalNavbar from '@/components/GlobalNavbar'
 import { HotjarScript } from '@/components/HotjarScript'
-import { GoogleTagManager, GoogleTagManagerNoScript } from '@/components/GoogleTagManager'
 
 // Partner logo for footer
 const acuminPro = localFont({
@@ -37,11 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <head>
-        <GoogleTagManager />
-      </head>
       <body className={`${acuminPro.className} antialiased`}>
-        <GoogleTagManagerNoScript />
         <HotjarScript />
         <Providers>
           <GlobalNavbar />
