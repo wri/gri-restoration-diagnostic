@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button, TextInput, Modal, Checkbox, IconButton } from '@worldresources/wri-design-systems'
 import { CheckIcon, CopyIcon } from '@/components/icons'
-import { Box } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 
 interface AccessDetailsModalProps {
   open: boolean
@@ -23,6 +23,18 @@ export function AccessDetailsModal({
   const [bothCopied, setBothCopied] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
 
+  const linkTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const passwordTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const bothTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (linkTimerRef.current) clearTimeout(linkTimerRef.current)
+      if (passwordTimerRef.current) clearTimeout(passwordTimerRef.current)
+      if (bothTimerRef.current) clearTimeout(bothTimerRef.current)
+    }
+  }, [])
+
   const assessmentLink = typeof window !== 'undefined' 
     ? `${window.location.origin}/assessment/${assessmentId}`
     : `/assessment/${assessmentId}`
@@ -32,7 +44,8 @@ export function AccessDetailsModal({
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(assessmentLink)
         setLinkCopied(true)
-        setTimeout(() => setLinkCopied(false), 2000)
+        if (linkTimerRef.current) clearTimeout(linkTimerRef.current)
+        linkTimerRef.current = setTimeout(() => setLinkCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
         const textArea = document.createElement('textarea')
@@ -47,7 +60,8 @@ export function AccessDetailsModal({
           throw new Error('execCommand copy failed')
         }
         setLinkCopied(true)
-        setTimeout(() => setLinkCopied(false), 2000)
+        if (linkTimerRef.current) clearTimeout(linkTimerRef.current)
+        linkTimerRef.current = setTimeout(() => setLinkCopied(false), 2000)
       }
     } catch (error) {
       console.error('Failed to copy link:', error)
@@ -61,7 +75,8 @@ export function AccessDetailsModal({
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(password)
         setPasswordCopied(true)
-        setTimeout(() => setPasswordCopied(false), 2000)
+        if (passwordTimerRef.current) clearTimeout(passwordTimerRef.current)
+        passwordTimerRef.current = setTimeout(() => setPasswordCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
         const textArea = document.createElement('textarea')
@@ -76,7 +91,8 @@ export function AccessDetailsModal({
           throw new Error('execCommand copy failed')
         }
         setPasswordCopied(true)
-        setTimeout(() => setPasswordCopied(false), 2000)
+        if (passwordTimerRef.current) clearTimeout(passwordTimerRef.current)
+        passwordTimerRef.current = setTimeout(() => setPasswordCopied(false), 2000)
       }
     } catch (error) {
       console.error('Failed to copy password:', error)
@@ -91,7 +107,8 @@ export function AccessDetailsModal({
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(textToCopy)
         setBothCopied(true)
-        setTimeout(() => setBothCopied(false), 2000)
+        if (bothTimerRef.current) clearTimeout(bothTimerRef.current)
+        bothTimerRef.current = setTimeout(() => setBothCopied(false), 2000)
       } else {
         // Fallback for browsers without Clipboard API
         const textArea = document.createElement('textarea')
@@ -106,7 +123,8 @@ export function AccessDetailsModal({
           throw new Error('execCommand copy failed')
         }
         setBothCopied(true)
-        setTimeout(() => setBothCopied(false), 2000)
+        if (bothTimerRef.current) clearTimeout(bothTimerRef.current)
+        bothTimerRef.current = setTimeout(() => setBothCopied(false), 2000)
       }
     } catch (error) {
       console.error('Failed to copy link and password:', error)
@@ -117,7 +135,7 @@ export function AccessDetailsModal({
     <Modal
       open={open}
       size="medium"
-      header="Save your access details"
+      header={<Text fontWeight={'bold'}>Save your access details</Text>}
       blocking={true}
       content={
         <div className="space-y-6">
@@ -141,11 +159,14 @@ export function AccessDetailsModal({
                     <TextInput
                       value={assessmentLink}
                       disabled
+                      aria-label="Diagnostic link"
                     />
                     <IconButton
                       padding="8px !important"
                       icon={linkCopied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       onClick={handleCopyLink}
+                      aria-label={linkCopied ? 'Diagnostic link copied to clipboard' : 'Copy diagnostic link to clipboard'}
+                      aria-live="polite"
                     />
                   </Box>
                 </div>
@@ -164,11 +185,14 @@ export function AccessDetailsModal({
                     <TextInput
                       value={password}
                       disabled
+                      aria-label="Password"
                     />
                     <IconButton
                       padding="8px !important"
                       icon={passwordCopied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       onClick={handleCopyPassword}
+                      aria-label={passwordCopied ? 'Password copied to clipboard' : 'Copy password to clipboard'}
+                      aria-live="polite"
                     />
                   </Box>
                 </div>
@@ -181,6 +205,8 @@ export function AccessDetailsModal({
                   leftIcon={<CopyIcon className="w-4 h-4" />}
                   label={bothCopied ? 'Copied!' : 'Copy link & password'}
                   onClick={handleCopyBoth}
+                  aria-label={bothCopied ? 'Link and password copied to clipboard' : 'Copy both link and password to clipboard'}
+                  aria-live="polite"
                 />
               </div>
           </div>
@@ -192,7 +218,7 @@ export function AccessDetailsModal({
               onCheckedChange={({checked}) => setConfirmed(Boolean(checked))}
               checked={confirmed}
             >
-              I&aposve saved the link and password securely, and understand that if I lose these I will not be able to access the assessment.
+              I&apos;ve saved the link and password securely, and understand that if I lose these I will not be able to access the diagnostic.
             </Checkbox>
           </label>
 

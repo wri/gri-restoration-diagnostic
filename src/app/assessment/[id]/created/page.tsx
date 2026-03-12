@@ -6,8 +6,9 @@ import { Button, Modal } from '@worldresources/wri-design-systems';
 import { AccessDetailsModal } from '@/components/assessment/AccessDetailsModal';
 import './styles.css';
 /**
- * Likely DEPRECATED if no redirection to this page happens
- * @returns 
+  * Page shown after an assessment is created, displaying access details for the diagnostic.
+ *
+ * @deprecated This page is kept for backward compatibility; new flows should redirect users directly to the preparation page.
  */
 export default function AssessmentCreatedPage() {
   const params = useParams();
