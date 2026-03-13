@@ -2,7 +2,7 @@
 
 import SectionTitle from './SectionTitle'
 import CardContainer from './CardContainer'
-import { QuestionWithAnswer } from '@/types/questions.types'
+import { Questions } from '@/types/questions.types'
 import {
   Table,
   TableCell,
@@ -17,11 +17,10 @@ import {
 import { useState } from 'react'
 import StrategiesReadOnlyModal from '@/app/assessment/[id]/[theme]/components/Strategies/ReadOnlyModal'
 import Link from 'next/link'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface StrategicPlanProps {
   assessmentId: string
-  questions: QuestionWithAnswer[]
+  questions: Questions[]
   allContributors: PlainContributor[]
 }
 
@@ -44,7 +43,6 @@ const StrategicPlan = ({
   allContributors,
 }: StrategicPlanProps) => {
   const [strategyDetails, setStrategyDetails] = useState<Data | undefined>()
-  const t = useTranslations()
 
   const orderedQuestions = questions
     .filter(
@@ -70,42 +68,25 @@ const StrategicPlan = ({
   return (
     <>
       <div>
-        <SectionTitle
-          index={3}
-          title={t('overview.strategicPlan.sectionTitle')}
-        />
+        <SectionTitle index={3} title='Strategic Plan' />
         <CardContainer
-          title={t('overview.strategicPlan.title')}
-          caption={t('overview.strategicPlan.caption')}
-          hideLabel={t('overview.scope.labels.table')}
+          title='Strategic Plan'
+          caption='All strategies added across Diagnostic factors.'
+          hideLabel='table'
           noHorizontalPadding
           noPaddingBottom
         >
           {data.length > 0 ? (
             <Table
               columns={[
-                {
-                  key: 'title',
-                  label: t('overview.strategicPlan.table.headers.strategy'),
-                  sortable: true,
-                },
+                { key: 'title', label: 'Strategy', sortable: true },
                 {
                   key: 'keySuccessFactor',
-                  label: t(
-                    'overview.strategicPlan.table.headers.keySuccessFactor',
-                  ),
+                  label: 'Key Success Factor',
                   sortable: true,
                 },
-                {
-                  key: 'priority',
-                  label: t('overview.strategicPlan.table.headers.priority'),
-                  sortable: true,
-                },
-                {
-                  key: 'scale',
-                  label: t('overview.strategicPlan.table.headers.scale'),
-                  sortable: true,
-                },
+                { key: 'priority', label: 'Priority', sortable: true },
+                { key: 'scale', label: 'Scale', sortable: true },
               ]}
               data={data}
               renderRow={(row: Data) => {
@@ -124,15 +105,12 @@ const StrategicPlan = ({
                           className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
                           onClick={() => setStrategyDetails(row)}
                         >
-                          {row.title ||
-                            t('overview.strategicPlan.table.noTitle')}
+                          {row.title || 'No title'}
                         </p>
                         <div className='flex gap-2 items-center'>
                           {row.deadline ? (
                             <p className='text-neutral-700 text-xs'>
-                              {t('overview.strategicPlan.table.deadline', {
-                                value: formatDeadline(row.deadline),
-                              })}
+                              Deadline {formatDeadline(row.deadline)}
                             </p>
                           ) : (
                             ''
@@ -140,7 +118,7 @@ const StrategicPlan = ({
 
                           {row.responsibility ? (
                             <p className='text-neutral-700 text-xs'>
-                              {t('overview.strategicPlan.table.ownedBy')}{' '}
+                              Owned by{' '}
                               {selectedContributors
                                 .map((c) => c.name)
                                 .join(', ')}
@@ -163,9 +141,10 @@ const StrategicPlan = ({
                       <div className='flex'>
                         {row.priority ? (
                           <Tag
-                            label={t(
-                              `overview.strategicPlan.table.priorities.${row.priority}`,
-                            )}
+                            label={
+                              row.priority.charAt(0).toUpperCase() +
+                              row.priority.slice(1)
+                            }
                             variant={
                               row.priority === 'low'
                                 ? 'success'
@@ -179,11 +158,7 @@ const StrategicPlan = ({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className='w-56'>
-                      {row.scale
-                        ? t(`overview.strategicPlan.table.scales.${row.scale}`)
-                        : '--'}
-                    </TableCell>
+                    <TableCell className='w-56'>{row.scale || '--'}</TableCell>
                   </TableRow>
                 )
               }}
@@ -194,10 +169,10 @@ const StrategicPlan = ({
           ) : (
             <div className='flex flex-col items-center gap-2 py-10 bg-neutral-200'>
               <p className='text-xl font-bold text-neutral-800'>
-                {t('overview.strategicPlan.empty.title')}
+                No strategies created
               </p>
               <p className='text-neutral-700'>
-                {t('overview.strategicPlan.empty.description')}
+                When you add strategies under a factor they will appear here
               </p>
             </div>
           )}

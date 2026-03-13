@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import { Button, TextInput, Modal, Checkbox, IconButton } from '@worldresources/wri-design-systems'
 import { CheckIcon, CopyIcon } from '@/components/icons'
 import { Box, Text } from '@chakra-ui/react'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface AccessDetailsModalProps {
   open: boolean
@@ -19,7 +18,6 @@ export function AccessDetailsModal({
   password,
   onContinue,
 }: AccessDetailsModalProps) {
-  const t = useTranslations()
   const [linkCopied, setLinkCopied] = useState(false)
   const [passwordCopied, setPasswordCopied] = useState(false)
   const [bothCopied, setBothCopied] = useState(false)
@@ -137,16 +135,13 @@ export function AccessDetailsModal({
     <Modal
       open={open}
       size="medium"
-      header={
-        <Text fontWeight={'bold'}>
-          {t('forms.setup.accessModal.title')}
-        </Text>
-      }
+      header={<Text fontWeight={'bold'}>Save your access details</Text>}
       blocking={true}
       content={
-        <div className="space-y-4">
+        <div className="space-y-6">
           <p className="text-gray-700 leading-relaxed">
-            {t('forms.setup.accessModal.description')}
+            This diagnostic doesn&apost use accounts. To keep your progress secure and return later, 
+            you&aposll need to save both the diagnostic link and password.
           </p>
 
           {/* input box */}
@@ -154,9 +149,7 @@ export function AccessDetailsModal({
               {/* diagnostic Link */}
               <div className="flex space-y-1">
                 <div className="flex-1">
-                  <label className="block text-sm text-neutral-900">
-                    {t('forms.setup.accessModal.fields.link')}
-                  </label>
+                  <label className="block text-sm text-neutral-900">Diagnostic link</label>
                   <Box className="flex items-center justify-center gap-3" 
                     css={{
                       '& .ds-text-input-container': {
@@ -166,17 +159,13 @@ export function AccessDetailsModal({
                     <TextInput
                       value={assessmentLink}
                       disabled
-                      aria-label={t('forms.setup.accessModal.fields.link')}
+                      aria-label="Diagnostic link"
                     />
                     <IconButton
                       padding="8px !important"
                       icon={linkCopied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       onClick={handleCopyLink}
-                      aria-label={
-                        linkCopied
-                          ? t('forms.setup.accessModal.aria.linkCopied')
-                          : t('forms.setup.accessModal.aria.copyLink')
-                      }
+                      aria-label={linkCopied ? 'Diagnostic link copied to clipboard' : 'Copy diagnostic link to clipboard'}
                       aria-live="polite"
                     />
                   </Box>
@@ -186,9 +175,7 @@ export function AccessDetailsModal({
               {/* Password */}
               <div className="flex space-y-1">
                 <div className="flex-1">
-                  <label className="block text-sm text-neutral-900">
-                    {t('forms.setup.accessModal.fields.password')}
-                  </label>
+                  <label className="block text-sm text-neutral-900">Password</label>
                   <Box className="flex items-center justify-center gap-3" 
                     css={{
                       '& .ds-text-input-container': {
@@ -198,17 +185,13 @@ export function AccessDetailsModal({
                     <TextInput
                       value={password}
                       disabled
-                      aria-label={t('forms.setup.accessModal.fields.password')}
+                      aria-label="Password"
                     />
                     <IconButton
                       padding="8px !important"
                       icon={passwordCopied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
                       onClick={handleCopyPassword}
-                      aria-label={
-                        passwordCopied
-                          ? t('forms.setup.accessModal.aria.passwordCopied')
-                          : t('forms.setup.accessModal.aria.copyPassword')
-                      }
+                      aria-label={passwordCopied ? 'Password copied to clipboard' : 'Copy password to clipboard'}
                       aria-live="polite"
                     />
                   </Box>
@@ -220,17 +203,9 @@ export function AccessDetailsModal({
                 <Button
                   variant="secondary"
                   leftIcon={<CopyIcon className="w-4 h-4" />}
-                  label={
-                    bothCopied
-                      ? t('forms.setup.accessModal.actions.copied')
-                      : t('forms.setup.accessModal.actions.copyBoth')
-                  }
+                  label={bothCopied ? 'Copied!' : 'Copy link & password'}
                   onClick={handleCopyBoth}
-                  aria-label={
-                    bothCopied
-                      ? t('forms.setup.accessModal.aria.bothCopied')
-                      : t('forms.setup.accessModal.aria.copyBoth')
-                  }
+                  aria-label={bothCopied ? 'Link and password copied to clipboard' : 'Copy both link and password to clipboard'}
                   aria-live="polite"
                 />
               </div>
@@ -243,14 +218,14 @@ export function AccessDetailsModal({
               onCheckedChange={({checked}) => setConfirmed(Boolean(checked))}
               checked={confirmed}
             >
-              {t('forms.setup.accessModal.confirmation')}
+              I&apos;ve saved the link and password securely, and understand that if I lose these I will not be able to access the diagnostic.
             </Checkbox>
           </label>
 
           {/* Start Button */}
-          <div>
+          <div className="pt-2">
             <Button
-              label={t('common.buttons.continue')}
+              label="Continue"
               variant="primary"
               size="default"
               onClick={onContinue}

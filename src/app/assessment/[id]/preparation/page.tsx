@@ -1,43 +1,42 @@
 'use client'
 
-import { PREPARATION_STEPS } from '@/constants'
+import { PREPARATION_STEPS } from '@/components/assessment/DiagnosticPreparation/utils'
 import { ChecklistIcon, ScopeIcon } from '@/components/icons'
 import { Button, Tag } from '@worldresources/wri-design-systems'
 import { useParams, useRouter } from 'next/navigation'
-import { useTranslations } from '@/i18n/useTranslations'
 
 const PreparationPage = () => {
   const params = useParams()
   const router = useRouter()
   const assessmentId = params.id as string
-  const t = useTranslations()
 
   return (
     <div className='mx-auto w-full max-w-[580px] pt-16 pb-20 px-5'>
       <div className='p-8 border border-neutral-400 rounded-lg bg-white mb-6'>
         <h1 className='text-3xl font-bold text-neutral-800'>
-          {t('scoping.intro.heading')}
+          Prepare for the diagnostic
         </h1>
 
         <p className='text-neutral-800 mt-2'>
-          {t('scoping.intro.description1')}
+          This step helps you get ready to run the diagnostic effectively. You
+          will decide how you will conduct the process and define the scope of
+          the assessment.
         </p>
         <p className='text-neutral-800 mt-2'>
-          {t('scoping.intro.description2')}
+          Taking time to prepare ensures the diagnostic is focused,
+          well-supported, and aligned with your restoration context.
         </p>
 
         <h2 className='text-neutral-800 mt-6 text-lg font-bold'>
-          {t('scoping.intro.description3')}
+          There are 2 parts to this step:
         </h2>
 
         <div className='flex gap-4 mt-2 border border-neutral-300 rounded-lg p-4'>
           <ScopeIcon className='text-secondary-600' />
           <div>
-            <h3 className='text-neutral-900'>
-              {t('scoping.intro.parts.scope.title')}
-            </h3>
+            <h3 className='text-neutral-900'>Set the scope</h3>
             <p className='text-neutral-700'>
-              {t('scoping.intro.parts.scope.description')}
+              Define the target landscape, time horizon, and restoration goals.
             </p>
           </div>
         </div>
@@ -47,23 +46,20 @@ const PreparationPage = () => {
           <div>
             <div className='flex items-center justify-between gap-2'>
               <h3 className='text-neutral-900'>
-                {t('scoping.intro.parts.approach.title')}
+                Plan your diagnostic approach
               </h3>
-              <Tag
-                label={t('scoping.intro.parts.approach.badge')}
-                variant='warning'
-                size='small'
-              />
+              <Tag label='Optional' variant='warning' size='small' />
             </div>
             <p className='text-neutral-700'>
-              {t('scoping.intro.parts.approach.description')}
+              Decide how you will engage stakeholders and gather supporting
+              materials.
             </p>
           </div>
         </div>
       </div>
 
       <Button
-        label={t('scoping.intro.button')}
+        label='Start preparation'
         onClick={() =>
           router.push(
             `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TARGET_GEOGRAPHY}`,

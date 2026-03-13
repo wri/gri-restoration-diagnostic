@@ -1,5 +1,3 @@
-'use client'
-
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import {
   Table,
@@ -10,7 +8,6 @@ import {
 import { useState } from 'react'
 import { formatDeadline, sortStrategies } from './utils'
 import StrategiesReadOnlyModal from './ReadOnlyModal'
-import { useTranslations } from '@/i18n/useTranslations'
 
 const StrategiesReadOnly = ({
   strategies,
@@ -22,7 +19,6 @@ const StrategiesReadOnly = ({
   allContributors: PlainContributor[]
 }) => {
   const [strategyDetails, setStrategyDetails] = useState<Strategy | undefined>()
-  const t = useTranslations()
 
   const strategiesData = JSON.parse(strategies) as Strategy[]
 
@@ -30,28 +26,14 @@ const StrategiesReadOnly = ({
     <>
       <div className='!mt-8'>
         <div className='flex items-center gap-3 mb-1'>
-          <p className='font-bold text-neutral-900'>
-            {t('assessment.strategies.heading')}
-          </p>
+          <p className='font-bold text-neutral-900'>Strategies</p>
         </div>
 
         <Table
           columns={[
-            {
-              key: 'title',
-              label: t('assessment.strategies.readOnly.headers.strategy'),
-              sortable: true,
-            },
-            {
-              key: 'priority',
-              label: t('assessment.strategies.readOnly.headers.priority'),
-              sortable: true,
-            },
-            {
-              key: 'scale',
-              label: t('assessment.strategies.readOnly.headers.scale'),
-              sortable: true,
-            },
+            { key: 'title', label: 'Strategy', sortable: true },
+            { key: 'priority', label: 'Priority', sortable: true },
+            { key: 'scale', label: 'Scale', sortable: true },
           ]}
           data={strategiesData}
           renderRow={(row: Strategy) => {
@@ -70,14 +52,12 @@ const StrategiesReadOnly = ({
                       className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
                       onClick={() => setStrategyDetails(row)}
                     >
-                      {row.title || t('assessment.strategies.readOnly.noTitle')}
+                      {row.title || 'No title'}
                     </p>
                     <div className='flex gap-2 items-center'>
                       {row.deadline ? (
                         <p className='text-neutral-700 text-xs'>
-                          {t('assessment.strategies.readOnly.due', {
-                            value: formatDeadline(row.deadline),
-                          })}
+                          Due {formatDeadline(row.deadline)}
                         </p>
                       ) : (
                         ''
@@ -85,7 +65,7 @@ const StrategiesReadOnly = ({
 
                       {row.responsibility ? (
                         <p className='text-neutral-700 text-xs'>
-                          {t('assessment.strategies.readOnly.ownedBy')}{' '}
+                          Owned by{' '}
                           {selectedContributors.map((c) => c.name).join(', ')}
                         </p>
                       ) : (
@@ -98,9 +78,10 @@ const StrategiesReadOnly = ({
                   <div className='flex'>
                     {row.priority ? (
                       <Tag
-                        label={t(
-                          `assessment.strategies.fields.priority.options.${row.priority}`,
-                        )}
+                        label={
+                          row.priority.charAt(0).toUpperCase() +
+                          row.priority.slice(1)
+                        }
                         variant={
                           row.priority === 'low'
                             ? 'success'
@@ -114,13 +95,7 @@ const StrategiesReadOnly = ({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className='w-56'>
-                  {row.scale
-                    ? t(
-                        `assessment.strategies.fields.scale.options.${row.scale}`,
-                      )
-                    : '--'}
-                </TableCell>
+                <TableCell className='w-56'>{row.scale || '--'}</TableCell>
               </TableRow>
             )
           }}

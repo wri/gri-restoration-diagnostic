@@ -6,29 +6,15 @@ import { ThemeNavigation } from './ThemeNavigation'
 import { QuestionContent } from './QuestionContent'
 import { GuidanceSidebar } from './GuidanceSidebar'
 import { useAutoSave, type AutoSaveStatus } from '@/hooks/useAutoSave'
-import {
-  CheckIcon,
-  ChevronLeftIcon as ChevronLeft,
-  ChevronRightIcon,
-  CheckCircleIcon,
-  InProgressIcon,
-  NotStartedIcon,
-  EditIcon,
-} from '@/components/icons'
+import { CheckIcon, ChevronLeftIcon as ChevronLeft, ChevronRightIcon, CheckCircleIcon, InProgressIcon, NotStartedIcon, EditIcon } from '@/components/icons'
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
 import { type AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
-import {
-  Button,
-  getThemedColor,
-  InlineMessage,
-  Modal,
-} from '@worldresources/wri-design-systems'
+import { Button, getThemedColor, InlineMessage, Modal } from '@worldresources/wri-design-systems'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { FactorPaginationContainer } from '@/components/assessment/FactorPaginationContainer'
 import { AnswerStatus, PlainContributor } from '@/types/answer.types'
 import { hasRichTextContent } from '@/utils/validation'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface QuestionViewProps {
   assessmentId: string
@@ -44,7 +30,6 @@ interface QuestionViewProps {
   allContributors: PlainContributor[]
   initialContributorsByAnswer: Array<[string, string[]]>
   onSaveStatusChange?: (status: AutoSaveStatus) => void
-  onFocusChange?: (code: string) => void
 }
 
 export function QuestionView({
@@ -61,85 +46,52 @@ export function QuestionView({
   allContributors: initialAllContributors,
   initialContributorsByAnswer,
   onSaveStatusChange,
-  onFocusChange,
 }: QuestionViewProps) {
   const router = useRouter()
-  const t = useTranslations()
-
+  
   // Reconstruct Map from serialized array (Maps cannot be passed from Server to Client Components)
-  const [answersCache, setAnswersCache] = useState(
-    () => new Map<string, PlainAnswer>(initialAnswers),
+  const [answersCache, setAnswersCache] = useState(() => 
+    new Map<string, PlainAnswer>(initialAnswers)
   )
-
-  useEffect(() => {
-    setAnswersCache(new Map(initialAnswers))
-  }, [initialAnswers])
-
+  
   // Contributor state
-  const [allContributors, setAllContributors] = useState<PlainContributor[]>(
-    initialAllContributors,
+  const [allContributors, setAllContributors] = useState<PlainContributor[]>(initialAllContributors)
+  const [contributorsByAnswer, setContributorsByAnswer] = useState(() =>
+    new Map<string, string[]>(initialContributorsByAnswer)
   )
-  const [contributorsByAnswer, setContributorsByAnswer] = useState(
-    () => new Map<string, string[]>(initialContributorsByAnswer),
-  )
-
+  
   // Current question state
-  const [currentQuestionCode, setCurrentQuestionCode] =
-    useState(focusQuestionCode)
-  const currentQuestion =
-    questions.find((q) => q.questionCode === currentQuestionCode) ||
-    questions[0]
+  const [currentQuestionCode, setCurrentQuestionCode] = useState(focusQuestionCode)
+  const currentQuestion = questions.find(q => q.questionCode === currentQuestionCode) || questions[0]
   const currentAnswer = answersCache.get(currentQuestion?.id || '')
-
+  
   // Answer state
   const [selectedAnswer, setSelectedAnswer] = useState<AnswerValue | null>(
-    currentAnswer?.value || null,
+    currentAnswer?.value || null
   )
   const [rationale, setRationale] = useState(currentAnswer?.rationale || '')
   const [notes, setNotes] = useState(currentAnswer?.notes || '')
-  const [strategies, setStrategies] = useState(
-    currentAnswer?.strategies || '[]',
-  )
+  const [strategies, setStrategies] = useState(currentAnswer?.strategies || '[]')
   const [isVisuallyMarkedAsComplete, setIsVisuallyMarkedAsComplete] = useState(
     currentAnswer?.status === AnswerStatus.COMPLETE,
   )
   const [showCompleteWarning, setShowCompleteWarning] = useState(false)
-  const [showProgressNotSavedModal, setShowProgressNotSavedModal] =
-    useState(false)
-
-  useEffect(() => {
-    const targetQuestion =
-      questions.find((q) => q.questionCode === focusQuestionCode) ||
-      questions[0]
-
-    if (!targetQuestion) return
-
-    setCurrentQuestionCode(targetQuestion.questionCode)
-    const answer = answersCache.get(targetQuestion.id)
-    setSelectedAnswer(answer?.value || null)
-    setRationale(answer?.rationale || '')
-    setNotes(answer?.notes || '')
-    setStrategies(answer?.strategies || '[]')
-    setIsVisuallyMarkedAsComplete(
-      answer?.status === AnswerStatus.COMPLETE,
-    )
-  }, [focusQuestionCode, questions, answersCache])
-
-  const currentContributorIds =
-    contributorsByAnswer.get(currentAnswer?.id || '') || []
-
+  const [showProgressNotSavedModal, setShowProgressNotSavedModal] = useState(false)
+  
+  const currentContributorIds = contributorsByAnswer.get(currentAnswer?.id || '') || []
+  
   // Helper: Ensure an answer exists for the current question (creates if needed)
   const ensureAnswerExists = useCallback(async () => {
     // If answer already exists, return it
     if (currentAnswer?.id) {
       return currentAnswer
     }
-
+    
     // If there's already a pending creation, await it instead of creating duplicate
     if (pendingAnswerCreationRef.current) {
       return pendingAnswerCreationRef.current
     }
-
+    
     // Create a new answer with minimal data
     const creationPromise = (async () => {
       const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
@@ -153,29 +105,29 @@ export function QuestionView({
           strategies: strategies || '[]',
           status: AnswerStatus.IN_PROGRESS,
           allowDataSharing,
-        }),
+        })
       })
-
+      
       if (!response.ok) {
         throw new Error('Failed to create answer')
       }
-
+      
       const result = await response.json()
       const newAnswer = result.answer
-
+      
       // Update local cache
-      setAnswersCache((prev) => {
+      setAnswersCache(prev => {
         const updated = new Map(prev)
         updated.set(currentQuestion.id, newAnswer)
         return updated
       })
-
+      
       return newAnswer
     })()
-
+    
     // Store the promise so concurrent calls can await it
     pendingAnswerCreationRef.current = creationPromise
-
+    
     try {
       const result = await creationPromise
       return result
@@ -193,223 +145,210 @@ export function QuestionView({
     strategies,
     allowDataSharing,
   ])
-
+  
   // Handler: Create contributor (optimistic)
-  const handleContributorCreate = useCallback(
-    async (name: string) => {
-      // Ensure an answer exists first
-      let answerToUse = currentAnswer
-      if (!answerToUse) {
-        try {
-          answerToUse = await ensureAnswerExists()
-        } catch (error) {
-          console.error('Failed to create answer for contributor:', error)
-          contributorErrorRef.current = true
-          throw error
-        }
-      }
-
-      // Defensive check (should never happen after ensureAnswerExists)
-      if (!answerToUse) {
-        contributorErrorRef.current = true
-        throw new Error('No answer available for contributor')
-      }
-
-      // Generate temporary ID for optimistic update
-      const tempId = crypto.randomUUID()
-      const tempContributor: PlainContributor = {
-        id: tempId,
-        name,
-        assessmentId,
-        createdAt: new Date().toISOString(),
-      }
-
-      // Optimistically add to pool
-      setAllContributors((prev) =>
-        [...prev, tempContributor].sort((a, b) => a.name.localeCompare(b.name)),
-      )
-
-      // Optimistically add to answer's contributors
-      setContributorsByAnswer((prev) => {
-        const updated = new Map(prev)
-        const current = prev.get(answerToUse!.id) || []
-        updated.set(answerToUse!.id, [...current, tempId])
-        return updated
-      })
-
-      // Fire API request in background
+  const handleContributorCreate = useCallback(async (name: string) => { 
+    // Ensure an answer exists first
+    let answerToUse = currentAnswer
+    if (!answerToUse) {
       try {
-        const response = await fetch(
-          `/api/assessments/${assessmentId}/contributors`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name }),
-          },
-        )
-
-        if (!response.ok) {
-          throw new Error('Failed to create contributor')
-        }
-
-        const { contributor } = await response.json()
-
-        // Replace temp ID with real ID in allContributors
-        setAllContributors((prev) =>
-          prev.map((c) => (c.id === tempId ? contributor : c)),
-        )
-
-        // Replace temp ID with real ID in contributorsByAnswer
-        setContributorsByAnswer((prev) => {
-          const updated = new Map(prev)
-          prev.forEach((contributorIds, answerId) => {
-            updated.set(
-              answerId,
-              contributorIds.map((id) => (id === tempId ? contributor.id : id)),
-            )
-          })
-          return updated
-        })
-
-        // Fire the association PUT request with the real ID
-        // Read from ref to get the latest state (avoids stale closure from useCallback deps)
-        const contributorIds = [
-          ...(contributorsByAnswerRef.current.get(answerToUse.id) || []),
-        ].map((id) => (id === tempId ? contributor.id : id))
-
-        const associationResponse = await fetch(
-          `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contributorIds }),
-          },
-        )
-
-        if (!associationResponse.ok) {
-          throw new Error('Failed to associate contributor')
-        }
-
-        contributorErrorRef.current = false
+        answerToUse = await ensureAnswerExists()
       } catch (error) {
-        console.error('Failed to create contributor:', error)
+        console.error('Failed to create answer for contributor:', error)
         contributorErrorRef.current = true
-
-        // Revert optimistic update - remove temp contributor
-        setAllContributors((prev) => prev.filter((c) => c.id !== tempId))
-
-        // Remove temp ID from contributorsByAnswer
-        setContributorsByAnswer((prev) => {
-          const updated = new Map(prev)
-          prev.forEach((contributorIds, answerId) => {
-            updated.set(
-              answerId,
-              contributorIds.filter((id) => id !== tempId),
-            )
-          })
-          return updated
-        })
+        throw error
       }
-
-      // Return temp contributor immediately for UI feedback
-      return tempContributor
-    },
-    [assessmentId, currentAnswer, ensureAnswerExists],
-  )
-
-  // Handler: Update contributors for answer
-  const handleContributorsChange = useCallback(
-    async (contributorIds: string[]) => {
-      // Ensure an answer exists first
-      let answerToUse = currentAnswer
-      if (!answerToUse) {
-        try {
-          answerToUse = await ensureAnswerExists()
-        } catch (error) {
-          console.error('Failed to create answer for contributors:', error)
-          return
-        }
-      }
-
-      // Defensive check (should never happen after ensureAnswerExists)
-      if (!answerToUse) {
-        console.error('No answer available for contributors')
-        return
-      }
-
-      // Optimistic update
-      setContributorsByAnswer((prev) => {
-        const updated = new Map(prev)
-        updated.set(answerToUse!.id, contributorIds)
-        return updated
-      })
-
-      // Save to API
-      try {
-        const response = await fetch(
-          `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contributorIds }),
-          },
-        )
-
-        if (!response.ok) {
-          throw new Error('Failed to save contributors')
-        }
-      } catch (error) {
-        console.error('Failed to save contributors:', error)
-        // Revert optimistic update
-        setContributorsByAnswer((prev) => {
-          const updated = new Map(prev)
-          const current = contributorsByAnswer.get(answerToUse!.id) || []
-          updated.set(answerToUse!.id, current)
-          return updated
-        })
-      }
-    },
-    [assessmentId, currentAnswer, contributorsByAnswer, ensureAnswerExists],
-  )
-
-  // Auto-save function
-  const saveAnswer = useCallback(
-    async (data: {
-      questionId: string
-      value: AnswerValue | null
-      rationale?: string
-      notes?: string
-      strategies?: string
-      status: AnswerStatus
-    }) => {
-      const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
+    }
+    
+    // Defensive check (should never happen after ensureAnswerExists)
+    if (!answerToUse) {
+      contributorErrorRef.current = true
+      throw new Error('No answer available for contributor')
+    }
+    
+    // Generate temporary ID for optimistic update
+    const tempId = crypto.randomUUID()
+    const tempContributor: PlainContributor = {
+      id: tempId,
+      name,
+      assessmentId,
+      createdAt: new Date().toISOString()
+    }
+    
+    // Optimistically add to pool
+    setAllContributors(prev => [...prev, tempContributor].sort((a, b) => 
+      a.name.localeCompare(b.name)
+    ))
+    
+    // Optimistically add to answer's contributors
+    setContributorsByAnswer(prev => {
+      const updated = new Map(prev)
+      const current = prev.get(answerToUse!.id) || []
+      updated.set(answerToUse!.id, [...current, tempId])
+      return updated
+    })
+    
+    // Fire API request in background
+    try {
+      const response = await fetch(`/api/assessments/${assessmentId}/contributors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          id: currentAnswer?.id,
-          allowDataSharing,
-        }),
+        body: JSON.stringify({ name })
       })
-
+      
       if (!response.ok) {
-        throw new Error('Failed to save answer')
+        throw new Error('Failed to create contributor')
       }
-
-      const result = await response.json()
-
-      // Update local cache
-      setAnswersCache((prev) => {
+      
+      const { contributor } = await response.json()
+      
+      // Replace temp ID with real ID in allContributors
+      setAllContributors(prev => prev.map(c => 
+        c.id === tempId ? contributor : c
+      ))
+      
+      // Replace temp ID with real ID in contributorsByAnswer
+      setContributorsByAnswer(prev => {
         const updated = new Map(prev)
-        updated.set(data.questionId, result.answer)
+        prev.forEach((contributorIds, answerId) => {
+          updated.set(
+            answerId,
+            contributorIds.map(id => id === tempId ? contributor.id : id)
+          )
+        })
         return updated
       })
-
-      return result
-    },
-    [assessmentId, currentAnswer, allowDataSharing],
-  )
-
+      
+      // Fire the association PUT request with the real ID
+      // Read from ref to get the latest state (avoids stale closure from useCallback deps)
+      const contributorIds = [...(contributorsByAnswerRef.current.get(answerToUse.id) || [])]
+        .map(id => id === tempId ? contributor.id : id)
+      
+      const associationResponse = await fetch(
+        `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contributorIds })
+        }
+      )
+      
+      if (!associationResponse.ok) {
+        throw new Error('Failed to associate contributor')
+      }
+      
+      contributorErrorRef.current = false
+    } catch (error) {
+      console.error('Failed to create contributor:', error)
+      contributorErrorRef.current = true
+      
+      // Revert optimistic update - remove temp contributor
+      setAllContributors(prev => prev.filter(c => c.id !== tempId))
+      
+      // Remove temp ID from contributorsByAnswer
+      setContributorsByAnswer(prev => {
+        const updated = new Map(prev)
+        prev.forEach((contributorIds, answerId) => {
+          updated.set(
+            answerId,
+            contributorIds.filter(id => id !== tempId)
+          )
+        })
+        return updated
+      })
+    }
+    
+    // Return temp contributor immediately for UI feedback
+    return tempContributor
+  }, [assessmentId, currentAnswer, ensureAnswerExists])
+  
+  // Handler: Update contributors for answer
+  const handleContributorsChange = useCallback(async (contributorIds: string[]) => {
+    // Ensure an answer exists first
+    let answerToUse = currentAnswer
+    if (!answerToUse) {
+      try {
+        answerToUse = await ensureAnswerExists()
+      } catch (error) {
+        console.error('Failed to create answer for contributors:', error)
+        return
+      }
+    }
+    
+    // Defensive check (should never happen after ensureAnswerExists)
+    if (!answerToUse) {
+      console.error('No answer available for contributors')
+      return
+    }
+    
+    // Optimistic update
+    setContributorsByAnswer(prev => {
+      const updated = new Map(prev)
+      updated.set(answerToUse!.id, contributorIds)
+      return updated
+    })
+    
+    // Save to API
+    try {
+      const response = await fetch(
+        `/api/assessments/${assessmentId}/answers/${answerToUse.id}/contributors`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contributorIds })
+        }
+      )
+      
+      if (!response.ok) {
+        throw new Error('Failed to save contributors')
+      }
+    } catch (error) {
+      console.error('Failed to save contributors:', error)
+      // Revert optimistic update
+      setContributorsByAnswer(prev => {
+        const updated = new Map(prev)
+        const current = contributorsByAnswer.get(answerToUse!.id) || []
+        updated.set(answerToUse!.id, current)
+        return updated
+      })
+    }
+  }, [assessmentId, currentAnswer, contributorsByAnswer, ensureAnswerExists])
+  
+  // Auto-save function
+  const saveAnswer = useCallback(async (data: {
+    questionId: string
+    value: AnswerValue | null
+    rationale?: string
+    notes?: string
+    strategies?: string
+    status: AnswerStatus
+  }) => {
+    const response = await fetch(`/api/assessments/${assessmentId}/answers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...data,
+        id: currentAnswer?.id,
+        allowDataSharing,
+      })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to save answer')
+    }
+    
+    const result = await response.json()
+    
+    // Update local cache
+    setAnswersCache(prev => {
+      const updated = new Map(prev)
+      updated.set(data.questionId, result.answer)
+      return updated
+    })
+    
+    return result
+  }, [assessmentId, currentAnswer, allowDataSharing])
+  
   // Ref to track current save status synchronously (for navigation guards)
   const saveStatusRef = useRef<AutoSaveStatus>('idle')
   // Track contributor creation errors separately
@@ -426,14 +365,11 @@ export function QuestionView({
   const pendingCompleteGuardNavigationRef = useRef<(() => void) | null>(null)
 
   // Auto-save hook
-  const handleAutoSaveStatusChange = useCallback(
-    (status: AutoSaveStatus) => {
-      saveStatusRef.current = status
-      onSaveStatusChange?.(status)
-      // Don't show modal immediately on error - wait for navigation attempt
-    },
-    [onSaveStatusChange],
-  )
+  const handleAutoSaveStatusChange = useCallback((status: AutoSaveStatus) => {
+    saveStatusRef.current = status
+    onSaveStatusChange?.(status)
+    // Don't show modal immediately on error - wait for navigation attempt
+  }, [onSaveStatusChange])
 
   const { save, clearError } = useAutoSave({
     onSave: saveAnswer,
@@ -454,11 +390,7 @@ export function QuestionView({
 
   // Wraps a navigation action: if saving/error, defers it and shows modal; otherwise executes immediately
   const guardedNavigate = useCallback((navigateFn: () => void) => {
-    if (
-      saveStatusRef.current === 'saving' ||
-      saveStatusRef.current === 'error' ||
-      contributorErrorRef.current
-    ) {
+    if (saveStatusRef.current === 'saving' || saveStatusRef.current === 'error' || contributorErrorRef.current) {
       pendingNavigationRef.current = navigateFn
       setShowProgressNotSavedModal(true)
     } else {
@@ -486,216 +418,164 @@ export function QuestionView({
     },
     [guardedNavigate, shouldTriggerCompleteGuard],
   )
-
+  
   // Handle answer selection (immediate save)
-  const handleAnswerChange = useCallback(
-    (value: AnswerValue) => {
-      setSelectedAnswer(value)
-      save(
-        {
-          questionId: currentQuestion.id,
-          value,
-          rationale,
-          notes,
-          strategies,
-          status: AnswerStatus.IN_PROGRESS,
-        },
-        true,
-      ) // Immediate save for answer selection
-    },
-    [currentQuestion?.id, rationale, notes, strategies, save],
-  )
-
+  const handleAnswerChange = useCallback((value: AnswerValue) => {
+    setSelectedAnswer(value)
+    save({
+      questionId: currentQuestion.id,
+      value,
+      rationale,
+      notes,
+      strategies,
+      status: AnswerStatus.IN_PROGRESS,
+    }, true) // Immediate save for answer selection
+  }, [currentQuestion?.id, rationale, notes, strategies, save])
+  
   // Handle rationale change (debounced save)
-  const handleRationaleChange = useCallback(
-    (value: string) => {
-      setRationale(value)
-      save(
-        {
-          questionId: currentQuestion.id,
-          value: selectedAnswer,
-          rationale: value,
-          notes,
-          strategies,
-          status: AnswerStatus.IN_PROGRESS,
-        },
-        false,
-      ) // Debounced save for text input
-    },
-    [currentQuestion?.id, selectedAnswer, notes, strategies, save],
-  )
-
+  const handleRationaleChange = useCallback((value: string) => {
+    setRationale(value)
+    save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale: value,
+      notes,
+      strategies,
+      status: AnswerStatus.IN_PROGRESS,
+    }, false) // Debounced save for text input
+  }, [currentQuestion?.id, selectedAnswer, notes, strategies, save])
+  
   // Handle notes change (debounced save)
-  const handleNotesChange = useCallback(
-    (value: string) => {
-      setNotes(value)
-      save(
-        {
-          questionId: currentQuestion.id,
-          value: selectedAnswer,
-          rationale,
-          notes: value,
-          strategies,
-          status: AnswerStatus.IN_PROGRESS,
-        },
-        false,
-      ) // Debounced save for text input
-    },
-    [currentQuestion?.id, selectedAnswer, rationale, strategies, save],
-  )
+  const handleNotesChange = useCallback((value: string) => {
+    setNotes(value)
+    save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale,
+      notes: value,
+      strategies,
+      status: AnswerStatus.IN_PROGRESS,
+    }, false) // Debounced save for text input
+  }, [currentQuestion?.id, selectedAnswer, rationale, strategies, save])
+  
+  const handleStrategysChange = useCallback((value: string) => {
+    setStrategies(value)
 
-  const handleStrategysChange = useCallback(
-    (value: string) => {
-      setStrategies(value)
-
-      save(
-        {
-          questionId: currentQuestion.id,
-          value: selectedAnswer,
-          rationale,
-          notes,
-          strategies: value,
-          status: AnswerStatus.IN_PROGRESS,
-        },
-        false,
-      ) // Debounced save for text input
-    },
-    [currentQuestion?.id, selectedAnswer, rationale, notes, save],
-  )
-
+    save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale,
+      notes,
+      strategies: value,
+      status: AnswerStatus.IN_PROGRESS,
+    }, false) // Debounced save for text input
+  }, [currentQuestion?.id, selectedAnswer, rationale, notes, save])
+  
   // Handle question selection
-  const executeQuestionSelect = useCallback(
-    (code: string) => {
-      const question = questions.find((q) => q.questionCode === code)
-      if (question) {
-        router.push(
-          `/assessment/${assessmentId}/${theme.toLowerCase()}?questionCode=${code}`,
-        )
+  const executeQuestionSelect = useCallback((code: string) => {
+    const question = questions.find(q => q.questionCode === code)
+    if (question) {
+      router.push(`/assessment/${assessmentId}/${theme.toLowerCase()}?questionCode=${code}`)
 
-        setCurrentQuestionCode(code)
-        onFocusChange?.(code)
-        const answer = answersCache.get(question.id)
-        setSelectedAnswer(answer?.value || null)
-        setRationale(answer?.rationale || '')
-        setNotes(answer?.notes || '')
-        setStrategies(answer?.strategies || '[]')
-        setIsVisuallyMarkedAsComplete(answer?.status === AnswerStatus.COMPLETE)
-        // Contributors are loaded from state, no need to update here
-      }
-    },
-    [questions, answersCache, assessmentId, theme, router],
-  )
+      setCurrentQuestionCode(code)
+      const answer = answersCache.get(question.id)
+      setSelectedAnswer(answer?.value || null)
+      setRationale(answer?.rationale || '')
+      setNotes(answer?.notes || '')
+      setStrategies(answer?.strategies || '[]')
+      setIsVisuallyMarkedAsComplete(answer?.status === AnswerStatus.COMPLETE)
+      // Contributors are loaded from state, no need to update here
+    }
+  }, [questions, answersCache, assessmentId, theme, router])
 
-  const handleQuestionSelect = useCallback(
-    (code: string) => {
-      navigateWithCompleteGuard(() => executeQuestionSelect(code))
-    },
-    [navigateWithCompleteGuard, executeQuestionSelect],
-  )
-
+  const handleQuestionSelect = useCallback((code: string) => {
+    navigateWithCompleteGuard(() => executeQuestionSelect(code))
+  }, [navigateWithCompleteGuard, executeQuestionSelect])
+  
   // Handle theme navigation
-  const handleThemeChange = useCallback(
-    (direction: 'prev' | 'next') => {
-      const targetTheme = direction === 'prev' ? prevTheme : nextTheme
-      if (targetTheme) {
-        navigateWithCompleteGuard(() =>
-          router.push(`/assessment/${assessmentId}/${targetTheme}`),
-        )
-      }
-    },
-    [assessmentId, prevTheme, nextTheme, router, navigateWithCompleteGuard],
-  )
-
-  const buildPaginationNavigation = useCallback(
-    (direction: 'next' | 'prev') => {
-      const currentIndex = questions.findIndex(
-        (q) => q.questionCode === currentQuestionCode,
+  const handleThemeChange = useCallback((direction: 'prev' | 'next') => {
+    const targetTheme = direction === 'prev' ? prevTheme : nextTheme
+    if (targetTheme) {
+      navigateWithCompleteGuard(() =>
+        router.push(`/assessment/${assessmentId}/${targetTheme}`),
       )
+    }
+  }, [assessmentId, prevTheme, nextTheme, router, navigateWithCompleteGuard])
+  
+  const buildPaginationNavigation = useCallback((direction: 'next' | 'prev') => {
+    const currentIndex = questions.findIndex(
+      (q) => q.questionCode === currentQuestionCode,
+    )
 
-      if (direction === 'next') {
-        const nextQuestion =
-          currentIndex < questions.length - 1
-            ? questions[currentIndex + 1]
-            : null
-        const hasNextInTheme = nextQuestion !== null
-        const canGoNextTheme = !hasNextInTheme && nextTheme !== null
+    if (direction === 'next') {
+      const nextQuestion =
+        currentIndex < questions.length - 1 ? questions[currentIndex + 1] : null
+      const hasNextInTheme = nextQuestion !== null
+      const canGoNextTheme = !hasNextInTheme && nextTheme !== null
 
-        if (hasNextInTheme && nextQuestion) {
-          return () => executeQuestionSelect(nextQuestion.questionCode)
-        }
-
-        if (canGoNextTheme) {
-          return () => router.push(`/assessment/${assessmentId}/${nextTheme}`)
-        }
-      } else {
-        const prevQuestion =
-          currentIndex > 0 ? questions[currentIndex - 1] : null
-        const hasPrevInTheme = prevQuestion !== null
-        const canGoPrevTheme = !hasPrevInTheme && prevTheme !== null
-
-        if (hasPrevInTheme && prevQuestion) {
-          return () => executeQuestionSelect(prevQuestion.questionCode)
-        }
-
-        if (canGoPrevTheme) {
-          return () => router.push(`/assessment/${assessmentId}/${prevTheme}`)
-        }
+      if (hasNextInTheme && nextQuestion) {
+        return () => executeQuestionSelect(nextQuestion.questionCode)
       }
 
-      return null
-    },
-    [
-      questions,
-      currentQuestionCode,
-      nextTheme,
-      prevTheme,
-      executeQuestionSelect,
-      router,
-      assessmentId,
-    ],
-  )
+      if (canGoNextTheme) {
+        return () => router.push(`/assessment/${assessmentId}/${nextTheme}`)
+      }
+    } else {
+      const prevQuestion = currentIndex > 0 ? questions[currentIndex - 1] : null
+      const hasPrevInTheme = prevQuestion !== null
+      const canGoPrevTheme = !hasPrevInTheme && prevTheme !== null
+
+      if (hasPrevInTheme && prevQuestion) {
+        return () => executeQuestionSelect(prevQuestion.questionCode)
+      }
+
+      if (canGoPrevTheme) {
+        return () => router.push(`/assessment/${assessmentId}/${prevTheme}`)
+      }
+    }
+
+    return null
+  }, [
+    questions,
+    currentQuestionCode,
+    nextTheme,
+    prevTheme,
+    executeQuestionSelect,
+    router,
+    assessmentId,
+  ])
 
   if (!currentQuestion) {
-    return (
-      <div className='p-8 text-center text-slate-500'>
-        {t('assessment.content.empty.noQuestions')}
-      </div>
-    )
+    return <div className="p-8 text-center text-slate-500">No questions found for this theme.</div>
   }
 
   const markAsCompleteHandler = async () => {
     setIsVisuallyMarkedAsComplete(true)
 
-    await save(
-      {
-        questionId: currentQuestion.id,
-        value: selectedAnswer,
-        rationale,
-        notes,
-        strategies,
-        status: AnswerStatus.COMPLETE,
-      },
-      true,
-    )
+    await save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale,
+      notes,
+      strategies,
+      status: AnswerStatus.COMPLETE,
+    }, true)
   }
-
+  
   const allowMarkAsComplete =
     selectedAnswer !== null &&
     hasRichTextContent(rationale) &&
     (strategies ? JSON.parse(strategies).length > 0 : false)
 
   const markCompleteAndContinue = async () => {
-    await save(
-      {
-        questionId: currentQuestion.id,
-        value: selectedAnswer,
-        rationale,
-        notes,
-        strategies,
-        status: AnswerStatus.COMPLETE,
-      },
-      true,
-    )
+    await save({
+      questionId: currentQuestion.id,
+      value: selectedAnswer,
+      rationale,
+      notes,
+      strategies,
+      status: AnswerStatus.COMPLETE,
+    }, true)
 
     setIsVisuallyMarkedAsComplete(true)
 
@@ -704,7 +584,7 @@ export function QuestionView({
     pendingCompleteGuardNavigationRef.current = null
     pendingNavigation?.()
   }
-
+  
   const continueWithoutMarking = async () => {
     setShowCompleteWarning(false)
     const pendingNavigation = pendingCompleteGuardNavigationRef.current
@@ -725,16 +605,16 @@ export function QuestionView({
         canGoPrev={canGoPrev}
         canGoNext={canGoNext}
       />
-
+      
       {/* Main Content */}
-      <main className='flex-1 pb-20 bg-transparent'>
-        <div className='max-w-4xl mx-auto pr-8 py-8'>
-          <div className='flex items-center justify-between mb-6'>
+      <main className="flex-1 pb-20 bg-transparent">
+        <div className="max-w-4xl mx-auto pr-8 py-8">
+          <div className="flex items-center justify-between mb-6">
             {/* Back to overview */}
             <Button
-              variant='borderless'
-              className='text-neutral-700'
-              leftIcon={<ChevronLeft className='w-3 h-3' />}
+              variant="borderless" 
+              className="text-neutral-700"
+              leftIcon={<ChevronLeft className="w-3 h-3" />}
               onClick={() =>
                 navigateWithCompleteGuard(() =>
                   router.push(`/assessment/${assessmentId}`),
@@ -742,68 +622,39 @@ export function QuestionView({
               }
               style={{ paddingLeft: '0' }}
             >
-              <span className='underline underline-offset-1'>
-                {t('common.buttons.backToOverview')}
-              </span>
+              <span className="underline underline-offset-1">Back to overview</span>
             </Button>
-
+            
             {/* Right side: Status indicator + Mark complete/Edit factor button */}
-            <div className='flex items-center gap-3'>
+            <div className="flex items-center gap-3">
               {/* Status Tag indicator */}
               {currentAnswer?.status === AnswerStatus.COMPLETE ? (
-                <Flex
-                  align='center'
-                  gap={2}
-                  px={3}
-                  py={1}
-                  color={getThemedColor('success', 900)}
-                >
-                  <CheckCircleIcon boxSize='12px' />
-                  <Text fontSize='sm'>
-                    {t('overview.keySuccessFactors.status.complete')}
-                  </Text>
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("success", 900)}>
+                  <CheckCircleIcon boxSize="12px" />
+                  <Text fontSize="sm">Complete</Text>
                 </Flex>
               ) : currentAnswer?.status === AnswerStatus.IN_PROGRESS ? (
-                <Flex
-                  align='center'
-                  gap={2}
-                  px={3}
-                  py={1}
-                  color={getThemedColor('primary', 800)}
-                >
-                  <InProgressIcon boxSize='12px' />
-                  <Text fontSize='sm'>
-                    {t('overview.keySuccessFactors.status.inProgress')}
-                  </Text>
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("primary", 800)}>
+                  <InProgressIcon boxSize="12px" />
+                  <Text fontSize="sm">In progress</Text>
                 </Flex>
               ) : (
-                <Flex
-                  align='center'
-                  gap={2}
-                  px={3}
-                  py={1}
-                  color={getThemedColor('neutral', 800)}
-                >
-                  <NotStartedIcon boxSize='12px' />
-                  <Text fontSize='sm'>
-                    {t('overview.keySuccessFactors.status.notStarted')}
-                  </Text>
+                <Flex align="center" gap={2} px={3} py={1} color={getThemedColor("neutral", 800)}>
+                  <NotStartedIcon boxSize="12px" />
+                  <Text fontSize="sm">Not started</Text>
                 </Flex>
               )}
-
+              
               {/* Mark complete or Edit factor button */}
               {isVisuallyMarkedAsComplete ? (
                 <Button
-                  leftIcon={
-                    <EditIcon css={{ width: '12px', height: '12px' }} />
-                  }
+                  leftIcon={<EditIcon css={{ width: '12px', height: '12px' }} />}
                   variant='secondary'
                   size='small'
                   onClick={() => setIsVisuallyMarkedAsComplete(false)}
-                  label={t('assessment.actions.buttons.editFactor')}
+                  label='Edit factor'
                 />
-              ) : currentAnswer?.status &&
-                currentAnswer.status !== AnswerStatus.NOT_STARTED ? (
+              ) : currentAnswer?.status && currentAnswer.status !== AnswerStatus.NOT_STARTED ? (
                 <Button
                   leftIcon={<CheckIcon />}
                   variant='primary'
@@ -811,7 +662,7 @@ export function QuestionView({
                   onClick={markAsCompleteHandler}
                   disabled={!allowMarkAsComplete}
                 >
-                  {t('overview.keySuccessFactors.status.complete')}
+                  Complete
                 </Button>
               ) : null}
             </div>
@@ -843,11 +694,11 @@ export function QuestionView({
               }}
             >
               <InlineMessage
-                actionLabel={t('assessment.actions.messages.markAsComplete')}
-                caption={t('assessment.actions.captions.markComplete')}
+                actionLabel='Mark complete'
+                caption='Mark this factor as complete when you’ve finished reviewing the response, rationale, and strategies.'
                 isButtonRight
                 icon={null}
-                label={t('assessment.actions.messages.readyToFinish')}
+                label='Ready to finish this factor?'
                 size='full-width'
                 onActionClick={markAsCompleteHandler}
                 buttonLeftIcon={<CheckIcon />}
@@ -859,15 +710,13 @@ export function QuestionView({
           {isVisuallyMarkedAsComplete ? (
             <div className='mt-10'>
               <InlineMessage
-                actionLabel={t('assessment.actions.buttons.editFactor')}
+                actionLabel='Edit factor'
                 isButtonRight
                 icon={<CheckIcon />}
-                label={t('assessment.actions.messages.factorMarkedComplete')}
+                label='This factor is marked as complete.'
                 size='full-width'
                 onActionClick={() => setIsVisuallyMarkedAsComplete(false)}
-                buttonLeftIcon={
-                  <EditIcon css={{ width: '12px', height: '12px' }} />
-                }
+                buttonLeftIcon={<EditIcon css={{ width: '12px', height: '12px' }} />}
                 variant='success'
               />
             </div>
@@ -893,7 +742,7 @@ export function QuestionView({
           />
         </div>
       </main>
-
+      
       <GuidanceSidebar
         question={currentQuestion}
         notes={notes}
@@ -907,19 +756,17 @@ export function QuestionView({
           pendingCompleteGuardNavigationRef.current = null
         }}
         header={
-          <p className='text-neutral-800 font-bold'>
-            {t('assessment.actions.modal.markComplete.header')}
-          </p>
+          <p className='text-neutral-800 font-bold'>Mark factor as complete?</p>
         }
-        content={t('assessment.actions.modal.markComplete.content')}
+        content='You’ve filled in the response and required fields for this factor. Would you like to mark it as complete before moving on?'
         footer={
           <>
             <Button
-              label={t('assessment.actions.modal.markComplete.confirmButton')}
+              label='Mark complete & continue'
               onClick={markCompleteAndContinue}
             />
             <Button
-              label={t('assessment.actions.modal.markComplete.cancelButton')}
+              label='Continue without marking'
               onClick={continueWithoutMarking}
               rightIcon={<ChevronRightIcon />}
               variant='borderless'
@@ -943,21 +790,14 @@ export function QuestionView({
           clearError()
           saveStatusRef.current = 'idle'
           // Fire-and-forget save attempt (best-effort)
-          save(
-            {
-              questionId: currentQuestion.id,
-              value: selectedAnswer,
-              rationale,
-              notes,
-              strategies,
-              status: isVisuallyMarkedAsComplete
-                ? AnswerStatus.COMPLETE
-                : AnswerStatus.IN_PROGRESS,
-            },
-            true,
-          ).catch(() => {
-            /* best-effort */
-          })
+          save({
+            questionId: currentQuestion.id,
+            value: selectedAnswer,
+            rationale,
+            notes,
+            strategies,
+            status: isVisuallyMarkedAsComplete ? AnswerStatus.COMPLETE : AnswerStatus.IN_PROGRESS,
+          }, true).catch(() => { /* best-effort */ })
           // Execute the deferred navigation if one was pending
           if (pendingNavigationRef.current) {
             pendingNavigationRef.current()
@@ -965,6 +805,7 @@ export function QuestionView({
           }
         }}
       />
+        
     </>
   )
 }

@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react'
 import { Combobox, Portal, createListCollection } from '@chakra-ui/react'
 import { Tag, getThemedColor } from '@worldresources/wri-design-systems'
 import { PlainContributor } from '@/types/answer.types'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface ContributorsComboboxProps {
   selectedContributorIds: string[]
@@ -21,7 +20,6 @@ export function Responsibility({
   disabled = false,
   assessmentId,
 }: ContributorsComboboxProps) {
-  const t = useTranslations()
   const [inputValue, setInputValue] = useState('')
   const [localAllContributors, setLocalAllContributors] =
     useState(allContributors)
@@ -137,8 +135,7 @@ export function Responsibility({
   return (
     <div>
       <p className='text-neutral-900 mb-1.5'>
-        {t('assessment.strategies.fields.responsibility.label')}{' '}
-        <span className='text-neutral-700'>({t('common.optional')})</span>
+        Responsibility <span className='text-neutral-700'>(Optional)</span>
       </p>
 
       <Combobox.Root
@@ -154,7 +151,7 @@ export function Responsibility({
       >
         <Combobox.Control>
           <Combobox.Input
-            placeholder={t('assessment.strategies.fields.responsibility.placeholder')}
+            placeholder='Type to search or add responsibility'
             css={{
               backgroundColor: 'white',
               borderColor: 'neutral.700',
@@ -231,7 +228,7 @@ export function Responsibility({
                     color: 'slate.500',
                   }}
                 >
-                  {t('assessment.contributors.empty')}
+                  No contributors found
                 </Combobox.Empty>
               )}
             </Combobox.Content>

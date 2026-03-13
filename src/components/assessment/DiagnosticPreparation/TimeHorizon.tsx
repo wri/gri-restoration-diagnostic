@@ -3,14 +3,9 @@
 import { ChevronLeftIcon } from '@/components/icons'
 import Loader from '@/components/ui/Loader'
 import { Button, TextInput } from '@worldresources/wri-design-systems'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
-import { PREPARATION_STEPS } from '@/constants'
-import {
-  usePreparationSubmit,
-  type PreparationSubmitAction,
-} from './PreparationSubmitContext'
-import { useTranslations } from '@/i18n/useTranslations'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { PREPARATION_STEPS } from './utils'
 
 const TimeHorizon = () => {
   const params = useParams()
@@ -18,11 +13,6 @@ const TimeHorizon = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [timeHorizon, setTimeHorizon] = useState('')
-  const t = useTranslations()
-  const searchParams = useSearchParams()
-  const isEditMode = searchParams.get('isEditMode')
-  const isEditing = isEditMode === 'true'
-  const { registerSubmitHandler } = usePreparationSubmit()
 
   const assessmentId = params.id as string
   const activeStep = (params.step as string) || PREPARATION_STEPS.TIME_HORIZON
@@ -49,48 +39,35 @@ const TimeHorizon = () => {
     getAssessmentData()
   }, [])
 
-  const onSubmit = useCallback(
-    async (action: PreparationSubmitAction = 'advance') => {
-      setIsSubmitting(true)
+  const onSubmit = async () => {
+    setIsSubmitting(true)
 
-      const payload = {
-        timeHorizon,
-        step: activeStep,
-        isEditing,
-      }
+    const payload = {
+      timeHorizon,
+      step: activeStep,
+    }
 
-      const response = await fetch(
-        `/api/assessments/${assessmentId}/preparation`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
+    const response = await fetch(
+      `/api/assessments/${assessmentId}/preparation`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(payload),
+      },
+    )
+
+    const result = await response.json()
+
+    if (result.success) {
+      router.push(
+        `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.RESTORATION_GOALS}`,
       )
+    }
 
-      const result = await response.json()
-
-      if (result.success) {
-        const destination =
-          action === 'exit'
-            ? `/assessment/${assessmentId}`
-            : `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.RESTORATION_GOALS}${isEditing ? '?isEditMode=true' : ''}`
-
-        router.push(destination)
-      }
-
-      setIsSubmitting(false)
-    },
-    [activeStep, assessmentId, isEditing, router, timeHorizon],
-  )
-
-  useEffect(() => {
-    registerSubmitHandler(onSubmit)
-
-    return () => registerSubmitHandler(null)
-  }, [onSubmit, registerSubmitHandler])
+    setIsSubmitting(false)
+  }
 
   if (isLoading) {
     return <Loader />
@@ -104,25 +81,23 @@ const TimeHorizon = () => {
         leftIcon={<ChevronLeftIcon className='w-3 h-3' />}
         onClick={() =>
           router.push(
-            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TARGET_GEOGRAPHY}${isEditing ? '?isEditMode=true' : ''}`,
+            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TARGET_GEOGRAPHY}`,
           )
         }
-        >
-        <span className='underline underline-offset-1'>
-          {t('scoping.common.buttons.previous')}
-        </span>
+      >
+        <span className='underline underline-offset-1'>Previous</span>
       </Button>
 
-      <h1 className='text-3xl font-bold text-neutral-900 mb-2'>
-        {t('scoping.step2.heading')}
-      </h1>
+      <h1 className='text-3xl font-bold text-neutral-900 mb-2'>Time horizon</h1>
       <p className='text-neutral-800 mb-8'>
-        {t('scoping.step2.description')}
+        The time horizon should reflect the long-term nature of restoration,
+        even if actions begin in the short term. It may align with an existing
+        national or sub-national planning cycle or strategy.
       </p>
 
       <div className='mb-10'>
         <TextInput
-          label={t('scoping.step2.fields.restorationPeriod.label')}
+          label='Restoration period (years)'
           style={{ width: '120px' }}
           type='number'
           min={1}
@@ -133,19 +108,19 @@ const TimeHorizon = () => {
 
       <div className='flex items-center gap-5 mt-10'>
         <Button
-          onClick={() => onSubmit('advance')}
+          onClick={onSubmit}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          {t('scoping.common.buttons.saveAndContinue')}
+          Save and continue
         </Button>
         <Button
           variant='borderless'
-          onClick={() => onSubmit('advance')}
+          onClick={onSubmit}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          {t('scoping.common.buttons.skip')}
+          Skip
         </Button>
       </div>
     </div>

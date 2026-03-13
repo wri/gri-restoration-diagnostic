@@ -1,10 +1,7 @@
-'use client'
-
 import { ChevronDownIcon, InfoIcon } from '@/components/icons'
 import { StepProps } from './Steps'
 import { Collapsible } from '@chakra-ui/react'
 import RichText from '@/components/ui/RichText'
-import { useTranslations } from '@/i18n/useTranslations'
 
 const Guidance = ({
   steps,
@@ -13,16 +10,15 @@ const Guidance = ({
   steps: StepProps[]
   activeStep: string
 }) => {
-  const t = useTranslations()
   const activeStepData = steps.find((s) => s.id === activeStep)
 
   if (!activeStepData) return null
 
   return (
-    <div className='border border-l-neutral-300 bg-white max-h-[calc(100vh-48px-44px-56px)] overflow-y-auto'>
+    <div className='border border-l-neutral-300 bg-white max-h-[calc(100vh-48px-56px)] overflow-y-auto'>
       <div className='px-4 py-3 text-neutral-900 border-b border-neutral-300 flex items-center gap-2'>
         <InfoIcon className='h-4 w-4' />
-        {t('scoping.sidebar.guidance.title')}
+        Guidance
       </div>
 
       {activeStepData.guidance.map((guidance) => (

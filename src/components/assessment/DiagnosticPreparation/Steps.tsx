@@ -1,10 +1,7 @@
-'use client'
-
 import { ProgressBar } from '@worldresources/wri-design-systems'
 import { DocumentIcon } from '@/components/icons'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { useTranslations } from '@/i18n/useTranslations'
 
 export type StepProps = {
   id: string
@@ -78,7 +75,6 @@ const DiagnosticPreparationStep = ({
 }
 
 const Steps = ({ steps, activeStep, assessmentId }: StepsProps) => {
-  const t = useTranslations()
   const totalSteps = steps.length
   const activeStepIdx = steps.findIndex((s) => s.id === activeStep)
   const activeStepNumber = activeStepIdx >= 0 ? activeStepIdx + 1 : 1
@@ -90,16 +86,13 @@ const Steps = ({ steps, activeStep, assessmentId }: StepsProps) => {
           <div className='mb-2 flex items-center gap-2'>
             <DocumentIcon className='h-4 w-4 text-neutral-700' />
             <h2 className='font-bold text-neutral-800'>
-              {t('scoping.sidebar.title')}
+              Diagnostic preparation
             </h2>
           </div>
 
           <div className='flex items-center gap-2'>
             <span className='text-sm text-neutral-700'>
-              {t('scoping.sidebar.progress', {
-                current: activeStepNumber,
-                total: totalSteps,
-              })}
+              {activeStepNumber}/{totalSteps}
             </span>
             <div className='w-full rounded-full'>
               <ProgressBar progress={(activeStepNumber / totalSteps) * 100} />
@@ -110,7 +103,7 @@ const Steps = ({ steps, activeStep, assessmentId }: StepsProps) => {
         <div className='border-b border-neutral-300'>
           <div className='pt-4'>
             <h3 className='mb-0.5 px-3 text-sm text-neutral-800'>
-              {t('scoping.sidebar.groups.scope')}
+              Setting the scope
             </h3>
             {steps
               .filter((step) => step.section === 'scope')
@@ -130,7 +123,7 @@ const Steps = ({ steps, activeStep, assessmentId }: StepsProps) => {
         <div className='border-b border-neutral-300'>
           <div className='py-4'>
             <h3 className='mb-0.5 px-3 text-sm text-neutral-800'>
-              {t('scoping.sidebar.groups.approach')}
+              Plan your approach
             </h3>
             {steps
               .filter((step) => step.section === 'approach')

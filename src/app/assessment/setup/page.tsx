@@ -14,85 +14,42 @@ import {
   Select,
   RadioList,
 } from '@worldresources/wri-design-systems'
-import { InfoIcon } from '@/components/icons'
+import {
+  DownloadIcon,
+} from '@/components/icons'
 import { AccessDetailsModal } from '@/components/assessment/AccessDetailsModal'
 import {
   useAssessmentSetupForm,
-  getAssessmentFormRules,
+  assessmentFormRules,
 } from '@/hooks/useAssessmentSetupForm'
+import {
+  genderOptions,
+  ageRangeOptions,
+  identityOptions,
+} from '@/constants/setup-assessment'
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import type { AssessmentCreatedResponse } from '@/types/api.types'
 import Image from 'next/image'
-import { Box, Text } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { externalLinks } from '@/constants/external-links'
-import { useTranslations } from '@/i18n/useTranslations'
+
+
 
 export default function SetupAssessmentPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { language } = useLanguage()
-  const t = useTranslations()
   const [error, setError] = useState<{
     message: string
     error?: string
     stack?: string
   } | null>(null)
   const [showAccessModal, setShowAccessModal] = useState(false)
-  const [createdAssessmentId, setCreatedAssessmentId] = useState<string | null>(
-    null,
-  )
-  const [assessmentPassword, setAssessmentPassword] = useState<string | null>(
-    null,
-  )
-  const [showDemographicInfoModal, setShowDemographicInfoModal] =
-    useState(false)
+  const [createdAssessmentId, setCreatedAssessmentId] = useState<string | null>(null)
+  const [assessmentPassword, setAssessmentPassword] = useState<string | null>(null)
 
   const isDev = process.env.NODE_ENV === 'development'
-  const assessmentFormRules = getAssessmentFormRules(t)
-  const genderOptions = [
-    { label: t('forms.setup.genderOptions.woman'), value: 'woman' },
-    { label: t('forms.setup.genderOptions.man'), value: 'man' },
-    { label: t('forms.setup.genderOptions.nonBinary'), value: 'non_binary' },
-    { label: t('forms.setup.genderOptions.transgender'), value: 'transgender' },
-    { label: t('forms.setup.genderOptions.intersex'), value: 'intersex' },
-    {
-      label: t('forms.setup.genderOptions.preferNotToSay'),
-      value: 'prefer_not_to_say',
-    },
-    {
-      label: t('forms.setup.genderOptions.identityNotListed'),
-      value: 'identity_not_listed',
-    },
-  ]
-  const ageRangeOptions = [
-    { label: t('forms.setup.ageRangeOptions.under25'), value: 'under_25' },
-    { label: t('forms.setup.ageRangeOptions.25to34'), value: '25_34' },
-    { label: t('forms.setup.ageRangeOptions.35to44'), value: '35_44' },
-    { label: t('forms.setup.ageRangeOptions.45to54'), value: '45_54' },
-    { label: t('forms.setup.ageRangeOptions.55to64'), value: '55_64' },
-    { label: t('forms.setup.ageRangeOptions.65plus'), value: '65_plus' },
-    {
-      label: t('forms.setup.ageRangeOptions.preferNotToSay'),
-      value: 'prefer_not_to_say',
-    },
-  ]
-  const identityOptions = [
-    {
-      value: 'indigenous_peoples',
-      children: t('forms.setup.identityOptions.indigenousPeoples'),
-    },
-    {
-      value: 'local_communities',
-      children: t('forms.setup.identityOptions.localCommunities'),
-    },
-    { value: 'both', children: t('forms.setup.identityOptions.both') },
-    {
-      value: 'prefer_not_to_say',
-      children: t('forms.setup.identityOptions.preferNotToSay'),
-    },
-    { value: 'none', children: t('forms.setup.identityOptions.none') },
-  ]
 
   const {
     register,
@@ -154,7 +111,7 @@ export default function SetupAssessmentPage() {
         errorMessages.push(`• ${error.message}`)
       }
     })
-    return errorMessages
+    return errorMessages.join('\n')
   }
 
   const hasErrors = Object.keys(errors).length > 0
@@ -166,7 +123,7 @@ export default function SetupAssessmentPage() {
           open={true}
           onClose={() => setError(null)}
           size='large'
-          header={t('forms.setup.errors.genericError')}
+          header='Something went wrong'
           content={
             <div className='space-y-4'>
               <p className='text-gray-700 leading-relaxed'>{error.message}</p>
@@ -199,7 +156,7 @@ export default function SetupAssessmentPage() {
 
               <div className='pt-4'>
                 <Button
-                  label={t('common.buttons.close')}
+                  label='Close'
                   variant='primary'
                   size='default'
                   onClick={() => setError(null)}
@@ -222,11 +179,13 @@ export default function SetupAssessmentPage() {
               content={
                 <div className='p-6 sm:p-8'>
                   <h2 className='font-bold text-4xl text-neutral-800 mb-2'>
-                    {t('forms.setup.page.title')}
+                    Welcome to the Restoration Diagnostic Tool
                   </h2>
 
                   <p className='text-lg text-neutral-800 mb-4'>
-                    {t('forms.setup.page.subtitle')}
+                    A rapid assessment tool to evaluate the readiness of your
+                    landscape/geography for restoration and design strategic
+                    actions to ensure long-term success.
                   </p>
 
                   <div className='rounded-lg overflow-hidden'>
@@ -237,6 +196,37 @@ export default function SetupAssessmentPage() {
                       height={480}
                     />
                   </div>
+
+                  <div className='my-4 px-4 py-3 border border-neutral-300 rounded-lg bg-white'>
+                    <div className='flex items-center justify-between gap-4'>
+                      <div className='flex-1'>
+                        <h3 className='font-bold text-lg text-neutral-800'>
+                          Complete offline
+                        </h3>
+                        <p className='text-neutral-800'>
+                          Download the spreadsheet template and PDF guidance document to complete a simplified version of the Diagnostic offline.
+                        </p>
+                      </div>
+                      <Button
+                        variant='secondary'
+                        size='small'
+                        leftIcon={<DownloadIcon />}
+                        label='Download'
+                        onClick={() =>
+                          window.open(
+                            externalLinks.offlineDownload,
+                            '_blank',
+                            'noopener noreferrer',
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <p className='mt-3 text-sm text-neutral-700'>
+                    Fields marked with <span className='text-error-500'>*</span>{' '}
+                    are required.
+                  </p>
                 </div>
               }
             />
@@ -248,34 +238,32 @@ export default function SetupAssessmentPage() {
               content={
                 <div className='p-6 sm:p-8'>
                   <h3 className='font-bold text-4xl text-neutral-800 mb-2'>
-                    {t('forms.setup.sections.getStarted')}
+                    Get started
                   </h3>
                   <p className='text-lg text-neutral-800 mb-4'>
-                    {t('forms.setup.sections.getStartedDescription')}
+                    Enter some basic details about this diagnostic to get
+                    started.
                   </p>
 
                   <hr className='my-6' />
 
-                  <Box
+                  <Box 
                     css={{
                       '& label': {
                         fontSize: 'xl',
                         fontWeight: '600',
                         color: getThemedColor('neutral', 800),
-                        marginBottom: '2',
+                        marginBottom: '2'
                       },
-                      '& span[data-part="helper-text"]': {
+                      '& span': {
                         fontSize: 'lg',
-                        color: getThemedColor('neutral', 800),
-                      },
-                    }}
-                  >
+                        color: getThemedColor('neutral', 800)
+                      }
+                    }}>
                     <TextInput
-                      label={t('forms.setup.labels.diagnosticTitle')}
-                      caption={t('forms.setup.captions.diagnosticTitle')}
-                      placeholder={t(
-                        'forms.setup.placeholders.diagnosticTitle',
-                      )}
+                      label='Diagnostic title'
+                      caption='Include a descriptive title for your diagnostic. This will be shown to anyone that accesses the diagnostic.'
+                      placeholder='Enter a diagnostic title'
                       required
                       {...register('title', assessmentFormRules.title)}
                       errorMessage={errors.title?.message}
@@ -285,44 +273,41 @@ export default function SetupAssessmentPage() {
                   <hr className='my-6' />
 
                   <h4 className='font-bold text-xl text-neutral-800 mb-2'>
-                    {t('forms.setup.sections.diagnosticLead')}
+                    Diagnostic lead
                   </h4>
                   <p className='text-lg text-neutral-800 mb-4'>
-                    {t('forms.setup.sections.diagnosticLeadDescription')}
+                    Add the details of the person who will coordinate and oversee this diagnostic. This may be you or another member of your team.
                   </p>
 
                   <InlineMessage
-                    label={t(
-                      'forms.setup.sections.diagnosticLeadWarning.label',
-                    )}
-                    caption={t(
-                      'forms.setup.sections.diagnosticLeadWarning.caption',
-                    )}
+                    label="Answering on behalf of the diagnostic lead"
+                    caption="If you are entering details for someone else, please provide this information with their knowledge and consent. Where possible, we recommend that the diagnostic lead creates the diagnostic to ensure continuity."
                     onActionClick={() => {}}
-                    variant='warning'
+                    variant="warning"
                     size='full-width'
                   />
 
                   <div className='space-y-6'>
+
                     <div className='grid grid-cols-1 gap-4'>
                       <TextInput
-                        label={t('forms.setup.labels.fullName')}
-                        placeholder={t('forms.setup.placeholders.fullName')}
+                        label='Full name'
+                        placeholder='Enter full name'
                         required
                         {...register('fullName', assessmentFormRules.fullName)}
                         errorMessage={errors.fullName?.message}
                       />
                       <TextInput
-                        label={t('forms.setup.labels.email')}
+                        label='Email address'
                         type='email'
-                        placeholder={t('forms.setup.placeholders.email')}
+                        placeholder='name@organization.com'
                         required
                         {...register('email', assessmentFormRules.email)}
                         errorMessage={errors.email?.message}
                       />
                       <TextInput
-                        label={t('forms.setup.labels.organization')}
-                        placeholder={t('forms.setup.placeholders.organization')}
+                        label='Organization'
+                        placeholder='Enter an organization name'
                         {...register(
                           'organization',
                           assessmentFormRules.organization,
@@ -330,8 +315,8 @@ export default function SetupAssessmentPage() {
                         errorMessage={errors.organization?.message}
                       />
                       <TextInput
-                        label={t('forms.setup.labels.role')}
-                        placeholder={t('forms.setup.placeholders.role')}
+                        label='Job role'
+                        placeholder='e.g. Project Manager'
                         {...register('role', assessmentFormRules.role)}
                         errorMessage={errors.role?.message}
                       />
@@ -341,26 +326,11 @@ export default function SetupAssessmentPage() {
                     <div className='flex flex-col gap-6 mb-6'>
                       <div className='flex flex-col gap-2'>
                         <h3 className='text-lg font-bold text-neutral-800'>
-                          {t('forms.setup.sections.demographicInformation')}
+                          Demographic information
                         </h3>
-                        <p className='text-neutral-700'>
-                          {t(
-                            'forms.setup.sections.demographicInformationDescription',
-                          )}
+                        <p className='text-sm text-neutral-600'>
+                          The following questions are used for aggregated reporting only and do not affect participation.
                         </p>
-                        <div>
-                          <Button
-                            variant='secondary'
-                            size='small'
-                            leftIcon={<InfoIcon />}
-                            style={{ borderRadius: '8px' }}
-                            onClick={() => setShowDemographicInfoModal(true)}
-                          >
-                            {t(
-                              'forms.setup.sections.demographicInfoModal.buttonLabel',
-                            )}
-                          </Button>
-                        </div>
                       </div>
 
                       <Controller
@@ -369,8 +339,8 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.gender}
                         render={({ field }) => (
                           <Select
-                            label={t('forms.setup.labels.gender')}
-                            placeholder={t('forms.setup.placeholders.gender')}
+                            label='Gender (Optional)'
+                            placeholder='Please select'
                             items={genderOptions}
                             value={field.value ? [field.value] : []}
                             onChange={(value) => field.onChange(value[0] || '')}
@@ -385,8 +355,8 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.ageRange}
                         render={({ field }) => (
                           <Select
-                            label={t('forms.setup.labels.ageRange')}
-                            placeholder={t('forms.setup.placeholders.ageRange')}
+                            label='Age range (Optional)'
+                            placeholder='Please select'
                             items={ageRangeOptions}
                             value={field.value ? [field.value] : []}
                             onChange={(value) => field.onChange(value[0] || '')}
@@ -401,18 +371,17 @@ export default function SetupAssessmentPage() {
                         rules={assessmentFormRules.identity}
                         render={({ field }) => (
                           <RadioList
-                            label={t('forms.setup.labels.identity')}
+                            label='Does the diagnostic lead identify as part of any of the following groups? (Optional)'
                             name='identity'
                             radios={identityOptions}
                             defaultValue={field.value}
-                            onCheckedChange={(_, selectedValue) =>
-                              field.onChange(selectedValue)
-                            }
+                            onCheckedChange={(_, selectedValue) => field.onChange(selectedValue)}
                             errorMessage={errors.identity?.message}
                           />
                         )}
                       />
                     </div>
+                   
                   </div>
                 </div>
               }
@@ -428,30 +397,15 @@ export default function SetupAssessmentPage() {
                 render={({ field }) => (
                   <Checkbox
                     checked={field.value}
-                    onCheckedChange={({ checked }) => field.onChange(checked)}
+                    onCheckedChange={({ checked }) =>
+                      field.onChange(checked)
+                    }
                     required
                   >
                     <p className='text-neutral-800 font-normal'>
-                      <span className='text-error-500'>*</span>{' '}
-                      {t('forms.setup.checkboxes.termsPrefix')}{' '}
-                      <a
-                        className='underline'
-                        rel='noopener noreferrer'
-                        href={externalLinks.tos}
-                        target='_blank'
-                      >
-                        {t('common.footer.termsOfService')}
-                      </a>{' '}
-                      {t('forms.setup.checkboxes.termsMiddle')}{' '}
-                      <a
-                        className='underline'
-                        rel='noopener noreferrer'
-                        href={externalLinks.privacy}
-                        target='_blank'
-                      >
-                        {t('common.footer.privacyPolicy')}
-                      </a>{' '}
-                      {t('forms.setup.checkboxes.termsSuffix')}
+                      <span className='text-error-500'>*</span> I agree
+                      to WRI&apos;s <a className='underline' rel='noopener noreferrer' href={externalLinks.tos} target='_blank'>Terms of Service</a> and <a className='underline' rel='noopener noreferrer' href={externalLinks.privacy} target="_blank">Privacy Policy</a>&nbsp;
+                      so I can save and manage my progress.
                     </p>
                   </Checkbox>
                 )}
@@ -464,10 +418,14 @@ export default function SetupAssessmentPage() {
                 render={({ field }) => (
                   <Checkbox
                     checked={field.value}
-                    onCheckedChange={({ checked }) => field.onChange(checked)}
+                    onCheckedChange={({ checked }) =>
+                      field.onChange(checked)
+                    }
                   >
                     <p className='text-neutral-800 font-normal'>
-                      {t('forms.setup.checkboxes.allowDataSharing')}
+                      I allow my anonymized data to be used in global
+                      research and meta-analysis to help identify
+                      restoration trends.
                     </p>
                   </Checkbox>
                 )}
@@ -476,26 +434,18 @@ export default function SetupAssessmentPage() {
 
             {hasErrors && (
               <div className='mb-4'>
-                <InlineMessage
-                  variant='error'
-                  label={t('scoping.validation.formErrors', {
-                    count: Object.keys(errors).length,
-                    verb: Object.keys(errors).length > 1 ? 'are' : 'is',
-                    plural: Object.keys(errors).length > 1 ? 's' : '',
-                  })}
-                  caption={
-                    <div className='flex flex-col'>
-                      {getErrorList().map((error: string) => (
-                        <p key={error}>{error}</p>
-                      ))}
-                    </div>
-                  }
-                  size='full-width'
-                />
+                <div className='p-4 bg-error-50 border-l-4 border-error-500 rounded'>
+                  <p className='font-bold text-error-900 text-sm mb-3'>
+                    There are errors in the form:
+                  </p>
+                  <div className='space-y-1 text-sm text-error-800 whitespace-pre-line'>
+                    {getErrorList()}
+                  </div>
+                </div>
               </div>
             )}
             <Button
-              label={t('common.buttons.continue')}
+              label='Continue'
               variant='primary'
               type='submit'
               loading={isSubmitting}
@@ -511,29 +461,6 @@ export default function SetupAssessmentPage() {
           assessmentId={createdAssessmentId}
           password={assessmentPassword}
           onContinue={handleContinueAssessment}
-        />
-      )}
-
-      {showDemographicInfoModal && (
-        <Modal
-          open={showDemographicInfoModal}
-          onClose={() => setShowDemographicInfoModal(false)}
-          size='medium'
-          header={
-            <Text fontWeight={'bold'}>
-              {t('forms.setup.sections.demographicInfoModal.title')}
-            </Text>
-          }
-          content={
-            <div className='space-y-4'>
-              <p className='text-neutral-700 leading-relaxed'>
-                {t('forms.setup.sections.demographicInfoModal.description1')}
-              </p>
-              <p className='text-neutral-700 leading-relaxed'>
-                {t('forms.setup.sections.demographicInfoModal.description2')}
-              </p>
-            </div>
-          }
         />
       )}
     </>

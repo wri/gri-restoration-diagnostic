@@ -1,5 +1,3 @@
-'use client'
-
 import {
   CheckCircleIcon,
   PopulatedCheckIcon,
@@ -12,7 +10,6 @@ import { Tag } from '@worldresources/wri-design-systems'
 import Link from 'next/link'
 import AnswerOptionsResponse from '../../AnswerOptionsResponse'
 import { AnswerStatus } from '@/types/answer.types'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface KeySuccessFactorsTableProps {
   questions: Questions[]
@@ -23,7 +20,6 @@ const KeySuccessFactorsTable = ({
   questions,
   assessmentId,
 }: KeySuccessFactorsTableProps) => {
-  const t = useTranslations()
   const groupedQuestions = questions
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .reduce(
@@ -42,20 +38,12 @@ const KeySuccessFactorsTable = ({
     <div>
       <div className='flex items-center gap-3 bg-neutral-200 border border-neutral-300 px-3 py-[10px]'>
         <p className='text-neutral-800 font-bold w-[440px]'>
-          {t('overview.keySuccessFactors.table.headers.keySuccessFactor')}
+          Key success factor
         </p>
-        <p className='text-neutral-800 font-bold w-[130px]'>
-          {t('overview.keySuccessFactors.table.headers.status')}
-        </p>
-        <p className='text-neutral-800 font-bold w-[130px]'>
-          {t('overview.keySuccessFactors.table.headers.response')}
-        </p>
-        <p className='text-neutral-800 font-bold w-[130px]'>
-          {t('overview.keySuccessFactors.table.headers.rationale')}
-        </p>
-        <p className='text-neutral-800 font-bold w-[130px]'>
-          {t('overview.keySuccessFactors.table.headers.strategies')}
-        </p>
+        <p className='text-neutral-800 font-bold w-[130px]'>Status</p>
+        <p className='text-neutral-800 font-bold w-[130px]'>Response</p>
+        <p className='text-neutral-800 font-bold w-[130px]'>Rationale</p>
+        <p className='text-neutral-800 font-bold w-[130px]'>Strategies</p>
       </div>
 
       {Object.entries(groupedQuestions).map(
@@ -84,25 +72,19 @@ const KeySuccessFactorsTable = ({
                     <div className='w-full max-w-[130px] flex'>
                       {q.answer.status === AnswerStatus.COMPLETE ? (
                         <Tag
-                          label={t(
-                            'overview.keySuccessFactors.status.complete',
-                          )}
+                          label='Complete'
                           variant='success'
                           icon={<CheckCircleIcon />}
                         />
                       ) : q.answer.status === AnswerStatus.IN_PROGRESS ? (
                         <Tag
-                          label={t(
-                            'overview.keySuccessFactors.status.inProgress',
-                          )}
+                          label='In progress'
                           variant='warning'
                           icon={<InProgressIcon />}
                         />
                       ) : (
                         <Tag
-                          label={t(
-                            'overview.keySuccessFactors.status.notStarted',
-                          )}
+                          label='Not started'
                           variant='info-grey'
                           icon={<NotStartedIcon />}
                         />
@@ -113,7 +95,7 @@ const KeySuccessFactorsTable = ({
                     </div>
                     <div className='w-full max-w-[130px] h-6 flex items-center'>
                       {q.answer.value?.toLowerCase() === 'na' ? (
-                        t('overview.keySuccessFactors.table.na')
+                        'N/A'
                       ) : hasRichTextContent(q.answer.rationale) ? (
                         <PopulatedCheckIcon className='h-6 w-6' />
                       ) : (
@@ -122,11 +104,9 @@ const KeySuccessFactorsTable = ({
                     </div>
                     <div className='w-full max-w-[130px] h-6 flex items-center'>
                       {q.answer.value?.toLowerCase() === 'na' ? (
-                        t('overview.keySuccessFactors.table.na')
+                        'N/A'
                       ) : strategies.length > 0 ? (
-                        t('overview.keySuccessFactors.table.added', {
-                          count: strategies.length,
-                        })
+                        `${strategies.length} added`
                       ) : (
                         <div className='bg-neutral-600 h-[3px] w-6' />
                       )}

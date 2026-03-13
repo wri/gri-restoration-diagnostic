@@ -8,18 +8,48 @@ import {
   SendIcon,
 } from '@/components/icons'
 import { Button } from '@worldresources/wri-design-systems'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { ChakraRichTextEditor } from '../ChakraRichTextEditor'
 import { Collapsible } from '@chakra-ui/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Loader from '@/components/ui/Loader'
-import { PREPARATION_STEPS } from '@/constants'
+import { PREPARATION_STEPS } from './utils'
 import RichText from '@/components/ui/RichText'
-import {
-  usePreparationSubmit,
-  type PreparationSubmitAction,
-} from './PreparationSubmitContext'
-import { useTranslations } from '@/i18n/useTranslations'
+
+const suggestedApproaches = [
+  {
+    title: 'Participatory workshops',
+    icon: <PeopleIcon className='w-4 h-4 text-secondary-500' />,
+    content: `
+      <ul>
+        <li>Convene a half-day or full-day workshop (virtual or in-person)</li>
+        <li>Use structured facilitation to guide responses</li>
+        <li>Best when time is limited and participation is desired</li>
+      </ul>
+    `,
+  },
+  {
+    title: 'Interviews / focus groups',
+    icon: <InterviewIcon className='w-4 h-4 text-secondary-500' />,
+    content: `
+      <ul>
+        <li>Semi-structured interviews with key actors</li>
+        <li>Useful for sensitive topics (e.g., tenure insecurity, governance challenges)</li>
+      </ul>
+    `,
+  },
+  {
+    title: 'Distributed completion',
+    icon: <SendIcon className='w-4 h-4 text-secondary-500' />,
+    content: `
+      <ul>
+        <li>Share the worksheet found under Step 2 with stakeholders </li>
+        <li>Ask them to complete sections relevant to their expertise</li>
+        <li>Coordinate synthesis and discussion afterward</li>
+      </ul>
+    `,
+  },
+]
 
 const DefineEngagement = () => {
   const params = useParams()
@@ -27,11 +57,6 @@ const DefineEngagement = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [engagementStrategy, setEngagementStrategy] = useState('')
-  const t = useTranslations()
-  const searchParams = useSearchParams()
-  const isEditMode = searchParams.get('isEditMode')
-  const isEditing = isEditMode === 'true'
-  const { registerSubmitHandler } = usePreparationSubmit()
 
   const assessmentId = params.id as string
   const activeStep =
@@ -59,69 +84,35 @@ const DefineEngagement = () => {
     getAssessmentData()
   }, [])
 
-  const onSubmit = useCallback(
-    async (action: PreparationSubmitAction = 'advance') => {
-      setIsSubmitting(true)
+  const onSubmit = async () => {
+    setIsSubmitting(true)
 
-      const payload = {
-        engagementStrategy,
-        step: activeStep,
-        isEditing,
-      }
+    const payload = {
+      engagementStrategy,
+      step: activeStep,
+    }
 
-      const result = await fetch(
-        `/api/assessments/${assessmentId}/preparation`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        },
+    const result = await fetch(`/api/assessments/${assessmentId}/preparation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    const jsonResult = await result.json()
+
+    if (jsonResult.success) {
+      router.push(
+        `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.GATHER_MATERIALS}`,
       )
-      const jsonResult = await result.json()
+    }
 
-      if (jsonResult.success) {
-        const destination =
-          action === 'exit'
-            ? `/assessment/${assessmentId}`
-            : `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.GATHER_MATERIALS}${isEditing ? '?isEditMode=true' : ''}`
-
-        router.push(destination)
-      }
-
-      setIsSubmitting(false)
-    },
-    [activeStep, assessmentId, engagementStrategy, isEditing, router],
-  )
-
-  useEffect(() => {
-    registerSubmitHandler(onSubmit)
-
-    return () => registerSubmitHandler(null)
-  }, [onSubmit, registerSubmitHandler])
+    setIsSubmitting(false)
+  }
 
   if (isLoading) {
     return <Loader />
   }
-
-  const suggestedApproaches = [
-    {
-      title: t('scoping.step4.accordions.participatory.title'),
-      icon: <PeopleIcon className='w-4 h-4 text-secondary-500' />,
-      content: t('scoping.step4.accordions.participatory.content'),
-    },
-    {
-      title: t('scoping.step4.accordions.interviews.title'),
-      icon: <InterviewIcon className='w-4 h-4 text-secondary-500' />,
-      content: t('scoping.step4.accordions.interviews.content'),
-    },
-    {
-      title: t('scoping.step4.accordions.distributed.title'),
-      icon: <SendIcon className='w-4 h-4 text-secondary-500' />,
-      content: t('scoping.step4.accordions.distributed.content'),
-    },
-  ]
 
   return (
     <div className='pb-28'>
@@ -131,25 +122,25 @@ const DefineEngagement = () => {
         leftIcon={<ChevronLeftIcon className='w-3 h-3' />}
         onClick={() =>
           router.push(
-            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.RESTORATION_GOALS}${isEditing ? '?isEditMode=true' : ''}`,
+            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.RESTORATION_GOALS}`,
           )
         }
-        >
-        <span className='underline underline-offset-1'>
-          {t('scoping.common.buttons.previous')}
-        </span>
+      >
+        <span className='underline underline-offset-1'>Previous</span>
       </Button>
 
       <h1 className='text-3xl font-bold text-neutral-900 mb-2'>
-        {t('scoping.step4.heading')}
+        Define engagement strategy
       </h1>
       <p className='text-neutral-800 mb-8'>
-        {t('scoping.step4.description')}
+        You will engage stakeholders at different stages of the diagnostic.
+        Review the suggested approaches below and plan how you will involve
+        them. You may wish to outline your strategy below.
       </p>
 
       <div className='mb-10'>
         <p className='text-neutral-900 text-xl mb-4 font-bold'>
-          {t('scoping.step4.suggestedApproachesHeading')}
+          Suggested engagement approaches
         </p>
 
         {suggestedApproaches.map((approach, idx) => (
@@ -181,10 +172,8 @@ const DefineEngagement = () => {
 
       <div className='mb-10'>
         <p className='text-neutral-900 text-xl mb-4 font-bold'>
-          {t('scoping.step4.fields.notes.label')}{' '}
-          <span className='font-normal text-neutral-700'>
-            ({t('common.optional')})
-          </span>
+          Engagement strategy notes{' '}
+          <span className='font-normal text-neutral-700'>(Optional)</span>
         </p>
         <ChakraRichTextEditor
           value={engagementStrategy}
@@ -194,19 +183,19 @@ const DefineEngagement = () => {
 
       <div className='flex items-center gap-5 mt-10'>
         <Button
-          onClick={() => onSubmit('advance')}
+          onClick={onSubmit}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          {t('scoping.common.buttons.saveAndContinue')}
+          Save and continue
         </Button>
         <Button
           variant='borderless'
-          onClick={() => onSubmit('advance')}
+          onClick={onSubmit}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          {t('scoping.common.buttons.skip')}
+          Skip
         </Button>
       </div>
     </div>

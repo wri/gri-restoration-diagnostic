@@ -1,49 +1,44 @@
 'use client'
 
 import SectionTitle from '../SectionTitle'
-import { QuestionWithAnswer } from '@/types/questions.types'
+import { Questions } from '@/types/questions.types'
 import { Theme } from '@/db/entities'
 import KeySuccessFactorsSection from './KeySuccessFactorsSection'
-import { useTranslations } from '@/i18n/useTranslations'
 
 interface KeySuccessFactorsProps {
   assessmentId: string
-  questions: QuestionWithAnswer[]
+  questions: Questions[]
 }
 
 const KeySuccessFactors = ({
   assessmentId,
   questions,
 }: KeySuccessFactorsProps) => {
-  const t = useTranslations()
-
   const keyFactorsData = [
     {
       theme: Theme.MOTIVATE,
-      title: t('overview.keySuccessFactors.themes.motivate.title'),
-      caption: t('overview.keySuccessFactors.themes.motivate.caption'),
+      title: 'Motivate',
+      caption:
+        'Factors that create incentives and demand for restoration among investors, policymakers, and implementers.',
       questions: questions.filter((q) => q.theme === Theme.MOTIVATE),
     },
     {
       theme: Theme.ENABLE,
-      title: t('overview.keySuccessFactors.themes.enable.title'),
-      caption: t('overview.keySuccessFactors.themes.enable.caption'),
+      title: 'Enable',
+      caption: 'Policies, institutions, finance, and land tenure conditions.',
       questions: questions.filter((q) => q.theme === Theme.ENABLE),
     },
     {
       theme: Theme.IMPLEMENT,
-      title: t('overview.keySuccessFactors.themes.implement.title'),
-      caption: t('overview.keySuccessFactors.themes.implement.caption'),
+      title: 'Implement',
+      caption: 'Technical capacity, knowledge, and operational readiness.',
       questions: questions.filter((q) => q.theme === Theme.IMPLEMENT),
     },
   ]
 
   return (
     <div>
-      <SectionTitle
-        index={2}
-        title={t('overview.keySuccessFactors.sectionTitle')}
-      />
+      <SectionTitle index={2} title='Key success factors' />
 
       {keyFactorsData.map((item) => (
         <KeySuccessFactorsSection
