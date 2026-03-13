@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  // OneToMany,  // On hold - was used for strategies relation
   JoinColumn,
   Index,
   PrimaryColumn,
@@ -76,6 +75,6 @@ export class Answer {
   @Index()
   status!: AnswerStatus
 
-  // @OneToMany(() => Strategy, (strategy) => strategy.answer) // On hold
-  // strategies!: Strategy[]
+  @Column({ type: 'text', nullable: true })
+  strategies!: string | null
 }

@@ -13,6 +13,7 @@ import type { Lead } from './Lead.entity'
 import type { Region } from './Region.entity'
 import type { Diagnostic } from './Diagnostic.entity'
 import type { Answer } from './Answer.entity'
+import type { Contributor } from './Contributor.entity'
 
 export enum ProjectType {
   GEF_8 = 'GEF_8',
@@ -89,6 +90,9 @@ export class Assessment {
   @OneToMany('Answer', 'assessment')
   answers!: Answer[]
 
+  @OneToMany('Contributor', 'assessment')
+  contributors!: Contributor[]
+
   @Index()
   @Column({ name: 'title', type: 'varchar', default: 'Assessment Title' })
   title!: string
@@ -107,4 +111,7 @@ export class Assessment {
 
   @Column({ name: 'materials', type: 'varchar', default: '' })
   materials!: string
+
+  @Column({ name: 'preparation_step', type: 'varchar', default: 'target-geography' })
+  preparationStep!: string
 }

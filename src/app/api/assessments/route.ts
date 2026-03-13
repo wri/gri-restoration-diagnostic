@@ -71,21 +71,19 @@ export async function POST(request: NextRequest) {
         const diagnosticRepository =
           transactionalEntityManager.getRepository(Diagnostic)
 
-        // 1. Create or find Lead (user information)
-        let lead = await leadRepository.findOne({
-          where: { email: normalizedEmail },
+        // 1. Create Lead (user information for this assessment)
+        // Each assessment gets its own Lead record to capture org/role at time of creation
+        const lead = leadRepository.create({
+          jobTitle: body.jobTitle,
+          name: body.fullName,
+          email: normalizedEmail,
+          organization: body.organization,
+          role: body.role,
+          gender: body.gender || null,
+          ageRange: body.ageRange || null,
+          identity: body.identity || null,
         })
-
-        if (!lead) {
-          lead = leadRepository.create({
-            jobTitle: body.jobTitle,
-            name: body.fullName,
-            email: normalizedEmail,
-            organization: body.organization,
-            role: body.role,
-          })
-          lead = await leadRepository.save(lead)
-        }
+        const savedLead = await leadRepository.save(lead)
 
         // 2. Create Region (geography information)
         const region = regionRepository.create({
@@ -116,7 +114,7 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(password, 10)
 
         const assessment = assessmentRepository.create({
-          leadId: lead.id,
+          leadId: savedLead.id,
           regionId: savedRegion.id,
           diagnosticId: diagnostic.id,
           passwordHash: passwordHash,

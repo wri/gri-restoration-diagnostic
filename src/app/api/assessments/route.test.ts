@@ -255,9 +255,11 @@ describe('POST /api/assessments', () => {
       
       await POST(request);
       
-      expect(mockLeadRepository.findOne).toHaveBeenCalledWith({
-        where: { email: 'john.doe@example.com' }
-      });
+      expect(mockLeadRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'john.doe@example.com'
+        })
+      );
     });
 
     it('should trim whitespace from email', async () => {
@@ -268,9 +270,11 @@ describe('POST /api/assessments', () => {
       
       await POST(request);
       
-      expect(mockLeadRepository.findOne).toHaveBeenCalledWith({
-        where: { email: 'john.doe@example.com' }
-      });
+      expect(mockLeadRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'john.doe@example.com'
+        })
+      );
     });
 
     it('should reject invalid email format - missing @', async () => {
@@ -357,40 +361,87 @@ describe('POST /api/assessments', () => {
     });
   });
 
-  describe('Lead Creation/Lookup', () => {
-    it('should create new lead if email does not exist', async () => {
-      mockLeadRepository.findOne.mockResolvedValue(null);
-      
+  describe('Lead Creation', () => {
+    it('should always create new lead for each assessment', async () => {
       const request = createMockRequest(validFormData);
       
       await POST(request);
       
-      expect(mockLeadRepository.findOne).toHaveBeenCalledWith({
-        where: { email: 'john.doe@example.com' }
-      });
+      // Should NOT look up existing leads - always create new
+      expect(mockLeadRepository.findOne).not.toHaveBeenCalled();
       
       expect(mockLeadRepository.create).toHaveBeenCalledWith({
         jobTitle: 'Director',
         name: 'John Doe',
         email: 'john.doe@example.com',
         organization: 'Test Organization',
-        role: 'Project Lead'
+        role: 'Project Lead',
+        gender: null,
+        ageRange: null,
+        identity: null
       });
       
       expect(mockLeadRepository.save).toHaveBeenCalled();
     });
 
-    it('should reuse existing lead if email exists', async () => {
-      const existingLead = { ...mockLead, id: 'existing-lead-123' };
-      mockLeadRepository.findOne.mockResolvedValue(existingLead);
-      
-      const request = createMockRequest(validFormData);
+    it('should create lead with demographic fields when provided', async () => {
+      const formDataWithDemographics = {
+        ...validFormData,
+        gender: 'female',
+        ageRange: '25-34',
+        identity: 'indigenous'
+      };
+      const request = createMockRequest(formDataWithDemographics);
       
       await POST(request);
       
-      expect(mockLeadRepository.findOne).toHaveBeenCalled();
-      expect(mockLeadRepository.create).not.toHaveBeenCalled();
-      expect(mockLeadRepository.save).not.toHaveBeenCalled();
+      expect(mockLeadRepository.create).toHaveBeenCalledWith({
+        jobTitle: 'Director',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        organization: 'Test Organization',
+        role: 'Project Lead',
+        gender: 'female',
+        ageRange: '25-34',
+        identity: 'indigenous'
+      });
+    });
+
+    it('should create separate leads for same email with different roles', async () => {
+      // First assessment
+      const request1 = createMockRequest({
+        ...validFormData,
+        role: 'Researcher'
+      });
+      
+      await POST(request1);
+      
+      expect(mockLeadRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'john.doe@example.com',
+          role: 'Researcher'
+        })
+      );
+      
+      // Reset mock for second call
+      mockLeadRepository.create.mockClear();
+      
+      // Second assessment with same email, different role
+      const request2 = createMockRequest({
+        ...validFormData,
+        role: 'Coordinator',
+        organization: 'Different Org'
+      });
+      
+      await POST(request2);
+      
+      expect(mockLeadRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'john.doe@example.com',
+          role: 'Coordinator',
+          organization: 'Different Org'
+        })
+      );
     });
   });
 
@@ -452,6 +503,7 @@ describe('POST /api/assessments', () => {
     });
 
     it('should throw error if no diagnostic found for language', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       mockDiagnosticRepository.findOne.mockResolvedValue(null);
       
       const request = createMockRequest(validFormData);
@@ -461,6 +513,8 @@ describe('POST /api/assessments', () => {
       expect(response.status).toBe(500);
       expect(data.success).toBe(false);
       expect(data.error).toContain('No diagnostic found for language: en');
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should support different language codes', async () => {
@@ -536,6 +590,7 @@ describe('POST /api/assessments', () => {
     });
 
     it('should rollback on error during transaction', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       mockRegionRepository.save.mockRejectedValue(new Error('Database error'));
       
       const request = createMockRequest(validFormData);
@@ -545,6 +600,8 @@ describe('POST /api/assessments', () => {
       
       // Verify transaction was called (rollback happens automatically in TypeORM)
       expect(AppDataSource.transaction).toHaveBeenCalled();
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should return assessmentId and password on success', async () => {
@@ -562,6 +619,7 @@ describe('POST /api/assessments', () => {
 
   describe('Error Handling', () => {
     it('should handle database initialization errors', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       AppDataSource.initialize.mockRejectedValue(new Error('Connection failed'));
       
       const request = createMockRequest(validFormData);
@@ -571,18 +629,24 @@ describe('POST /api/assessments', () => {
       expect(response.status).toBe(500);
       expect(data.success).toBe(false);
       expect(data.error).toBe('Connection failed');
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should handle lead creation errors', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       mockLeadRepository.save.mockRejectedValue(new Error('Lead save failed'));
       
       const request = createMockRequest(validFormData);
       const response = await POST(request);
       
       expect(response.status).toBe(500);
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should return user-friendly error message', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       AppDataSource.transaction.mockRejectedValue(new Error('Database error'));
       
       const request = createMockRequest(validFormData);
@@ -592,11 +656,14 @@ describe('POST /api/assessments', () => {
       expect(data.message).toBe(
         'We encountered an issue while creating your assessment. Please check your information and try again.'
       );
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should include error details in development mode', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
       
       AppDataSource.transaction.mockRejectedValue(new Error('Detailed error'));
       
@@ -607,12 +674,14 @@ describe('POST /api/assessments', () => {
       expect(data.error).toBe('Detailed error');
       expect(data.stack).toBeDefined();
       
-      process.env.NODE_ENV = originalEnv;
+      (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
+      consoleErrorSpy.mockRestore();
     });
 
     it('should not expose error stack in production', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
       
       AppDataSource.transaction.mockRejectedValue(new Error('Production error'));
       
@@ -622,10 +691,12 @@ describe('POST /api/assessments', () => {
       
       expect(data.stack).toBeUndefined();
       
-      process.env.NODE_ENV = originalEnv;
+      (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
+      consoleErrorSpy.mockRestore();
     });
 
     it('should handle non-Error exceptions', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       AppDataSource.transaction.mockRejectedValue('String error');
       
       const request = createMockRequest(validFormData);
@@ -635,11 +706,14 @@ describe('POST /api/assessments', () => {
       expect(response.status).toBe(500);
       expect(data.success).toBe(false);
       expect(data.error).toBe('An unexpected error occurred');
+      
+      consoleErrorSpy.mockRestore();
     });
   });
 
   describe('Request Body Validation', () => {
     it('should handle malformed JSON', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const request = {
         json: jest.fn().mockRejectedValue(new Error('Invalid JSON'))
       } as unknown as NextRequest;
@@ -647,6 +721,8 @@ describe('POST /api/assessments', () => {
       const response = await POST(request);
       
       expect(response.status).toBe(500);
+      
+      consoleErrorSpy.mockRestore();
     });
 
     it('should process all required fields', async () => {

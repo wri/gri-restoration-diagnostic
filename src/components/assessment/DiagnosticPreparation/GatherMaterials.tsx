@@ -1,3 +1,5 @@
+'use client'
+
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -10,6 +12,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { Collapsible } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import Loader from '@/components/ui/Loader'
+import { PREPARATION_STEPS } from './utils'
+import RichText from '@/components/ui/RichText'
 
 const suggestedDocuments = [
   {
@@ -67,7 +71,8 @@ const GatherMaterials = () => {
   const [materials, setMaterials] = useState('')
 
   const assessmentId = params.id as string
-  const activeStep = Number.isNaN(params.step) ? 3 : Number(params.step)
+  const activeStep =
+    (params.step as string) || PREPARATION_STEPS.GATHER_MATERIALS
 
   const getAssessmentData = async () => {
     setIsLoading(true)
@@ -126,7 +131,7 @@ const GatherMaterials = () => {
           leftIcon={<ChevronLeftIcon className='w-3 h-3' />}
           onClick={() =>
             router.push(
-              `/assessment/${assessmentId}/preparation/${activeStep - 1}`,
+              `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.DEFINE_ENGAGEMENT}`,
             )
           }
         >
@@ -168,9 +173,9 @@ const GatherMaterials = () => {
                 </div>
               </Collapsible.Trigger>
               <Collapsible.Content>
-                <div
+                <RichText
+                  html={document.content}
                   className='p-3 text-neutral-700 text-sm [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mt-1.5 [&_li]:mb-0.5 [&_p]:mb-0 border-t border-neutral-300'
-                  dangerouslySetInnerHTML={{ __html: document.content }}
                 />
               </Collapsible.Content>
             </Collapsible.Root>
@@ -196,9 +201,7 @@ const GatherMaterials = () => {
           </Button>
           <Button
             variant='borderless'
-            onClick={() =>
-              router.push(`/assessment/${assessmentId}?isFromPreparation=true`)
-            }
+            onClick={onSubmit}
             disabled={isSubmitting}
             loading={isSubmitting}
           >

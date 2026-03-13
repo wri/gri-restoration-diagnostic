@@ -34,6 +34,9 @@ app_environment_variables = {
 # are passed via the RD_APP_ENV GitHub secret as
 # secret_environment_variables.
 
+# RDS Security Group (managed via AWS Console)
+rds_security_group_id = "sg-09c5bc29f068fa9b7"
+
 certificate_arn        = "arn:aws:acm:us-east-1:590183828939:certificate/4f5dc7d7-9b37-4795-8bb9-5415edeb7e79"
 domain_name            = "www.restorationdiagnostic.org"
 listener_rule_priority = 200

@@ -20,7 +20,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
   const [activeTab, setActiveTab] = useState<TabType>('guidance')
   
   return (
-    <aside className="bg-white w-[320px] flex-shrink-0 border-l border-slate-200 sticky top-[47px] h-[calc(100vh-47px-55px)] overflow-y-auto">
+    <aside className="bg-white w-[320px] flex-shrink-0 border-l border-slate-200">
       {/* Tab Navigation */}
       <TabBar
         defaultValue='guidance'
@@ -45,7 +45,7 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
         <div className="collapsibles-container pb-16">
           <Collapsible title="Definition" defaultOpen>
             {question.definition ? (
-              <Text className="prose prose-sm max-w-none">{question.definition}</Text>
+              <Text className="prose prose-sm max-w-none whitespace-pre-line">{question.definition}</Text>
             ) : (
               <Text className="text-slate-400 italic">No definition available.</Text>
             )}
@@ -53,17 +53,17 @@ export function GuidanceSidebar({ question, notes, onNotesChange }: GuidanceSide
           
           <Collapsible title="Considerations">
             {question.considerations ? (
-              <Text className="prose prose-sm max-w-none">{question.considerations}</Text>
+              <ul className="prose prose-sm max-w-none list-disc pl-5 space-y-2">
+                {question.considerations
+                  .split(/\r?\n/)
+                  .filter(line => line.trim() !== '')
+                  .map((line, index) => (
+                    <li key={index}>{line.trim()}</li>
+                  ))
+                }
+              </ul>
             ) : (
               <Text className="text-slate-400 italic">No considerations available.</Text>
-            )}
-          </Collapsible>
-          
-          <Collapsible title="Example Strategies">
-            {question.strategyExamples ? (
-              <Text className="prose prose-sm max-w-none">{question.strategyExamples}</Text>
-            ) : (
-              <Text className="text-slate-400 italic">No example strategies available.</Text>
             )}
           </Collapsible>
         </div>
