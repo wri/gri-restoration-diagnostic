@@ -97,13 +97,13 @@ export function SubNavbar({
           </div>
         )}
 
-        {/* Share button (static, no functionality) */}
+        {/* Share button (static, no functionality)
         <Button
           variant='borderless'
           size='small'
           leftIcon={<ShareIcon />}
           label='Share'
-        />
+        /> */}
       </div>
     </div>
   )

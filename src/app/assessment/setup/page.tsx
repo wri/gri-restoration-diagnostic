@@ -15,7 +15,7 @@ import {
   RadioList,
 } from '@worldresources/wri-design-systems'
 import {
-  DownloadIcon,
+  InfoIcon,
 } from '@/components/icons'
 import { AccessDetailsModal } from '@/components/assessment/AccessDetailsModal'
 import {
@@ -48,7 +48,8 @@ export default function SetupAssessmentPage() {
   const [showAccessModal, setShowAccessModal] = useState(false)
   const [createdAssessmentId, setCreatedAssessmentId] = useState<string | null>(null)
   const [assessmentPassword, setAssessmentPassword] = useState<string | null>(null)
-
+  const [showDemographicInfoModal, setShowDemographicInfoModal] = useState(false)
+  
   const isDev = process.env.NODE_ENV === 'development'
 
   const {
@@ -207,7 +208,7 @@ export default function SetupAssessmentPage() {
                           Download the spreadsheet template and PDF guidance document to complete a simplified version of the Diagnostic offline.
                         </p>
                       </div>
-                      <Button
+                      {/* <Button
                         variant='secondary'
                         size='small'
                         leftIcon={<DownloadIcon />}
@@ -219,7 +220,7 @@ export default function SetupAssessmentPage() {
                             'noopener noreferrer',
                           )
                         }
-                      />
+                      /> */}
                     </div>
                   </div>
 
@@ -331,6 +332,16 @@ export default function SetupAssessmentPage() {
                         <p className='text-sm text-neutral-600'>
                           The following questions are used for aggregated reporting only and do not affect participation.
                         </p>
+                        <div>
+                          <Button 
+                            variant="secondary"
+                            size="small"
+                            leftIcon={<InfoIcon />}
+                            style={{ borderRadius: '8px' }}
+                            onClick={() => setShowDemographicInfoModal(true)}>
+                            How this information is used
+                          </Button>
+                        </div>
                       </div>
 
                       <Controller
@@ -461,6 +472,39 @@ export default function SetupAssessmentPage() {
           assessmentId={createdAssessmentId}
           password={assessmentPassword}
           onContinue={handleContinueAssessment}
+        />
+      )}
+
+      {showDemographicInfoModal && (
+        <Modal
+          open={showDemographicInfoModal}
+          onClose={() => setShowDemographicInfoModal(false)}
+          size='medium'
+          header='How demographic information is used'
+          content={
+            <div className='space-y-4'>
+              <p className='text-neutral-700 leading-relaxed'>
+                If you choose to provide demographic information, select staff
+                members from WRI's Data Lab and Restoration teams will have
+                access to it, and will use it to inform any suggested
+                improvements to WRI's approach to user engagement.
+              </p>
+              <p className='text-neutral-700 leading-relaxed'>
+                WRI is committed to prioritizing people's rights to consent,
+                privacy, security and ownership when using data in social
+                change and advocacy efforts, and implementing values and
+                practices of transparency and openness.
+              </p>
+              <div className='pt-4'>
+                <Button
+                  label='Close'
+                  variant='primary'
+                  size='default'
+                  onClick={() => setShowDemographicInfoModal(false)}
+                />
+              </div>
+            </div>
+          }
         />
       )}
     </>
