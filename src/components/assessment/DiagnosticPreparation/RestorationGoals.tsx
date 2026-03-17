@@ -117,7 +117,7 @@ const RestorationGoals = () => {
         Restoration goals describe the intended outcomes for the landscape.
         These may focus on a single ecosystem type or on a mix of ecosystems.
       </p>
-      <p className='text-neutral-800 mb-8'>
+      <p className='text-neutral-800 mb-2'>
         Goals commonly relate to biodiversity conservation, climate mitigation or adaptation, livelihood improvement, water security, or food production.
       </p>
       <p className='text-neutral-800 mb-8'>

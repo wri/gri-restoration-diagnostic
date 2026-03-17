@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Controller } from 'react-hook-form'
 import {
@@ -112,10 +112,16 @@ export default function SetupAssessmentPage() {
         errorMessages.push(`• ${error.message}`)
       }
     })
-    return errorMessages.join('\n')
+    return errorMessages
   }
 
   const hasErrors = Object.keys(errors).length > 0
+
+  useEffect(() => {
+    console.log("🚀 ~ SetupAssessmentPage ~ errors:", errors)
+    const errorString = getErrorList();
+    console.log("🚀 ~ SetupAssessmentPage ~ errorString:", errorString)
+  }, [errors]);
 
   return (
     <>
@@ -414,14 +420,16 @@ export default function SetupAssessmentPage() {
 
             {hasErrors && (
               <div className='mb-4'>
-                <div className='p-4 bg-error-50 border-l-4 border-error-500 rounded'>
-                  <p className='font-bold text-error-900 text-sm mb-3'>
-                    There are errors in the form:
-                  </p>
-                  <div className='space-y-1 text-sm text-error-800 whitespace-pre-line'>
-                    {getErrorList()}
-                  </div>
-                </div>
+                <InlineMessage
+                  variant='error'
+                  label={`${ Object.keys(errors).length > 1 ? 'There are' : 'There is'} ${ Object.keys(errors).length} error${ Object.keys(errors).length > 1 ? 's' : ''} in the form`}
+                  caption={ 
+                    <div className='flex flex-col'>
+                      {getErrorList().map((error: string) => (<p key={error}>{error}</p>))}
+                    </div>
+                  }
+                  size='full-width'
+                />
               </div>
             )}
             <Button
