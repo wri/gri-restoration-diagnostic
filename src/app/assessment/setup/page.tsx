@@ -197,19 +197,6 @@ export default function SetupAssessmentPage() {
                       height={480}
                     />
                   </div>
-
-                  <div className='my-4 px-4 py-3 border border-neutral-300 rounded-lg bg-white'>
-                    <div className='flex items-center justify-between gap-4'>
-                      <div className='flex-1'>
-                        <h3 className='font-bold text-lg text-neutral-800'>
-                          Complete offline
-                        </h3>
-                        <p className='text-neutral-800'>
-                          Download the spreadsheet template and PDF guidance document to complete a simplified version of the Diagnostic offline.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               }
             />
