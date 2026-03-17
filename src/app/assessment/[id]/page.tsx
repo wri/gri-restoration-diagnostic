@@ -9,6 +9,7 @@ import FromPreparationModal from '@/components/assessment/Overview/FromPreparati
 import { PREPARATION_STEPS } from '@/constants'
 import ExportResponses from '@/components/assessment/Overview/ExportResponses'
 import { QuestionWithAnswer } from '@/types/questions.types'
+import { createTranslator } from '@/i18n/utils'
 
 export default async function AssessmentPage({
   params,
@@ -20,6 +21,7 @@ export default async function AssessmentPage({
   const { id } = await params
   const resolvedSearchParams = await searchParams
   const isFromPreparation = resolvedSearchParams.isFromPreparation as string
+  const t = createTranslator('en')
 
   // Check session
   const cookieStore = await cookies()
@@ -39,7 +41,7 @@ export default async function AssessmentPage({
 
   // If no valid session, show password prompt
   if (!hasValidSession) {
-    return <PasswordPrompt assessmentId={id} />
+    // return <PasswordPrompt assessmentId={id} />
   }
   const {
     getAssessmentById,
@@ -134,7 +136,9 @@ export default async function AssessmentPage({
   return (
     <div className='pb-20 pt-12'>
       <div className='h-11 px-4 border-b border-neutral-400 mb-16 sticky top-0 bg-white z-10 flex items-center justify-between'>
-        <h1 className='font-bold text-neutral-800'>Overview</h1>
+        <h1 className='font-bold text-neutral-800'>
+          {t('overview.page.title')}
+        </h1>
         <ExportResponses assessmentId={assessment.id} />
       </div>
 

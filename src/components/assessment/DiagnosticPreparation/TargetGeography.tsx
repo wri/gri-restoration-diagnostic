@@ -1,7 +1,7 @@
 'use client'
 
 import Loader from '@/components/ui/Loader'
-import { COUNTRIES, TARGET_GEOGRAPHY_TYPE_OPTIONS } from '@/constants'
+import { COUNTRIES } from '@/constants'
 import { assessmentFormRules } from '@/hooks/useAssessmentSetupForm'
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import { TargetGeographyType } from '@/types/assessment-setup.types'
@@ -27,6 +27,7 @@ import {
   usePreparationSubmit,
   type PreparationSubmitAction,
 } from './PreparationSubmitContext'
+import { useTranslations } from '@/i18n/useTranslations'
 
 type AssessmentData = {
   geographyType: TargetGeographyType
@@ -75,6 +76,7 @@ const TargetGeography = () => {
     ecosystems: '',
   })
   const [isLoading, setIsLoading] = useState(true)
+  const t = useTranslations()
   const searchParams = useSearchParams()
   const isEditMode = searchParams.get('isEditMode')
   const isEditing = isEditMode === 'true'
@@ -143,6 +145,28 @@ const TargetGeography = () => {
     ...freshwaterEcosystems,
     ...marineEcosystems,
   ]
+  const geographyTypeOptions = [
+    {
+      value: TargetGeographyType.NATIONAL,
+      label: t('scoping.step1.fields.targetScale.options.national'),
+    },
+    {
+      value: TargetGeographyType.SUBNATIONAL,
+      label: t('scoping.step1.fields.targetScale.options.subnational'),
+    },
+    {
+      value: TargetGeographyType.LANDSCAPE,
+      label: t('scoping.step1.fields.targetScale.options.landscape'),
+    },
+    {
+      value: TargetGeographyType.RESTORATION_SITE,
+      label: t('scoping.step1.fields.targetScale.options.site'),
+    },
+    {
+      value: TargetGeographyType.TRANSBOUNDARY,
+      label: t('scoping.step1.fields.targetScale.options.transboundary'),
+    },
+  ]
 
   const onSubmit = useCallback(
     async (
@@ -197,10 +221,12 @@ const TargetGeography = () => {
     const errorMessages: string[] = []
     Object.entries(errors).forEach(([key, error]) => {
       if (key === 'ecosystems' && error?.message) {
-        errorMessages.push('• Capture ecosystem types is mandatory')
+        errorMessages.push(`• ${t('scoping.validation.ecosystems.summary')}`)
       }
       if (key === 'geographyType' && error?.message) {
-        errorMessages.push('• Target scale is mandatory')
+        errorMessages.push(
+          `• ${t('scoping.validation.targetScale.summary')}`,
+        )
       }
     })
 
@@ -220,13 +246,13 @@ const TargetGeography = () => {
       className='pb-28'
     >
       <h1 className='text-3xl font-bold text-neutral-900 mb-2'>
-        Target geography
+        {t('scoping.step1.heading')}
       </h1>
       <p className='text-neutral-800 mb-8'>
-        The target geography defines the area or scale where the diagnostic will be applied. This may be a country, sub-national administrative area, municipality, watershed, biome, or ecological region.
+        {t('scoping.step1.description')}
       </p>
       <p className='text-neutral-900 text-xl mb-3 font-bold'>
-        Define the geographic area
+        {t('scoping.step1.defineGeographicArea')}
       </p>
       <div className='w-96 mb-10'>
         {/* replaces Geography type */}
@@ -236,44 +262,10 @@ const TargetGeography = () => {
           rules={assessmentFormRules.geographyType}
           render={({ field }) => (
             <Select
-              label='Target scale'
-              placeholder='Please select'
+              label={t('scoping.step1.fields.targetScale.label')}
+              placeholder={t('scoping.step1.fields.targetScale.placeholder')}
               defaultValue={[assessmentData.geographyType]}
-              items={[
-                {
-                  value: TargetGeographyType.NATIONAL,
-                  label:
-                    TARGET_GEOGRAPHY_TYPE_OPTIONS[TargetGeographyType.NATIONAL],
-                },
-                {
-                  value: TargetGeographyType.SUBNATIONAL,
-                  label:
-                    TARGET_GEOGRAPHY_TYPE_OPTIONS[
-                      TargetGeographyType.SUBNATIONAL
-                    ],
-                },
-                {
-                  value: TargetGeographyType.LANDSCAPE,
-                  label:
-                    TARGET_GEOGRAPHY_TYPE_OPTIONS[
-                      TargetGeographyType.LANDSCAPE
-                    ],
-                },
-                {
-                  value: TargetGeographyType.RESTORATION_SITE,
-                  label:
-                    TARGET_GEOGRAPHY_TYPE_OPTIONS[
-                      TargetGeographyType.RESTORATION_SITE
-                    ],
-                },
-                {
-                  value: TargetGeographyType.TRANSBOUNDARY,
-                  label:
-                    TARGET_GEOGRAPHY_TYPE_OPTIONS[
-                      TargetGeographyType.TRANSBOUNDARY
-                    ],
-                },
-              ]}
+              items={geographyTypeOptions}
               onChange={(values) => field.onChange(values[0] || '')}
               errorMessage={errors.geographyType?.message}
               required
@@ -285,8 +277,8 @@ const TargetGeography = () => {
           control={control}
           render={({ field }) => (
             <Select
-              label='Country'
-              placeholder='Please select'
+              label={t('scoping.step1.fields.country.label')}
+              placeholder={t('scoping.step1.fields.country.placeholder')}
               defaultValue={[assessmentData.countries ?? '']}
               items={COUNTRIES.map((country) => ({
                 value: country,
@@ -297,34 +289,34 @@ const TargetGeography = () => {
           )}
         />
         <TextInput
-          label='Sub-region / Province'
+          label={t('scoping.step1.fields.subRegion.label')}
           {...register('subRegion')}
           defaultValue={assessmentData.subRegion}
         />
         <TextInput
-          label='Restoration boundary link'
-          caption='Add a link to a GIS dataset or boundary file'
+          label={t('scoping.step1.fields.restorationBoundary.label')}
+          caption={t('scoping.step1.fields.restorationBoundary.caption')}
           {...register('gisUrl')}
           defaultValue={assessmentData.gisUrl}
         />
       </div>
       <p className='text-neutral-900 text-xl mb-1.5 font-bold'>
-        Capture ecosystem types
+        {t('scoping.step1.fields.ecosystems.label')}
       </p>
       <p className='text-neutral-900 mb-0.5'>
-        <span className='text-error-500'>*</span> Select all ecosystems being
-        restored
+        <span className='text-error-500'>*</span>{' '}
+        {t('scoping.step1.fields.ecosystems.requiredLabel')}
       </p>
       <p className='text-neutral-700 text-sm mb-3'>
         <span>
-          Ecosystems types based on the{' '}
+          {t('scoping.step1.fields.ecosystems.sourcePrefix')}{' '}
           <Link
             href='https://portals.iucn.org/library/sites/library/files/documents/2020-037-En.pdf'
             target='_blank'
             rel='noopener noreferrer'
             className='underline decoration-dotted'
           >
-            IUCN Global Ecosystem Typology 2.0
+            {t('scoping.step1.fields.ecosystems.sourceLink1Label')}
           </Link>
           ,{' '}
           <Link
@@ -333,9 +325,9 @@ const TargetGeography = () => {
             rel='noopener noreferrer'
             className='underline decoration-dotted'
           >
-            Global Ecosystem
+            {t('scoping.step1.fields.ecosystems.sourceLink2Label')}
           </Link>
-          .
+          {t('scoping.step1.fields.ecosystems.sourceSuffix')}
         </span>
       </p>
 
@@ -375,7 +367,7 @@ const TargetGeography = () => {
                 checked: selectedEcosystems.includes(option.value),
               }))}
               label={{
-                label: 'Terrestrial',
+                label: t('scoping.ecosystems.terrestrial.label'),
                 name: 'all',
                 type: 'checkbox',
               }}
@@ -402,7 +394,7 @@ const TargetGeography = () => {
                 checked: selectedEcosystems.includes(option.value),
               }))}
               label={{
-                label: 'Freshwater',
+                label: t('scoping.ecosystems.freshwater.label'),
                 name: 'all',
                 type: 'checkbox',
               }}
@@ -429,7 +421,7 @@ const TargetGeography = () => {
                 checked: selectedEcosystems.includes(option.value),
               }))}
               label={{
-                label: 'Marine',
+                label: t('scoping.ecosystems.marine.label'),
                 name: 'all',
                 type: 'checkbox',
               }}
@@ -457,7 +449,11 @@ const TargetGeography = () => {
         <div className='mt-10'>
           <InlineMessage
             variant='error'
-            label={`${errorsLength > 1 ? 'There are' : 'There is'} ${errorsLength} error${errorsLength > 1 ? 's' : ''} in the form`}
+            label={t('scoping.validation.formErrors', {
+              count: errorsLength,
+              verb: errorsLength > 1 ? 'are' : 'is',
+              plural: errorsLength > 1 ? 's' : '',
+            })}
             caption={ 
               <div className='flex flex-col'>
                 {getErrorList().map((error: string) => (<p key={error}>{error}</p>))}
@@ -473,7 +469,7 @@ const TargetGeography = () => {
         disabled={isSubmitting}
         loading={isSubmitting}
       >
-        Save and continue
+        {t('scoping.common.buttons.saveAndContinue')}
       </Button>
     </form>
   )

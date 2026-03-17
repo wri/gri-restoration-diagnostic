@@ -5,6 +5,7 @@ import { Theme } from '@/db/entities'
 import Stats from './Stats'
 import KeySuccessFactorsTable from './KeySuccessFactorsTable'
 import { AnswerStatus } from '@/types/answer.types'
+import { useTranslations } from '@/i18n/useTranslations'
 
 const KeySuccessFactorsSection = ({
   questions,
@@ -22,6 +23,7 @@ const KeySuccessFactorsSection = ({
   openByDefault?: boolean
 }) => {
   const router = useRouter()
+  const t = useTranslations()
 
   const getQuestionsMetadata = () => {
     const shouldStart = questions.every((q) => !q.answer?.status)
@@ -86,11 +88,11 @@ const KeySuccessFactorsSection = ({
       }
       tag={
         shouldStart
-          ? 'Not started'
+          ? t('overview.keySuccessFactors.status.notStarted')
           : shouldContinue
-            ? 'In progress'
+            ? t('overview.keySuccessFactors.status.inProgress')
             : isComplete
-              ? 'Complete'
+              ? t('overview.keySuccessFactors.status.complete')
               : undefined
       }
       noHorizontalPadding
