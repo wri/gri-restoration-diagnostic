@@ -27,7 +27,7 @@ import { dirname } from 'path'
 import { initializeDatabase } from '../../db/data-source'
 import { Question } from '../../db/entities/Question.entity'
 import { Diagnostic } from '../../db/entities/Diagnostic.entity'
-import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions, decodeCSVBuffer } from '../../db/seeds/utils/sanitize-text'
+import { sanitizeText, sanitizeQuestionText, parseFollowUpQuestions, decodeCSVBuffer, sanitizeListText } from '../../db/seeds/utils/sanitize-text'
 
 interface CSVRow {
   id: string
@@ -161,7 +161,7 @@ async function importQuestionsFromCSV(
         definition: sanitizeText(row.Definition),
         considerations: sanitizeText(row.Guidance),
         followUpQuestions: parseFollowUpQuestions(row['Follow up question(s)']),
-        strategyExamples: sanitizeText(row['Examples of strategies to address gap in key factor']),
+        strategyExamples: sanitizeListText(row['Examples of strategies to address gap in key factor']),
         keySuccessFactor: row['Key Factor'] || question.keySuccessFactor,
         minimalKeySuccessFactor: row.Minimal || question.minimalKeySuccessFactor,
         enablingCondition: row['Enabling condition'] || question.enablingCondition,

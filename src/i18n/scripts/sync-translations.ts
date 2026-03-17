@@ -143,6 +143,11 @@ async function importFromJSON(language: string = 'en'): Promise<void> {
         continue
       }
       
+      // Validate locale matches language flag
+      if (data.locale && data.locale !== language) {
+        throw new Error(`Locale mismatch for ${questionCode}: JSON has '${data.locale}' but language flag is '${language}'`)
+      }
+      
       await queryRunner.manager.update(Question, question.id, {
         questionText: data.questionText,
         definition: data.definition,
@@ -151,7 +156,9 @@ async function importFromJSON(language: string = 'en'): Promise<void> {
         strategyExamples: data.strategyExamples,
         keySuccessFactor: data.keySuccessFactor,
         minimalKeySuccessFactor: data.minimalKeySuccessFactor,
-        locale: language, // Set locale from language flag
+        enablingCondition: data.enablingCondition,
+        theme: data.theme as Question['theme'],
+        locale: data.locale ?? language, // Use JSON locale or fall back to language flag
       })
       
       console.log(`✓ ${questionCode}: Synced`)
