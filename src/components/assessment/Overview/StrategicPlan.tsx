@@ -70,11 +70,14 @@ const StrategicPlan = ({
   return (
     <>
       <div>
-        <SectionTitle index={3} title={t('overview.strategicPlan.sectionTitle')} />
+        <SectionTitle
+          index={3}
+          title={t('overview.strategicPlan.sectionTitle')}
+        />
         <CardContainer
           title={t('overview.strategicPlan.title')}
           caption={t('overview.strategicPlan.caption')}
-          hideLabel='table'
+          hideLabel={t('overview.scope.labels.table')}
           noHorizontalPadding
           noPaddingBottom
         >
@@ -121,7 +124,8 @@ const StrategicPlan = ({
                           className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
                           onClick={() => setStrategyDetails(row)}
                         >
-                          {row.title || t('overview.strategicPlan.table.noTitle')}
+                          {row.title ||
+                            t('overview.strategicPlan.table.noTitle')}
                         </p>
                         <div className='flex gap-2 items-center'>
                           {row.deadline ? (
@@ -159,11 +163,9 @@ const StrategicPlan = ({
                       <div className='flex'>
                         {row.priority ? (
                           <Tag
-                            label={
-                              t(
-                                `overview.strategicPlan.table.priorities.${row.priority}`,
-                              )
-                            }
+                            label={t(
+                              `overview.strategicPlan.table.priorities.${row.priority}`,
+                            )}
                             variant={
                               row.priority === 'low'
                                 ? 'success'

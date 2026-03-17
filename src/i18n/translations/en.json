@@ -747,14 +747,19 @@
       "headers": {
         "question": "Question",
         "response": "Response",
-        "rationale": "Rationale"
+        "rationale": "Rationale",
+        "contributors": "Contributors"
       },
       "subheadings": {
         "topicsToInclude": "Topics to include"
       },
       "placeholders": {
+        "startWriting": "Start writing...",
         "rationale": "Add your rationale...",
         "notes": "Add notes about this question..."
+      },
+      "empty": {
+        "noQuestions": "No questions found for this theme."
       }
     },
     "answers": {
@@ -794,15 +799,16 @@
       },
       "messages": {
         "readyToFinish": "Ready to finish this factor?",
-        "markAsComplete": "Mark as complete"
+        "markAsComplete": "Mark complete",
+        "factorMarkedComplete": "This factor is marked as complete."
       },
       "captions": {
-        "markComplete": "Mark this factor as complete when you've finished reviewing..."
+        "markComplete": "Mark this factor as complete when you've finished reviewing the response, rationale, and strategies."
       },
       "modal": {
         "markComplete": {
           "header": "Mark factor as complete?",
-          "content": "You've filled in the response and required fields...",
+          "content": "You've filled in the response and required fields for this factor. Would you like to mark it as complete before moving on?",
           "confirmButton": "Mark complete & continue",
           "cancelButton": "Continue without marking"
         }

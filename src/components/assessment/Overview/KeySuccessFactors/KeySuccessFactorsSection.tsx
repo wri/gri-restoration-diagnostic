@@ -71,7 +71,7 @@ const KeySuccessFactorsSection = ({
     <CardContainer
       title={title}
       caption={caption}
-      hideLabel='table'
+      hideLabel={t('overview.scope.labels.table')}
       onStart={
         shouldStart
           ? () =>

@@ -107,7 +107,7 @@
         "subRegion": "Subregión / Provincia",
         "geographyType": "Tipo de geografía",
         "scope": "Alcance",
-        "gisLink": "Enlace SIG (GIS)",
+        "gisLink": "Enlace SIG",
         "ecosystemContext": "Contexto del ecosistema"
       },
       "placeholders": {
@@ -568,7 +568,7 @@
         "description": "La pantalla de resumen muestra cuánto progreso ha realizado en cada tema.",
         "cards": {
           "motivate": "Motivar ({count} preguntas)",
-          "enable": "Planificar ({count} preguntas)",
+          "enable": "Plan ({count} preguntas)",
           "implement": "Implementar ({count} preguntas)"
         }
       },
@@ -747,14 +747,19 @@
       "headers": {
         "question": "Pregunta",
         "response": "Respuesta",
-        "rationale": "Justificación"
+        "rationale": "Justificación",
+        "contributors": "Colaboradores"
       },
       "subheadings": {
         "topicsToInclude": "Temas a incluir"
       },
       "placeholders": {
+        "startWriting": "Empiece a escribir...",
         "rationale": "Agregue su justificación...",
         "notes": "Agregue notas sobre esta pregunta..."
+      },
+      "empty": {
+        "noQuestions": "No se encontraron preguntas para este tema."
       }
     },
     "answers": {
@@ -794,15 +799,16 @@
       },
       "messages": {
         "readyToFinish": "¿Listo para terminar este factor?",
-        "markAsComplete": "Marcar como completo"
+        "markAsComplete": "Marcar como completo",
+        "factorMarkedComplete": "Este factor ha sido marcado como completo."
       },
       "captions": {
-        "markComplete": "Marque este factor como completo cuando haya terminado de revisar..."
+        "markComplete": "Marque este factor como completo cuando haya terminado de revisar la respuesta, la justificación y las estrategias."
       },
       "modal": {
         "markComplete": {
           "header": "¿Marcar factor como completo?",
-          "content": "Ha completado la respuesta y los campos obligatorios...",
+          "content": "Ha completado la respuesta y los campos obligatorios para este factor. ¿Desea marcarlo como completo antes de continuar?",
           "confirmButton": "Marcar completo y continuar",
           "cancelButton": "Continuar sin marcar"
         }
@@ -863,7 +869,7 @@
     "modals": {
       "markCompleteConfirm": {
         "heading": "¿Está seguro de que desea marcar como completo?",
-        "description": "Hay información que aún no se ha completado para este factor clave de éxito. Asegúrese de estar satisfecho antes de marcar como completo.",
+        "description": "Hay información que aún no se ha completado para este factor clave de éxito. Asegúrese de estar satisfecho antes de proceder a marcar como completo.",
         "confirmButton": "Marcar como completo",
         "cancelButton": "Cancelar"
       },
@@ -891,7 +897,7 @@
       "button": "Reanudar diagnóstico"
     },
     "errors": {
-      "passwordRequired": "Se requiere contraseña",
+      "passwordRequired": "La contraseña es obligatoria",
       "incorrectPassword": "La contraseña es incorrecta o no coincide con este diagnóstico. Si el problema persiste, póngase en contacto con nuestro equipo.",
       "tooManyAttempts": "Demasiados intentos fallidos. Inténtelo de nuevo en {time}.",
       "authError": "Ocurrió un error al autenticar. Por favor, inténtelo de nuevo más tarde.",
@@ -905,7 +911,7 @@
       "failedToSaveAnswer": "Error al guardar la respuesta",
       "failedToFetchAnswers": "Error al obtener las respuestas",
       "tooManyLoginAttempts": "Demasiados intentos de inicio de sesión. Por favor, inténtelo de nuevo más tarde.",
-      "passwordRequired": "Se requiere contraseña",
+      "passwordRequired": "La contraseña es obligatoria",
       "invalidCredentials": "Credenciales no válidas",
       "unexpectedError": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde."
     },
