@@ -847,10 +847,10 @@
           "placeholder": "Seleccionar escala",
           "options": {
             "national": "Nacional",
-            "subnational": "Subnacional",
-            "landscape": "Paisaje",
-            "site": "Sitio",
-            "transboundary": "Transfronterizo"
+            "subnational": "Subnacional (municipio, provincia, distrito)",
+            "landscape": "Paisaje (o mar paisajístico si aplica)",
+            "site": "Sitio de restauración",
+            "transboundary": "Transfronterizo (dos o más países)"
           }
         },
         "deadline": {

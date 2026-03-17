@@ -31,23 +31,23 @@ const Strategies = ({
   const newStrategies: Strategy[] = strategies ? JSON.parse(strategies) : []
   const scaleOptions = [
     {
-      value: 'National',
+      value: t('assessment.strategies.fields.scale.options.national'),
       label: t('assessment.strategies.fields.scale.options.national'),
     },
     {
-      value: 'Subnational (municipality, province, district)',
+      value: t('assessment.strategies.fields.scale.options.subnational'),
       label: t('assessment.strategies.fields.scale.options.subnational'),
     },
     {
-      value: 'Landscape (or seascape if applicable)',
+      value: t('assessment.strategies.fields.scale.options.landscape'),
       label: t('assessment.strategies.fields.scale.options.landscape'),
     },
     {
-      value: 'Restoration site',
+      value: t('assessment.strategies.fields.scale.options.site'),
       label: t('assessment.strategies.fields.scale.options.site'),
     },
     {
-      value: 'Transboundary (two or more countries)',
+      value: t('assessment.strategies.fields.scale.options.transboundary'),
       label: t('assessment.strategies.fields.scale.options.transboundary'),
     },
   ]
