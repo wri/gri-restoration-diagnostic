@@ -484,12 +484,14 @@ const queryRunner = AppDataSource.createQueryRunner()
         await questionRepo.update(existing.id, {
           ...questionData,
           diagnosticId: diagnostic.id,
+          locale: 'en',
         })
       } else {
         console.log(`  + Creating question ${questionData.questionCode}: ${questionData.keySuccessFactor}`)
         const newQuestion = questionRepo.create({
           ...questionData,
           diagnosticId: diagnostic.id,
+          locale: 'en',
         })
         await questionRepo.save(newQuestion)
       }

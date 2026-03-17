@@ -39,7 +39,7 @@ async function validateTranslations(options: { questionsOnly?: boolean; ci?: boo
   
   try {
     const expectedQuestions = 31
-    const supportedLocales = ['en'] // Expand to ['en', 'es'] when Spanish is added
+    const supportedLocales = ['en', 'es', 'fr', 'pt'] // All supported languages
     
     for (const locale of supportedLocales) {
       const count = await dataSource
