@@ -1,3 +1,5 @@
+'use client'
+
 import { ChevronDownIcon, InfoIcon } from '@/components/icons'
 import { StepProps } from './Steps'
 import { Collapsible } from '@chakra-ui/react'

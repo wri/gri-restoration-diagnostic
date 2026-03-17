@@ -1,3 +1,5 @@
+'use client'
+
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import {
   Table,
@@ -95,12 +97,10 @@ const StrategiesReadOnly = ({
                 <TableCell className='w-28'>
                   <div className='flex'>
                     {row.priority ? (
-                        <Tag
-                          label={
-                            t(
-                              `assessment.strategies.fields.priority.options.${row.priority}`,
-                            )
-                          }
+                      <Tag
+                        label={t(
+                          `assessment.strategies.fields.priority.options.${row.priority}`,
+                        )}
                         variant={
                           row.priority === 'low'
                             ? 'success'

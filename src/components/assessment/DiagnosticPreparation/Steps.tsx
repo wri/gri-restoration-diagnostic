@@ -1,3 +1,5 @@
+'use client'
+
 import { ProgressBar } from '@worldresources/wri-design-systems'
 import { DocumentIcon } from '@/components/icons'
 import clsx from 'clsx'

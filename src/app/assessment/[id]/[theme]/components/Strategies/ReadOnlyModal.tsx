@@ -1,3 +1,5 @@
+'use client'
+
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import { Modal } from '@worldresources/wri-design-systems'
 import { formatDeadline } from './utils'
@@ -29,21 +31,33 @@ const StrategiesReadOnlyModal = ({
     <Modal
       open={!!strategy?.id}
       onClose={onClose}
-      header={<p className='font-bold text-neutral-800'>{t('assessment.strategies.modal.title')}</p>}
+      header={
+        <p className='font-bold text-neutral-800'>
+          {t('assessment.strategies.modal.title')}
+        </p>
+      }
       content={
         <div className='text-neutral-800'>
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.title.label')}</p>
-            <p>{strategy?.title || t('assessment.strategies.readOnly.noTitle')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.title.label')}
+            </p>
+            <p>
+              {strategy?.title || t('assessment.strategies.readOnly.noTitle')}
+            </p>
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.modal.relatedKeySuccessFactor')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.modal.relatedKeySuccessFactor')}
+            </p>
             <p>{keySuccessFactor}</p>
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.description.label')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.description.label')}
+            </p>
             {strategy?.description ? (
               <RichText html={strategy.description} />
             ) : (
@@ -52,26 +66,39 @@ const StrategiesReadOnlyModal = ({
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.priority.label')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.priority.label')}
+            </p>
             <p>
               {strategy.priority
-                ? t(`assessment.strategies.fields.priority.options.${strategy.priority}`)
+                ? t(
+                    `assessment.strategies.fields.priority.options.${strategy.priority}`,
+                  )
                 : t('assessment.strategies.modal.na')}
             </p>
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.scale.label')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.scale.label')}
+            </p>
             <p>{strategy.scale || t('assessment.strategies.modal.na')}</p>
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.deadline.label')}</p>
-            <p>{formatDeadline(strategy.deadline) || t('assessment.strategies.modal.na')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.deadline.label')}
+            </p>
+            <p>
+              {formatDeadline(strategy.deadline) ||
+                t('assessment.strategies.modal.na')}
+            </p>
           </div>
 
           <div className='mb-6'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.fields.responsibility.label')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.fields.responsibility.label')}
+            </p>
             <p>
               {selectedContributors?.length > 0
                 ? selectedContributors.map((c) => c.name).join(', ')

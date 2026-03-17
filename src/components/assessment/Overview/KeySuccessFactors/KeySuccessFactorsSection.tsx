@@ -1,3 +1,5 @@
+'use client'
+
 import { Questions } from '@/types/questions.types'
 import CardContainer from '../CardContainer'
 import { useRouter } from 'next/navigation'

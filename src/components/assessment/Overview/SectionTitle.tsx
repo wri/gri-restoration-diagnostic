@@ -1,3 +1,5 @@
+'use client'
+
 import { TabBar } from '@worldresources/wri-design-systems'
 import { useTranslations } from '@/i18n/useTranslations'
 

@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, Tag } from '@worldresources/wri-design-systems'
 import { ChevronDownIcon, EditIcon } from '../../icons'
 import { Collapsible } from '@chakra-ui/react'

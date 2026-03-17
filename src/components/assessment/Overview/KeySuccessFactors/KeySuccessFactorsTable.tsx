@@ -1,3 +1,5 @@
+'use client'
+
 import {
   CheckCircleIcon,
   PopulatedCheckIcon,
@@ -82,19 +84,25 @@ const KeySuccessFactorsTable = ({
                     <div className='w-full max-w-[130px] flex'>
                       {q.answer.status === AnswerStatus.COMPLETE ? (
                         <Tag
-                          label={t('overview.keySuccessFactors.status.complete')}
+                          label={t(
+                            'overview.keySuccessFactors.status.complete',
+                          )}
                           variant='success'
                           icon={<CheckCircleIcon />}
                         />
                       ) : q.answer.status === AnswerStatus.IN_PROGRESS ? (
                         <Tag
-                          label={t('overview.keySuccessFactors.status.inProgress')}
+                          label={t(
+                            'overview.keySuccessFactors.status.inProgress',
+                          )}
                           variant='warning'
                           icon={<InProgressIcon />}
                         />
                       ) : (
                         <Tag
-                          label={t('overview.keySuccessFactors.status.notStarted')}
+                          label={t(
+                            'overview.keySuccessFactors.status.notStarted',
+                          )}
                           variant='info-grey'
                           icon={<NotStartedIcon />}
                         />

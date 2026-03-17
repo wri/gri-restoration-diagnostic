@@ -1,3 +1,5 @@
+'use client'
+
 import { InfoIcon, PlusIcon, TrashIcon } from '@/components/icons'
 import { Button, TextInput, Select } from '@worldresources/wri-design-systems'
 import { useState } from 'react'
@@ -50,9 +52,18 @@ const Strategies = ({
     },
   ]
   const priorityOptions = [
-    { value: 'high', label: t('assessment.strategies.fields.priority.options.high') },
-    { value: 'medium', label: t('assessment.strategies.fields.priority.options.medium') },
-    { value: 'low', label: t('assessment.strategies.fields.priority.options.low') },
+    {
+      value: 'high',
+      label: t('assessment.strategies.fields.priority.options.high'),
+    },
+    {
+      value: 'medium',
+      label: t('assessment.strategies.fields.priority.options.medium'),
+    },
+    {
+      value: 'low',
+      label: t('assessment.strategies.fields.priority.options.low'),
+    },
   ]
 
   const handleAddStrategy = () => {
@@ -144,7 +155,9 @@ const Strategies = ({
                   onChange={(e) =>
                     updateStrategy(strategy.id, 'title', e.target.value)
                   }
-                  placeholder={t('assessment.strategies.fields.title.placeholder')}
+                  placeholder={t(
+                    'assessment.strategies.fields.title.placeholder',
+                  )}
                   maxLength={200}
                 />
                 <p className='text-sm text-neutral-500 -mt-1'>
@@ -157,7 +170,9 @@ const Strategies = ({
               <div className='mb-5'>
                 <p className='text-neutral-900'>
                   {t('assessment.strategies.fields.description.label')}{' '}
-                  <span className='text-neutral-700'>({t('common.optional')})</span>
+                  <span className='text-neutral-700'>
+                    ({t('common.optional')})
+                  </span>
                 </p>
                 <div className='mt-1'>
                   <ChakraRichTextEditor
@@ -173,7 +188,9 @@ const Strategies = ({
                 <div className='flex flex-col'>
                   <Select
                     label={`${t('assessment.strategies.fields.scale.label')} (${t('common.optional')})`}
-                    placeholder={t('assessment.strategies.fields.scale.placeholder')}
+                    placeholder={t(
+                      'assessment.strategies.fields.scale.placeholder',
+                    )}
                     items={scaleOptions}
                     onChange={(vals) =>
                       updateStrategy(strategy.id, 'scale', vals[0] || '')
@@ -184,7 +201,9 @@ const Strategies = ({
                 <div className='flex flex-col mt-1.5'>
                   <p className='text-neutral-900'>
                     {t('assessment.strategies.fields.deadline.label')}{' '}
-                    <span className='text-neutral-700'>({t('common.optional')})</span>
+                    <span className='text-neutral-700'>
+                      ({t('common.optional')})
+                    </span>
                   </p>
                   <DatePicker
                     defaultValue={strategy.deadline}
@@ -214,7 +233,9 @@ const Strategies = ({
                 <div className='flex flex-col'>
                   <Select
                     label={`${t('assessment.strategies.fields.priority.label')} (${t('common.optional')})`}
-                    placeholder={t('assessment.strategies.fields.priority.placeholder')}
+                    placeholder={t(
+                      'assessment.strategies.fields.priority.placeholder',
+                    )}
                     items={priorityOptions}
                     onChange={(vals) =>
                       updateStrategy(strategy.id, 'priority', vals[0] || '')

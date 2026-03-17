@@ -1,3 +1,5 @@
+'use client'
+
 import { WarningIcon } from '@/components/icons'
 import { InlineMessage, Modal } from '@worldresources/wri-design-systems'
 import Link from 'next/link'
@@ -15,33 +17,55 @@ const StrategiesAboutModal = ({
     <Modal
       open={open}
       onClose={onClose}
-      header={<p className='font-bold text-neutral-800'>{t('assessment.strategies.about.title')}</p>}
+      header={
+        <p className='font-bold text-neutral-800'>
+          {t('assessment.strategies.about.title')}
+        </p>
+      }
       content={
         <div className='text-neutral-800'>
           <div className='mb-3'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.about.sections.why.title')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.about.sections.why.title')}
+            </p>
             <p>{t('assessment.strategies.about.sections.why.body')}</p>
           </div>
           <div className='mb-3'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.about.sections.include.title')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.about.sections.include.title')}
+            </p>
             <p>{t('assessment.strategies.about.sections.include.body1')}</p>
-            <p className='mt-1'>{t('assessment.strategies.about.sections.include.body2')}</p>
+            <p className='mt-1'>
+              {t('assessment.strategies.about.sections.include.body2')}
+            </p>
           </div>
           <div className='mb-3'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.about.sections.considerations.title')}</p>
-            <p>{t('assessment.strategies.about.sections.considerations.body1')}</p>
-            <p className='mt-1'>{t('assessment.strategies.about.sections.considerations.body2')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.about.sections.considerations.title')}
+            </p>
+            <p>
+              {t('assessment.strategies.about.sections.considerations.body1')}
+            </p>
+            <p className='mt-1'>
+              {t('assessment.strategies.about.sections.considerations.body2')}
+            </p>
           </div>
           <div className='mb-3'>
-            <p className='font-bold mb-1'>{t('assessment.strategies.about.sections.priority.title')}</p>
+            <p className='font-bold mb-1'>
+              {t('assessment.strategies.about.sections.priority.title')}
+            </p>
             <p>{t('assessment.strategies.about.sections.priority.body1')}</p>
-            <p className='mt-1'>{t('assessment.strategies.about.sections.priority.body2')}</p>
+            <p className='mt-1'>
+              {t('assessment.strategies.about.sections.priority.body2')}
+            </p>
           </div>
           <InlineMessage
             label={t('assessment.strategies.about.note.title')}
             caption={
               <div>
-                <p className='mb-2'>{t('assessment.strategies.about.note.body')}</p>
+                <p className='mb-2'>
+                  {t('assessment.strategies.about.note.body')}
+                </p>
                 <p>
                   {t('assessment.strategies.about.note.linkPrefix')}{' '}
                   <Link
