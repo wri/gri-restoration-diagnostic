@@ -33,7 +33,9 @@ const PreparationPage = () => {
         <div className='flex gap-4 mt-2 border border-neutral-300 rounded-lg p-4'>
           <ScopeIcon className='text-secondary-600' />
           <div>
-            <h3 className='text-neutral-900'>Set the scope</h3>
+            <h3 className='text-neutral-900'>
+              {t('scoping.intro.parts.scope.title')}
+            </h3>
             <p className='text-neutral-700'>
               {t('scoping.intro.parts.scope.description')}
             </p>

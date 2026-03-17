@@ -105,90 +105,94 @@ type EcosystemOption = {
   value: string
 }
 
-export const terrestrialEcosystems: EcosystemOption[] = [
+export const getTerrestrialEcosystems = (
+  t: TranslationFunction,
+): EcosystemOption[] => [
   {
-    children: 'Tropical-subtropical forests',
+    children: t('scoping.ecosystems.terrestrial.types.tropicalSubtropicalForests'),
     name: 'tropical-subtropical-forests',
     value: 'tropical-subtropical-forests',
   },
   {
-    children: 'Temperate-boreal forests and woodlands',
+    children: t('scoping.ecosystems.terrestrial.types.temperateForests'),
     name: 'temperate-boreal-forests-and-woodlands',
     value: 'temperate-boreal-forests-and-woodlands',
   },
   {
-    children: 'Shrublands and shrubby woodlands',
+    children: t('scoping.ecosystems.terrestrial.types.shrublands'),
     name: 'shrublands-and-shrubby-woodlands',
     value: 'shrublands-and-shrubby-woodlands',
   },
   {
-    children: 'Savannas and grasslands',
+    children: t('scoping.ecosystems.terrestrial.types.savannas'),
     name: 'savannas-and-grasslands',
     value: 'savannas-and-grasslands',
   },
   {
-    children: 'Deserts and semi-deserts',
+    children: t('scoping.ecosystems.terrestrial.types.deserts'),
     name: 'deserts-and-semi-deserts',
     value: 'deserts-and-semi-deserts',
   },
   {
-    children: 'Polar-alpine',
+    children: t('scoping.ecosystems.terrestrial.types.polarAlpine'),
     name: 'polar-alpine',
     value: 'polar-alpine',
   },
   {
-    children: 'Productive and agricultural systems',
+    children: t('scoping.ecosystems.terrestrial.types.agricultural'),
     name: 'productive-and-agricultural-systems',
     value: 'productive-and-agricultural-systems',
   },
   {
-    children: 'Urban Landscapes',
+    children: t('scoping.ecosystems.terrestrial.types.urban'),
     name: 'urban-landscapes',
     value: 'urban-landscapes',
   },
 ]
 
-export const freshwaterEcosystems: EcosystemOption[] = [
+export const getFreshwaterEcosystems = (
+  t: TranslationFunction,
+): EcosystemOption[] => [
   {
-    children: 'Peatlands',
+    children: t('scoping.ecosystems.freshwater.types.peatlands'),
     name: 'peatlands',
     value: 'peatlands',
   },
   {
-    children: 'Wetlands',
+    children: t('scoping.ecosystems.freshwater.types.wetlands'),
     name: 'wetlands',
     value: 'wetlands',
   },
   {
-    children: 'Riparian ecosystems',
+    children: t('scoping.ecosystems.freshwater.types.riparian'),
     name: 'riparian-ecosystems',
     value: 'riparian-ecosystems',
   },
   {
-    children: 'Catchments',
+    children: t('scoping.ecosystems.freshwater.types.catchments'),
     name: 'catchments',
     value: 'catchments',
   },
   {
-    children: 'Artificial fresh waters',
+    children: t('scoping.ecosystems.freshwater.types.artificialFreshwaters'),
     name: 'artificial-fresh-waters',
     value: 'artificial-fresh-waters',
   },
 ]
 
-export const marineEcosystems: EcosystemOption[] = [
+export const getMarineEcosystems = (t: TranslationFunction): EcosystemOption[] => [
   {
-    children: 'Marine shelfs',
+    children: t('scoping.ecosystems.marine.types.marineShelfs'),
     name: 'marine-shelfs',
     value: 'marine-shelfs',
   },
   {
-    children: 'Mangroves and shoreline systems',
+    children: t('scoping.ecosystems.marine.types.mangroves'),
     name: 'mangroves-and-shoreline-systems',
     value: 'mangroves-and-shoreline-systems',
   },
   {
-    children: 'Deep-sea floors',
+    children: t('scoping.ecosystems.marine.types.deepSeaFloors'),
     name: 'deep-sea-floors',
     value: 'deep-sea-floors',
   },

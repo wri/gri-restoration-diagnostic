@@ -53,6 +53,10 @@
     "setup": {
       "title": "Welcome to the Restoration Diagnostic Tool",
       "subtitle": "A rapid assessment tool to evaluate the readiness of your landscape/geography for restoration and design strategic actions to ensure long-term success.",
+      "page": {
+        "title": "Run the Restoration Diagnostic",
+        "subtitle": "Using the Diagnostic tool helps you assess the readiness of the geography or scale selected for restoration and design strategic actions to promote long-term success."
+      },
       "features": {
         "steps": "3 step process",
         "duration": "3 - 5 weeks to complete"
@@ -169,7 +173,31 @@
       },
       "checkboxes": {
         "terms": "I agree to WRI's Terms of Service and Privacy Policy so I can save and manage my progress.",
+        "termsPrefix": "I agree to WRI's",
+        "termsMiddle": "and",
+        "termsSuffix": "so I can save and manage my progress.",
         "allowDataSharing": "I allow my anonymized data to be used in global research and meta-analysis to help identify restoration trends."
+      },
+      "accessModal": {
+        "title": "Save your access details",
+        "description": "This diagnostic doesn't use accounts. To keep your progress secure and return later, you'll need to save both the diagnostic link and password.",
+        "fields": {
+          "link": "Diagnostic link",
+          "password": "Password"
+        },
+        "actions": {
+          "copyBoth": "Copy link & password",
+          "copied": "Copied!"
+        },
+        "aria": {
+          "copyLink": "Copy diagnostic link to clipboard",
+          "linkCopied": "Diagnostic link copied to clipboard",
+          "copyPassword": "Copy password to clipboard",
+          "passwordCopied": "Password copied to clipboard",
+          "copyBoth": "Copy both link and password to clipboard",
+          "bothCopied": "Link and password copied to clipboard"
+        },
+        "confirmation": "I've saved the link and password securely, and understand that if I lose these I will not be able to access the diagnostic."
       },
       "ecosystems": {
         "forest": {
@@ -232,6 +260,9 @@
         "restorationGoals": "Restoration goals",
         "engagement": "Define engagement strategy",
         "materials": "Gather materials"
+      },
+      "guidance": {
+        "title": "Guidance"
       }
     },
     "common": {

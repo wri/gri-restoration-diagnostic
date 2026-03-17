@@ -2,7 +2,7 @@
 
 import Loader from '@/components/ui/Loader'
 import { COUNTRIES } from '@/constants'
-import { assessmentFormRules } from '@/hooks/useAssessmentSetupForm'
+import { getAssessmentFormRules } from '@/hooks/useAssessmentSetupForm'
 import type { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import { TargetGeographyType } from '@/types/assessment-setup.types'
 import {
@@ -17,9 +17,9 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import {
-  freshwaterEcosystems,
-  marineEcosystems,
-  terrestrialEcosystems,
+  getFreshwaterEcosystems,
+  getMarineEcosystems,
+  getTerrestrialEcosystems,
 } from './utils'
 import { PREPARATION_STEPS } from '@/constants'
 import Link from 'next/link'
@@ -77,6 +77,7 @@ const TargetGeography = () => {
   })
   const [isLoading, setIsLoading] = useState(true)
   const t = useTranslations()
+  const assessmentFormRules = getAssessmentFormRules(t)
   const searchParams = useSearchParams()
   const isEditMode = searchParams.get('isEditMode')
   const isEditing = isEditMode === 'true'
@@ -140,6 +141,9 @@ const TargetGeography = () => {
 
   const formValues = watch()
   const selectedEcosystems = formValues.ecosystems || []
+  const terrestrialEcosystems = getTerrestrialEcosystems(t)
+  const freshwaterEcosystems = getFreshwaterEcosystems(t)
+  const marineEcosystems = getMarineEcosystems(t)
   const allEcosystemOptions = [
     ...terrestrialEcosystems,
     ...freshwaterEcosystems,
