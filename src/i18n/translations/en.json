@@ -127,7 +127,7 @@
         "titleRequired": "Title is required",
         "fullNameRequired": "Full name is required",
         "fullNameMinLength": "Name must be at least 2 characters",
-        "emailRequired": "Email address is required",
+        "emailRequired": "Add a valid email address",
         "emailInvalid": "Please provide a valid email address",
         "countryRequired": "Country is required",
         "subRegionRequired": "Sub-region is required",

@@ -53,7 +53,7 @@ export const assessmentFormRules = {
     },
   },
   email: {
-    required: 'Email address is required',
+    required: 'Add a valid email address',
     validate: (val: string) =>
       validateEmailFormat(val) || 'Please provide a valid email address',
   },
