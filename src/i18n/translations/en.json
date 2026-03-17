@@ -735,6 +735,8 @@
   "assessment": {
     "navigation": {
       "progress": "{answered}/{total}",
+      "responses": "Responses:",
+      "other": "Other",
       "status": {
         "yes": "Yes",
         "partly": "Partly",
@@ -818,18 +820,23 @@
       "heading": "Contributors",
       "description": "Add the full name of everyone involved in answering this question.",
       "field": {
-        "placeholder": "Type to search"
-      }
+        "placeholder": "Type to search or add contributor"
+      },
+      "empty": "No contributors found"
     },
     "strategies": {
       "heading": "Strategies",
       "exampleIntro": "Examples of strategies for this factor:",
       "warning": "Strategic importance: Strategies addressing these key factors can have varying complexities and timescales. Restoration can be beneficial to countries or communities with historical/cultural connection to lands. It can be a way for governments to meet commitments to international agreements (e.g., UNFCCC, UNCCD, CBD, Aichi Challenges).",
+      "labels": {
+        "strategyNumber": "Strategy {number}"
+      },
       "fields": {
         "title": {
           "label": "Title",
           "placeholder": "Enter strategy title",
-          "maxLength": "(Maximum {remaining} characters remaining)"
+          "maxLength": "(Maximum {remaining} characters remaining)",
+          "remaining": "You have {remaining} characters remaining"
         },
         "description": {
           "label": "Description",
@@ -842,7 +849,8 @@
             "national": "National",
             "subnational": "Subnational",
             "landscape": "Landscape",
-            "site": "Site"
+            "site": "Site",
+            "transboundary": "Transboundary"
           }
         },
         "deadline": {
@@ -851,11 +859,69 @@
         },
         "responsibility": {
           "label": "Responsibility",
-          "placeholder": "Enter name"
+          "placeholder": "Type to search or add responsibility"
+        },
+        "priority": {
+          "label": "Priority",
+          "placeholder": "Select priority",
+          "options": {
+            "high": "High",
+            "medium": "Medium",
+            "low": "Low"
+          }
         }
       },
       "actions": {
-        "addStrategy": "+ Add strategy"
+        "addStrategy": "Add strategy",
+        "about": "About",
+        "delete": "Delete"
+      },
+      "readOnly": {
+        "headers": {
+          "strategy": "Strategy",
+          "priority": "Priority",
+          "scale": "Scale"
+        },
+        "noTitle": "No title",
+        "due": "Due {value}",
+        "ownedBy": "Owned by"
+      },
+      "modal": {
+        "title": "Strategy",
+        "relatedKeySuccessFactor": "Related key success factor",
+        "noDescription": "No description",
+        "na": "N/A"
+      },
+      "about": {
+        "title": "About strategies",
+        "sections": {
+          "why": {
+            "title": "Why set strategies",
+            "body": "Adding strategies allows you to plan how you will address key factors that are missing or only partly in place, while maintaining those already being addressed. The aim is to identify practical actions that increase the likelihood of successful restoration in the target geography."
+          },
+          "include": {
+            "title": "What to include",
+            "body1": "Strategies may include policy changes, incentives, institutional reforms, capacity-building activities, or cross-sector interventions (such as agriculture, finance, or land tenure). When defining strategies, consider how they align with existing policy processes, planning cycles, regulatory reform opportunities, and available technical capacity.",
+            "body2": "Each strategy should clearly describe who will act, what will be done, why the action is needed, when it should happen, and how it will be implemented and funded."
+          },
+          "considerations": {
+            "title": "Key considerations",
+            "body1": "A single strategy may address multiple key factors. If so, record it under the most relevant factor and note in the other related factors that they are addressed by this strategy.",
+            "body2": "Example strategies for each factor can be found in the key factor guidance. These are illustrative and should be adapted to local context."
+          },
+          "priority": {
+            "title": "Prioritizing strategies",
+            "body1": "Because resources are limited, strategies should be prioritized. Consider the urgency of the gap, dependencies between actions (for example land tenure before incentives), feasibility, cost, time to impact, and the scale of implementation.",
+            "body2": "The tool may suggest a recommended priority based on your response to a key factor (for example, gaps marked “No” may be flagged as higher priority). This recommendation is a guide and can be adjusted."
+          }
+        },
+        "note": {
+          "title": "Important note",
+          "body": "Strategies identified through the diagnostic are intended to inform planning and decision-making, not prescribe specific interventions or provide detailed implementation guidance. Results should be validated with relevant stakeholders.",
+          "linkPrefix": "For further guidance, consult the",
+          "linkLabel": "Restoration Opportunities Assessment Methodology (ROAM)",
+          "linkSuffix": "."
+        }
       }
     },
     "autoSave": {

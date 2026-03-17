@@ -8,6 +8,7 @@ import {
 import { useState } from 'react'
 import { formatDeadline, sortStrategies } from './utils'
 import StrategiesReadOnlyModal from './ReadOnlyModal'
+import { useTranslations } from '@/i18n/useTranslations'
 
 const StrategiesReadOnly = ({
   strategies,
@@ -19,6 +20,7 @@ const StrategiesReadOnly = ({
   allContributors: PlainContributor[]
 }) => {
   const [strategyDetails, setStrategyDetails] = useState<Strategy | undefined>()
+  const t = useTranslations()
 
   const strategiesData = JSON.parse(strategies) as Strategy[]
 
@@ -26,14 +28,28 @@ const StrategiesReadOnly = ({
     <>
       <div className='!mt-8'>
         <div className='flex items-center gap-3 mb-1'>
-          <p className='font-bold text-neutral-900'>Strategies</p>
+          <p className='font-bold text-neutral-900'>
+            {t('assessment.strategies.heading')}
+          </p>
         </div>
 
         <Table
           columns={[
-            { key: 'title', label: 'Strategy', sortable: true },
-            { key: 'priority', label: 'Priority', sortable: true },
-            { key: 'scale', label: 'Scale', sortable: true },
+            {
+              key: 'title',
+              label: t('assessment.strategies.readOnly.headers.strategy'),
+              sortable: true,
+            },
+            {
+              key: 'priority',
+              label: t('assessment.strategies.readOnly.headers.priority'),
+              sortable: true,
+            },
+            {
+              key: 'scale',
+              label: t('assessment.strategies.readOnly.headers.scale'),
+              sortable: true,
+            },
           ]}
           data={strategiesData}
           renderRow={(row: Strategy) => {
@@ -52,12 +68,14 @@ const StrategiesReadOnly = ({
                       className='text-neutral-800 font-bold underline decoration-dotted cursor-pointer'
                       onClick={() => setStrategyDetails(row)}
                     >
-                      {row.title || 'No title'}
+                      {row.title || t('assessment.strategies.readOnly.noTitle')}
                     </p>
                     <div className='flex gap-2 items-center'>
                       {row.deadline ? (
                         <p className='text-neutral-700 text-xs'>
-                          Due {formatDeadline(row.deadline)}
+                          {t('assessment.strategies.readOnly.due', {
+                            value: formatDeadline(row.deadline),
+                          })}
                         </p>
                       ) : (
                         ''
@@ -65,7 +83,7 @@ const StrategiesReadOnly = ({
 
                       {row.responsibility ? (
                         <p className='text-neutral-700 text-xs'>
-                          Owned by{' '}
+                          {t('assessment.strategies.readOnly.ownedBy')}{' '}
                           {selectedContributors.map((c) => c.name).join(', ')}
                         </p>
                       ) : (
@@ -77,11 +95,12 @@ const StrategiesReadOnly = ({
                 <TableCell className='w-28'>
                   <div className='flex'>
                     {row.priority ? (
-                      <Tag
-                        label={
-                          row.priority.charAt(0).toUpperCase() +
-                          row.priority.slice(1)
-                        }
+                        <Tag
+                          label={
+                            t(
+                              `assessment.strategies.fields.priority.options.${row.priority}`,
+                            )
+                          }
                         variant={
                           row.priority === 'low'
                             ? 'success'

@@ -19,6 +19,7 @@ import type { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import { Box } from '@chakra-ui/react'
 import { AnswerStatus } from '@/types/answer.types'
+import { useTranslations } from '@/i18n/useTranslations'
 
 interface ThemeNavigationProps {
   theme: 'Motivate' | 'Enable' | 'Implement'
@@ -32,10 +33,10 @@ interface ThemeNavigationProps {
 }
 
 // Helper to group questions by enabling condition
-function groupByEnablingCondition(questions: PlainQuestion[]) {
+function groupByEnablingCondition(questions: PlainQuestion[], fallbackLabel: string) {
   const grouped: Record<string, PlainQuestion[]> = {}
   questions.forEach((q) => {
-    const condition = q.enablingCondition || 'Other'
+    const condition = q.enablingCondition || fallbackLabel
     if (!grouped[condition]) {
       grouped[condition] = []
     }
@@ -65,11 +66,17 @@ function ThemeIcon() {
 }
 
 // Answer status badge
-function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
+function AnswerStatusBadge({
+  answer,
+  t,
+}: {
+  answer?: PlainAnswer
+  t: ReturnType<typeof useTranslations>
+}) {
   if (!answer?.value) {
     return (
       <span className='text-[11px] mt-1 block text-slate-400'>
-        Not answered
+        {t('assessment.navigation.status.notAnswered')}
       </span>
     )
   }
@@ -77,7 +84,7 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
   const config: Record<AnswerValue, { label: string; icon: React.ReactNode }> =
     {
       yes: {
-        label: 'Yes',
+        label: t('assessment.navigation.status.yes'),
         icon: (
           <YesAnswerIcon
             css={{ color: getThemedColor('success', 400) }}
@@ -86,7 +93,7 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
         ),
       },
       partly: {
-        label: 'Partly',
+        label: t('assessment.navigation.status.partly'),
         icon: (
           <PartlyAnswerIcon
             css={{ color: getThemedColor('warning', 400) }}
@@ -95,7 +102,7 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
         ),
       },
       no: {
-        label: 'No',
+        label: t('assessment.navigation.status.no'),
         icon: (
           <NoAnswerIcon
             css={{ color: getThemedColor('error', 400) }}
@@ -104,7 +111,7 @@ function AnswerStatusBadge({ answer }: { answer?: PlainAnswer }) {
         ),
       },
       na: {
-        label: 'N/A',
+        label: t('assessment.navigation.status.na'),
         icon: (
           <Box
             className='w-3 h-3 rounded-full border'
@@ -134,8 +141,12 @@ export function ThemeNavigation({
   canGoPrev,
   canGoNext,
 }: ThemeNavigationProps) {
+  const t = useTranslations()
   // Group questions by enabling condition
-  const groupedQuestions = groupByEnablingCondition(questions)
+  const groupedQuestions = groupByEnablingCondition(
+    questions,
+    t('assessment.navigation.other'),
+  )
 
   // Calculate progress - count questions marked as complete
   const answeredCount = questions.filter((q) => {
@@ -153,10 +164,12 @@ export function ThemeNavigation({
       <div className='flex items-center justify-between p-2 border-b'>
         <div className='flex items-center gap-2 font-bold capitalize text-sm text-grey-500'>
           <ThemeIcon />
-          <span className='text-lg'>{theme}</span>
+          <span className='text-lg'>
+            {t(`navigation.themes.${theme.toLowerCase()}`)}
+          </span>
         </div>
         <Box className='flex gap-1'>
-          <Tooltip content='Previous theme'>
+          <Tooltip content={t('navigation.tooltips.previousTheme')}>
             <IconButton
               color='primary'
               as='span'
@@ -165,7 +178,7 @@ export function ThemeNavigation({
               icon={<ChevronLeft />}
             />
           </Tooltip>
-          <Tooltip content='Next theme'>
+          <Tooltip content={t('navigation.tooltips.nextTheme')}>
             <IconButton
               color='primary'
               as='span'
@@ -198,7 +211,9 @@ export function ThemeNavigation({
 
       {/* Status counts */}
       <div className='flex items-center gap-3 text-xs p-2'>
-        <span className='text-grey-200'>Responses:</span>
+        <span className='text-grey-200'>
+          {t('assessment.navigation.responses')}
+        </span>
         <span className='flex items-center gap-1 text-slate-700'>
           <YesAnswerIcon className='w-4 h-4 text-success-500' />{' '}
           {statusCounts.yes}
@@ -251,7 +266,7 @@ export function ThemeNavigation({
                         >
                           {question.minimalKeySuccessFactor}
                         </p>
-                        <AnswerStatusBadge answer={answer} />
+                        <AnswerStatusBadge answer={answer} t={t} />
                       </div>
                     </div>
                   </li>

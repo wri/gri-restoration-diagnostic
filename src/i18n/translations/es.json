@@ -735,6 +735,8 @@
   "assessment": {
     "navigation": {
       "progress": "{answered}/{total}",
+      "responses": "Respuestas:",
+      "other": "Otro",
       "status": {
         "yes": "Sí",
         "partly": "Parcialmente",
@@ -818,18 +820,23 @@
       "heading": "Colaboradores",
       "description": "Agregue el nombre completo de todos los involucrados en responder esta pregunta.",
       "field": {
-        "placeholder": "Escriba para buscar"
-      }
+        "placeholder": "Escriba para buscar o añadir colaborador"
+      },
+      "empty": "No se encontraron colaboradores"
     },
     "strategies": {
       "heading": "Estrategias",
       "exampleIntro": "Ejemplos de estrategias para este factor:",
       "warning": "Importancia estratégica: Las estrategias que abordan estos factores clave pueden tener complejidades y escalas de tiempo variables. La restauración puede ser beneficiosa para países o comunidades con conexión histórica/cultural con las tierras. Puede ser una forma para que los gobiernos cumplan con los compromisos de los acuerdos internacionales (ej. CMNUCC, UNCCD, CDB, Desafíos de Aichi).",
+      "labels": {
+        "strategyNumber": "Estrategia {number}"
+      },
       "fields": {
         "title": {
           "label": "Título",
           "placeholder": "Ingrese el título de la estrategia",
-          "maxLength": "(Máximo {remaining} caracteres restantes)"
+          "maxLength": "(Máximo {remaining} caracteres restantes)",
+          "remaining": "Le quedan {remaining} caracteres"
         },
         "description": {
           "label": "Descripción",
@@ -842,7 +849,8 @@
             "national": "Nacional",
             "subnational": "Subnacional",
             "landscape": "Paisaje",
-            "site": "Sitio"
+            "site": "Sitio",
+            "transboundary": "Transfronterizo"
           }
         },
         "deadline": {
@@ -851,11 +859,69 @@
         },
         "responsibility": {
           "label": "Responsabilidad",
-          "placeholder": "Ingrese el nombre"
+          "placeholder": "Escriba para buscar o añadir responsabilidad"
+        },
+        "priority": {
+          "label": "Prioridad",
+          "placeholder": "Seleccionar prioridad",
+          "options": {
+            "high": "Alta",
+            "medium": "Media",
+            "low": "Baja"
+          }
         }
       },
       "actions": {
-        "addStrategy": "+ Añadir estrategia"
+        "addStrategy": "Añadir estrategia",
+        "about": "Acerca de",
+        "delete": "Eliminar"
+      },
+      "readOnly": {
+        "headers": {
+          "strategy": "Estrategia",
+          "priority": "Prioridad",
+          "scale": "Escala"
+        },
+        "noTitle": "Sin título",
+        "due": "Vence {value}",
+        "ownedBy": "Responsable"
+      },
+      "modal": {
+        "title": "Estrategia",
+        "relatedKeySuccessFactor": "Factor clave de éxito relacionado",
+        "noDescription": "Sin descripción",
+        "na": "N/A"
+      },
+      "about": {
+        "title": "Sobre las estrategias",
+        "sections": {
+          "why": {
+            "title": "¿Por qué establecer estrategias?",
+            "body": "Añadir estrategias le permite planificar cómo abordará los factores clave que faltan o están parcialmente implementados, mientras mantiene aquellos que ya se están abordando. El objetivo es identificar acciones prácticas que aumenten la probabilidad de éxito de la restauración en la geografía objetivo."
+          },
+          "include": {
+            "title": "Qué incluir",
+            "body1": "Las estrategias pueden incluir cambios en las políticas, incentivos, reformas institucionales, actividades de creación de capacidad o intervenciones intersectoriales (como agricultura, finanzas o tenencia de la tierra). Al definir estrategias, considere cómo se alinean con los procesos de políticas existentes, los ciclos de planificación, las oportunidades de reforma regulatoria y la capacidad técnica disponible.",
+            "body2": "Cada estrategia debe describir claramente quién actuará, qué se hará, por qué es necesaria la acción, cuándo debería suceder y cómo se implementará y financiará."
+          },
+          "considerations": {
+            "title": "Consideraciones clave",
+            "body1": "Una sola estrategia puede abordar varios factores clave. Si es así, regístrela bajo el factor más relevante y anote en los otros factores relacionados que son abordados por esta estrategia.",
+            "body2": "En la guía de cada factor clave se pueden encontrar ejemplos de estrategias. Estas son ilustrativas y deben adaptarse al contexto local."
+          },
+          "priority": {
+            "title": "Priorización de estrategias",
+            "body1": "Dado que los recursos son limitados, las estrategias deben priorizarse. Considere la urgencia de la brecha, las dependencias entre acciones (por ejemplo, la tenencia de la tierra antes que los incentivos), la factibilidad, el costo, el tiempo para el impacto y la escala de implementación.",
+            "body2": "La herramienta puede sugerir una prioridad recomendada basada en su respuesta a un factor clave (por ejemplo, las brechas marcadas como \"No\" pueden marcarse como de mayor prioridad). Esta recomendación es una guía y puede ajustarse."
+          }
+        },
+        "note": {
+          "title": "Nota importante",
+          "body": "Las estrategias identificadas a través del diagnóstico pretenden informar la planificación y la toma de decisiones, no prescribir intervenciones específicas ni proporcionar una guía de implementación detallada. Los resultados deben validarse con las partes interesadas pertinentes.",
+          "linkPrefix": "Para obtener más orientación, consulte la",
+          "linkLabel": "Metodología de Evaluación de Oportunidades de Restauración (ROAM)",
+          "linkSuffix": "."
+        }
       }
     },
     "autoSave": {
