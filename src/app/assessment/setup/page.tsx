@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Controller } from 'react-hook-form'
 import {
@@ -116,12 +116,6 @@ export default function SetupAssessmentPage() {
   }
 
   const hasErrors = Object.keys(errors).length > 0
-
-  useEffect(() => {
-    console.log("🚀 ~ SetupAssessmentPage ~ errors:", errors)
-    const errorString = getErrorList();
-    console.log("🚀 ~ SetupAssessmentPage ~ errorString:", errorString)
-  }, [errors]);
 
   return (
     <>
