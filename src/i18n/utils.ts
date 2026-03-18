@@ -1,5 +1,7 @@
 import en from '@/i18n/translations/en.json'
 import es from '@/i18n/translations/es.json'
+import fr from '@/i18n/translations/fr.json'
+import pt from '@/i18n/translations/pt.json'
 
 type Messages = Record<string, unknown>
 type TranslationValues = Record<string, string | number>
@@ -7,6 +9,8 @@ type TranslationValues = Record<string, string | number>
 const messagesByLanguage: Record<string, Messages> = {
   en,
   es,
+  fr,
+  pt,
 }
 
 const getNestedValue = (messages: Messages, key: string): unknown =>
