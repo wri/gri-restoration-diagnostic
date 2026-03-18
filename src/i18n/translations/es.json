@@ -24,7 +24,9 @@
     "languageMenu": "Idioma",
     "languages": {
       "en": "English",
-      "es": "Español"
+      "es": "Español",
+      "fr": "Français",
+      "pt": "Português"
     },
     "contact": "Contacto",
     "themes": {
@@ -568,7 +570,7 @@
         "description": "La pantalla de resumen muestra cuánto progreso ha realizado en cada tema.",
         "cards": {
           "motivate": "Motivar ({count} preguntas)",
-          "enable": "Plan ({count} preguntas)",
+          "enable": "Planificar ({count} preguntas)",
           "implement": "Implementar ({count} preguntas)"
         }
       },
@@ -745,6 +747,12 @@
         "notAnswered": "No respondido"
       }
     },
+    "pagination": {
+      "previousFactor": "Factor anterior",
+      "nextFactor": "Siguiente factor",
+      "firstFactorIn": "Primer factor en {theme}",
+      "lastFactorIn": "Último factor en {theme}"
+    },
     "content": {
       "headers": {
         "question": "Pregunta",
@@ -848,7 +856,7 @@
           "options": {
             "national": "Nacional",
             "subnational": "Subnacional (municipio, provincia, distrito)",
-            "landscape": "Paisaje (o mar paisajístico si aplica)",
+            "landscape": "Paisaje (o paisaje marino si aplica)",
             "site": "Sitio de restauración",
             "transboundary": "Transfronterizo (dos o más países)"
           }

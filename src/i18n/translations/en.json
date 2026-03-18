@@ -24,7 +24,9 @@
     "languageMenu": "Language",
     "languages": {
       "en": "English",
-      "es": "Español"
+      "es": "Español",
+      "fr": "Français",
+      "pt": "Português"
     },
     "contact": "Contact",
     "themes": {
@@ -744,6 +746,12 @@
         "na": "N/A",
         "notAnswered": "Not answered"
       }
+    },
+    "pagination": {
+      "previousFactor": "Previous factor",
+      "nextFactor": "Next factor",
+      "firstFactorIn": "First factor in {theme}",
+      "lastFactorIn": "Last factor in {theme}"
     },
     "content": {
       "headers": {

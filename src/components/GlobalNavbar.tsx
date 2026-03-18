@@ -24,6 +24,8 @@ export default function GlobalNavbar() {
   const languageOptions = [
     { label: t('navigation.languages.en'), value: 'en' },
     { label: t('navigation.languages.es'), value: 'es' },
+    { label: t('navigation.languages.fr'), value: 'fr' },
+    { label: t('navigation.languages.pt'), value: 'pt' },
   ]
 
   // Prevent hydration mismatch - Navbar has responsive logic that checks window dimensions
