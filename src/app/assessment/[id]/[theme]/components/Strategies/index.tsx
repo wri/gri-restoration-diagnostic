@@ -31,23 +31,23 @@ const Strategies = ({
   const newStrategies: Strategy[] = strategies ? JSON.parse(strategies) : []
   const scaleOptions = [
     {
-      value: t('assessment.strategies.fields.scale.options.national'),
+      value: 'national',
       label: t('assessment.strategies.fields.scale.options.national'),
     },
     {
-      value: t('assessment.strategies.fields.scale.options.subnational'),
+      value: 'subnational',
       label: t('assessment.strategies.fields.scale.options.subnational'),
     },
     {
-      value: t('assessment.strategies.fields.scale.options.landscape'),
+      value: 'landscape',
       label: t('assessment.strategies.fields.scale.options.landscape'),
     },
     {
-      value: t('assessment.strategies.fields.scale.options.site'),
+      value: 'site',
       label: t('assessment.strategies.fields.scale.options.site'),
     },
     {
-      value: t('assessment.strategies.fields.scale.options.transboundary'),
+      value: 'transboundary',
       label: t('assessment.strategies.fields.scale.options.transboundary'),
     },
   ]

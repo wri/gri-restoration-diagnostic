@@ -114,7 +114,13 @@ const StrategiesReadOnly = ({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className='w-56'>{row.scale || '--'}</TableCell>
+                <TableCell className='w-56'>
+                  {row.scale
+                    ? t(
+                        `assessment.strategies.fields.scale.options.${row.scale}`,
+                      )
+                    : '--'}
+                </TableCell>
               </TableRow>
             )
           }}

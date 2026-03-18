@@ -9,7 +9,7 @@
       "download": "Baixar",
       "share": "Compartilhar",
       "backToSetup": "Voltar para configuração",
-      "backToOverview": "Volver ao resumo"
+      "backToOverview": "Voltar ao resumo"
     },
     "footer": {
       "privacyPolicy": "Política de privacidade",
@@ -127,7 +127,7 @@
         "gisLink": "Insira o link SIG"
       },
       "captions": {
-        "diagnosticTitle": "Inclua un título descritivo para seu diagnóstico. Este será exibido para qualquer pessoa que acessar o diagnóstico.",
+        "diagnosticTitle": "Inclua um título descritivo para seu diagnóstico. Este será exibido para qualquer pessoa que acessar o diagnóstico.",
         "ecosystemContext": "Selecione todos os tipos de ecossistemas presentes na sua área de avaliação."
       },
       "validation": {
@@ -688,6 +688,13 @@
           "low": "Baixa",
           "medium": "Média",
           "high": "Alta"
+        },
+        "scales": {
+          "national": "Nacional",
+          "subnational": "Subnacional (município, província, distrito)",
+          "landscape": "Paisagem (ou paisagem marinha, se aplicável)",
+          "site": "Sítio de restauração",
+          "transboundary": "Transfronteiriço (dois ou mais países)"
         }
       },
       "empty": {
@@ -987,7 +994,7 @@
       "tooManyLoginAttempts": "Muitas tentativas de login. Tente novamente mais tarde.",
       "passwordRequired": "A senha é obrigatória",
       "invalidCredentials": "Credenciais inválidas",
-      "unexpectedError": "Ocorreu un erro inesperado. Tente novamente mais tarde."
+      "unexpectedError": "Ocorreu um erro inesperado. Tente novamente mais tarde."
     },
     "generic": {
       "somethingWentWrong": "Algo deu errado",

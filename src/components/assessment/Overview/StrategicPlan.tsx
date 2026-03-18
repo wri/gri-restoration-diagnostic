@@ -179,7 +179,11 @@ const StrategicPlan = ({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className='w-56'>{row.scale || '--'}</TableCell>
+                    <TableCell className='w-56'>
+                      {row.scale
+                        ? t(`overview.strategicPlan.table.scales.${row.scale}`)
+                        : '--'}
+                    </TableCell>
                   </TableRow>
                 )
               }}

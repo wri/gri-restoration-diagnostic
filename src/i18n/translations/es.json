@@ -688,6 +688,13 @@
           "low": "Baja",
           "medium": "Media",
           "high": "Alta"
+        },
+        "scales": {
+          "national": "Nacional",
+          "subnational": "Subnacional (municipio, provincia, distrito)",
+          "landscape": "Paisaje (o paisaje marino si aplica)",
+          "site": "Sitio de restauración",
+          "transboundary": "Transfronterizo (dos o más países)"
         }
       },
       "empty": {

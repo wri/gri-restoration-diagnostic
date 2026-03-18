@@ -688,6 +688,13 @@
           "low": "Faible",
           "medium": "Moyenne",
           "high": "Haute"
+        },
+        "scales": {
+          "national": "Nationale",
+          "subnational": "Infranationale (municipalité, province, district)",
+          "landscape": "Paysage (ou paysage marin le cas échéant)",
+          "site": "Site de restauration",
+          "transboundary": "Transfrontalier (deux pays ou plus)"
         }
       },
       "empty": {
