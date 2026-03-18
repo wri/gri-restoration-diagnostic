@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from 'react'
 
@@ -18,19 +17,16 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 )
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState('en')
-
-  // Hydrate from cookie on mount to persist selection across reloads
-  useEffect(() => {
-    if (typeof document === 'undefined') return
+  const [language, setLanguage] = useState(() => {
+    if (typeof document === 'undefined') {
+      return 'en'
+    }
     const match = document.cookie
       .split('; ')
       .find((row) => row.startsWith('language='))
     const cookieLang = match?.split('=')[1]
-    if (cookieLang) {
-      setLanguage(cookieLang)
-    }
-  }, [])
+    return cookieLang || 'en'
+  })
 
   // Persist selection for server-rendered routes
   const handleSetLanguage = (lang: string) => {
