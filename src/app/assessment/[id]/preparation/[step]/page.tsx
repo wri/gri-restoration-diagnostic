@@ -2,17 +2,18 @@
 
 import Guidance from '@/components/assessment/DiagnosticPreparation/Guidance'
 import Steps from '@/components/assessment/DiagnosticPreparation/Steps'
-import {
-  PREPARATION_STEPS,
-  steps,
-} from '@/components/assessment/DiagnosticPreparation/utils'
+import { PREPARATION_STEPS } from '@/constants'
+import { getPreparationSteps } from '@/components/assessment/DiagnosticPreparation/utils'
+import { useTranslations } from '@/i18n/useTranslations'
 import { redirect, useParams } from 'next/navigation'
 
 const PreparationPage = () => {
   const params = useParams()
+  const t = useTranslations()
 
   const assessmentId = params.id as string
   const activeStep = params.step as string
+  const steps = getPreparationSteps(t)
 
   const stepData = steps.find((s) => s.id === activeStep)
 
