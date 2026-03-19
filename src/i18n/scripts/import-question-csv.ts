@@ -149,13 +149,40 @@ async function importQuestionsFromCSV(
         where: { questionCode, diagnosticId: diagnostic.id },
       })
       
+      // Parse theme value (map translated themes to English enum)
+      const themeValue = (THEME_MAP[row.Theme] || row.Theme) as Question['theme']
+      
       if (!question) {
-        console.warn(`⚠️  ${questionCode}: Question not found in database, skipping`)
-        skipped++
+        // INSERT new question
+        const newQuestion = queryRunner.manager.create(Question, {
+          questionCode,
+          diagnosticId: diagnostic.id,
+          theme: themeValue,
+          enablingCondition: row['Enabling condition'] || '',
+          keySuccessFactor: row['Key Factor'] || '',
+          minimalKeySuccessFactor: row.Minimal || '',
+          definition: sanitizeText(row.Definition) || '',
+          questionText: sanitizeQuestionText(row.Question) || '',
+          considerations: sanitizeText(row.Guidance) || '',
+          followUpQuestions: parseFollowUpQuestions(row['Follow up question(s)']),
+          strategyExamples: sanitizeListText(row['Examples of strategies to address gap in key factor']) || '',
+          sortOrder: id,
+          locale: language,
+        })
+        
+        await queryRunner.manager.save(newQuestion)
+        console.log(`✅ ${questionCode}: Created new question`)
+        changes.push({
+          code: questionCode,
+          action: 'insert',
+          field: 'all',
+          newValue: `New question inserted (${themeValue})`,
+        })
+        processed++
         continue
       }
       
-      // Prepare sanitized data
+      // Prepare sanitized data for UPDATE
       const updatedData = {
         questionText: sanitizeQuestionText(row.Question) || question.questionText,
         definition: sanitizeText(row.Definition),
@@ -165,7 +192,7 @@ async function importQuestionsFromCSV(
         keySuccessFactor: row['Key Factor'] || question.keySuccessFactor,
         minimalKeySuccessFactor: row.Minimal || question.minimalKeySuccessFactor,
         enablingCondition: row['Enabling condition'] || question.enablingCondition,
-        theme: (THEME_MAP[row.Theme] || row.Theme) as Question['theme'],
+        theme: themeValue,
         locale: language, // Set locale from language flag
       }
       
