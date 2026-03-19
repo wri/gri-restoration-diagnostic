@@ -1,10 +1,8 @@
 import { Assessment } from '@/db/entities'
 import { AssessmentSetupFormData } from '@/types/assessment-setup.types'
 import { type NextRequest } from 'next/server'
-import {
-  PREPARATION_STEPS,
-  steps,
-} from '@/components/assessment/DiagnosticPreparation/utils'
+import { PREPARATION_STEPS } from '@/constants'
+import { preparationStepOrder } from '@/components/assessment/DiagnosticPreparation/utils'
 
 export async function GET(
   request: NextRequest,
@@ -98,17 +96,22 @@ export async function POST(
           geographyType: body.geographyType,
           countries: body.country,
           subRegion: body.subRegion,
-          gisUrl: body.gisUrl || undefined,
+          gisUrl: body.gisUrl || '',
           ecosystems: JSON.stringify(body.ecosystems),
         })
 
         await regionRepository.save(region)
       }
 
-      const currentStepIndex = steps.findIndex((s) => s.id === body.step)
-      const nextStepId =
-        currentStepIndex !== -1 && currentStepIndex < steps.length - 1
-          ? steps[currentStepIndex + 1].id
+      const isEditing = body.isEditing
+      const currentStepIndex = preparationStepOrder.findIndex(
+        (stepId) => stepId === body.step,
+      )
+      const nextStepId = isEditing
+        ? PREPARATION_STEPS.COMPLETE
+        : currentStepIndex !== -1 &&
+            currentStepIndex < preparationStepOrder.length - 1
+          ? preparationStepOrder[currentStepIndex + 1]
           : PREPARATION_STEPS.COMPLETE
 
       let updatedAssessmentData = {
@@ -116,37 +119,31 @@ export async function POST(
         preparationStep: nextStepId,
       }
 
-      if (body.step === PREPARATION_STEPS.TIME_HORIZON && body.timeHorizon) {
+      if (body.step === PREPARATION_STEPS.TIME_HORIZON) {
         updatedAssessmentData = {
           ...updatedAssessmentData,
-          timeHorizon: body.timeHorizon,
+          timeHorizon: body.timeHorizon || '',
         }
       }
 
-      if (
-        body.step === PREPARATION_STEPS.RESTORATION_GOALS &&
-        body.restorationGoals
-      ) {
+      if (body.step === PREPARATION_STEPS.RESTORATION_GOALS) {
         updatedAssessmentData = {
           ...updatedAssessmentData,
-          restorationGoals: body.restorationGoals,
+          restorationGoals: body.restorationGoals || '',
         }
       }
 
-      if (
-        body.step === PREPARATION_STEPS.DEFINE_ENGAGEMENT &&
-        body.engagementStrategy
-      ) {
+      if (body.step === PREPARATION_STEPS.DEFINE_ENGAGEMENT) {
         updatedAssessmentData = {
           ...updatedAssessmentData,
-          engagementStrategy: body.engagementStrategy,
+          engagementStrategy: body.engagementStrategy || '',
         }
       }
 
-      if (body.step === PREPARATION_STEPS.GATHER_MATERIALS && body.materials) {
+      if (body.step === PREPARATION_STEPS.GATHER_MATERIALS) {
         updatedAssessmentData = {
           ...updatedAssessmentData,
-          materials: body.materials,
+          materials: body.materials || '',
         }
       }
 
