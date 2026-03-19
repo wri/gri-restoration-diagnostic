@@ -2,11 +2,16 @@
 
 import { ChevronLeftIcon } from '@/components/icons'
 import { Button } from '@worldresources/wri-design-systems'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { ChakraRichTextEditor } from '../ChakraRichTextEditor'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Loader from '@/components/ui/Loader'
-import { PREPARATION_STEPS } from './utils'
+import { PREPARATION_STEPS } from '@/constants'
+import {
+  usePreparationSubmit,
+  type PreparationSubmitAction,
+} from './PreparationSubmitContext'
+import { useTranslations } from '@/i18n/useTranslations'
 
 const RestorationGoals = () => {
   const params = useParams()
@@ -14,6 +19,11 @@ const RestorationGoals = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [restorationGoals, setRestorationGoals] = useState('')
+  const t = useTranslations()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('isEditMode')
+  const isEditing = isEditMode === 'true'
+  const { registerSubmitHandler } = usePreparationSubmit()
 
   const assessmentId = params.id as string
   const activeStep =
@@ -41,31 +51,47 @@ const RestorationGoals = () => {
     getAssessmentData()
   }, [])
 
-  const onSubmit = async () => {
-    setIsSubmitting(true)
+  const onSubmit = useCallback(
+    async (action: PreparationSubmitAction = 'advance') => {
+      setIsSubmitting(true)
 
-    const payload = {
-      restorationGoals,
-      step: activeStep,
-    }
+      const payload = {
+        restorationGoals,
+        step: activeStep,
+        isEditing,
+      }
 
-    const result = await fetch(`/api/assessments/${assessmentId}/preparation`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-    const jsonResult = await result.json()
-
-    if (jsonResult.success) {
-      router.push(
-        `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.DEFINE_ENGAGEMENT}`,
+      const result = await fetch(
+        `/api/assessments/${assessmentId}/preparation`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        },
       )
-    }
+      const jsonResult = await result.json()
 
-    setIsSubmitting(false)
-  }
+      if (jsonResult.success) {
+        const destination =
+          action === 'exit'
+            ? `/assessment/${assessmentId}`
+            : `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.DEFINE_ENGAGEMENT}${isEditing ? '?isEditMode=true' : ''}`
+
+        router.push(destination)
+      }
+
+      setIsSubmitting(false)
+    },
+    [activeStep, assessmentId, isEditing, restorationGoals, router],
+  )
+
+  useEffect(() => {
+    registerSubmitHandler(onSubmit)
+
+    return () => registerSubmitHandler(null)
+  }, [onSubmit, registerSubmitHandler])
 
   if (isLoading) {
     return <Loader />
@@ -79,29 +105,30 @@ const RestorationGoals = () => {
         leftIcon={<ChevronLeftIcon className='w-3 h-3' />}
         onClick={() =>
           router.push(
-            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TIME_HORIZON}`,
+            `/assessment/${assessmentId}/preparation/${PREPARATION_STEPS.TIME_HORIZON}${isEditing ? '?isEditMode=true' : ''}`,
           )
         }
-      >
-        <span className='underline underline-offset-1'>Previous</span>
+        >
+        <span className='underline underline-offset-1'>
+          {t('scoping.common.buttons.previous')}
+        </span>
       </Button>
 
       <h1 className='text-3xl font-bold text-neutral-900 mb-2'>
-        Restoration goals
+        {t('scoping.step3.heading')}
       </h1>
       <p className='text-neutral-800 mb-2'>
-        Restoration goals describe the intended outcomes for the landscape.
-        These may focus on a single ecosystem type or on a mix of ecosystems.
+        {t('scoping.step3.description1')}
+      </p>
+      <p className='text-neutral-800 mb-2'>
+        {t('scoping.step3.description2')}
       </p>
       <p className='text-neutral-800 mb-8'>
-        Goals commonly relate to biodiversity conservation, climate mitigation
-        or adaptation, livelihood improvement, water security, or food
-        production.
+        {t('scoping.step3.description3')}
       </p>
-
       <div className='mb-10'>
         <p className='text-neutral-900 text-xl mb-4 font-bold'>
-          Describe your goals for restoration
+          {t('scoping.step3.fields.goals.label')}
         </p>
         <ChakraRichTextEditor
           value={restorationGoals}
@@ -111,19 +138,19 @@ const RestorationGoals = () => {
 
       <div className='flex items-center gap-5 mt-10'>
         <Button
-          onClick={onSubmit}
+          onClick={() => onSubmit('advance')}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          Save and continue
+          {t('scoping.common.buttons.saveAndContinue')}
         </Button>
         <Button
           variant='borderless'
-          onClick={onSubmit}
+          onClick={() => onSubmit('advance')}
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          Skip
+          {t('scoping.common.buttons.skip')}
         </Button>
       </div>
     </div>

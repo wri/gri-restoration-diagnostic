@@ -2,10 +2,11 @@
 
 import { Button, Breadcrumb, getThemedColor } from '@worldresources/wri-design-systems'
 import { Box } from '@chakra-ui/react'
-import { CheckIcon, ErrorCircleFilledIcon, ShareIcon } from '@/components/icons'
+import { CheckIcon, ErrorCircleFilledIcon } from '@/components/icons'
 import type { AutoSaveStatus } from '@/hooks/useAutoSave'
 import type { PlainQuestion } from './ThemePageLayout'
 import Link from 'next/link'
+import { useTranslations } from '@/i18n/useTranslations'
 
 interface SubNavbarProps {
   saveStatus?: AutoSaveStatus
@@ -20,12 +21,13 @@ export function SubNavbar({
   questions, 
   focusQuestionCode 
 }: SubNavbarProps) {
+  const t = useTranslations()
   // Find current question
   const currentQuestion = questions.find(q => q.questionCode === focusQuestionCode)
   
   // Build breadcrumb links
   const breadcrumbLinks = [
-    { label: 'Overview', link: `/assessment/${assessmentId}` },
+    { label: t('navigation.overview'), link: `/assessment/${assessmentId}` },
   ]
   
   // Add current question if it exists
@@ -63,7 +65,7 @@ export function SubNavbar({
                   variant='borderless'
                   size='small'
                   loading={true}
-                  label='Saving progress'
+                  label={t('assessment.autoSave.status.saving')}
                   disabled
                 />
               )}
@@ -72,7 +74,7 @@ export function SubNavbar({
                   variant='borderless'
                   size='small'
                   leftIcon={<CheckIcon />}
-                  label='Progress auto-saved'
+                  label={t('assessment.autoSave.status.saved')}
                   disabled
                 />
               )}
@@ -84,26 +86,18 @@ export function SubNavbar({
                     color: getThemedColor('error', 500)
                   },
                 }}
-              >
-                <Button
-                  variant='borderless'
-                  size='small'
-                  leftIcon={<ErrorCircleFilledIcon />}
-                  label='Error saving progress'
-                  disabled
-                />
-              </Box>
+                >
+                  <Button
+                    variant='borderless'
+                    size='small'
+                    leftIcon={<ErrorCircleFilledIcon />}
+                    label={t('assessment.autoSave.status.error')}
+                    disabled
+                  />
+                </Box>
             )}
           </div>
         )}
-
-        {/* Share button (static, no functionality) */}
-        <Button
-          variant='borderless'
-          size='small'
-          leftIcon={<ShareIcon />}
-          label='Share'
-        />
       </div>
     </div>
   )
