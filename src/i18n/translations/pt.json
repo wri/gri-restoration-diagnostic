@@ -1045,7 +1045,7 @@
     "errors": {
       "passwordRequired": "A senha é obrigatória",
       "incorrectPassword": "A senha está incorreta ou não coincide com este diagnóstico. Se o problema persistir, entre em contato com nossa equipe.",
-      "tooManyAttempts": "Muitas tentativas falhas. Tente novamente em {time}.",
+      "tooManyAttempts": "Muitas tentativas falharam. Tente novamente em {time}.",
       "authError": "Ocorreu um erro ao autenticar. Tente novamente mais tarde.",
       "networkError": "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
     }
