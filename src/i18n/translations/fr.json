@@ -1090,7 +1090,7 @@
     "tooManyAttempts": "Trop de tentatives",
     "submitButton": "Reprendre le diagnostic",
     "submitting": "Authentification...",
-    "timeRemaining": "Temps restant: {time}",
+    "timeRemaining": "Temps restant : {time}",
     "errors": {
       "required": "Le mot de passe est requis",
       "rateLimited": "Trop de tentatives échouées. Veuillez réessayer dans {time}.",
