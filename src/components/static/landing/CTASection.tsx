@@ -12,6 +12,10 @@ export const CTASection = () => {
   const router = useRouter()
   const t = useTranslations()
 
+  const downloadButtonHandler = () => {
+    console.log('Download guide (coming soon) RD-74')
+  }
+
   return (
     <section className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -56,7 +60,7 @@ export const CTASection = () => {
               <Button
                 variant='secondary'
                 label={t('home.cta.offlineButton')}
-                onClick={() => void 0}
+                onClick={downloadButtonHandler}
               />
             </div>
           </div>
