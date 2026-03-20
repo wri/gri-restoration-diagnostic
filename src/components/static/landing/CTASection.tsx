@@ -23,7 +23,7 @@ export const CTASection = () => {
           <p className="text-gray-600 text-lg leading-relaxed mb-8">
             {t('home.cta.description')}
           </p>
-          <ul className="space-y-3 mb-10 max-w-xl mx-auto flex-start">
+          <ul className="space-y-3 mb-10 max-w-xl mx-auto text-left">
             {BENEFITS.map((key) => (
               <li key={key} className="flex items-center gap-3">
                 <CheckIcon className='text-success-500' />
