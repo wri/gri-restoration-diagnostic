@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from '@/i18n/useTranslations'
 import { CheckIcon } from '@/components/icons'
 import { Box } from '@chakra-ui/react'
+import { useState } from 'react'
 
 const BENEFITS = ['benefit1', 'benefit2', 'benefit3'] as const
 
@@ -14,6 +15,13 @@ export const CTASection = () => {
 
   const downloadButtonHandler = () => {
     console.log('Download guide (coming soon) RD-74')
+  }
+
+  const [isCTAClicked, setIsCTAClicked] = useState(false);
+
+  const handleCTAClick = () => {
+    setIsCTAClicked(true);
+    router.push('/assessment/setup')
   }
 
   return (
@@ -39,7 +47,8 @@ export const CTASection = () => {
           </ul>
           <Button
             variant="primary"
-            onClick={() => router.push('/assessment/setup')}
+            onClick={handleCTAClick}
+            loading={isCTAClicked}
           >
             {t('home.cta.ctaButton')}
           </Button>

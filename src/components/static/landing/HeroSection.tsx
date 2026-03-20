@@ -5,6 +5,7 @@ import { Button } from '@worldresources/wri-design-systems'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from '@/i18n/useTranslations'
 import { externalLinks } from '@/constants/external-links'
+import { use, useState } from 'react'
 
 const ExternalLinkIcon = () => (
   <svg
@@ -27,6 +28,11 @@ const ExternalLinkIcon = () => (
 export const HeroSection = () => {
   const router = useRouter()
   const t = useTranslations()
+  const [isCTAClicked, setIsCTAClicked] = useState(false);
+  const handleCTAClick = () => {
+    setIsCTAClicked(true);
+    router.push('/assessment/setup')
+  }
 
   return (
     <section className="bg-gradient-to-b from-white to-primary-200 overflow-hidden py-[4rem] pt-[calc(4rem+50px)] lg:py-[9rem] relative">
@@ -42,20 +48,20 @@ export const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
             <Button
               variant="primary"
-              onClick={() => router.push('/assessment/setup')}
+              onClick={handleCTAClick}
+              loading={isCTAClicked}
             >
               {t('home.hero.ctaButton')}
             </Button>
-            <button
+            <a
+              href={externalLinks.roamMethodology}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-base font-semibold text-gray-900 hover:text-gray-600 transition-colors bg-transparent border-none cursor-pointer"
-              onClick={() =>
-                window.open(externalLinks.roamMethodology, '_blank', 'noopener,noreferrer')
-              }
-              type="button"
             >
               {t('home.hero.roamButton')}
               <ExternalLinkIcon />
-            </button>
+            </a>
           </div>
         </div>
       </div>
