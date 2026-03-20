@@ -1083,5 +1083,24 @@
         "description": "Complete sua avaliação de diagnóstico de restauração"
       }
     }
+  },
+  "passwordPrompt": {
+    "title": "Digite a senha para acessar o diagnóstico",
+    "passwordLabel": "Senha",
+    "tooManyAttempts": "Muitas tentativas",
+    "submitButton": "Retomar diagnóstico",
+    "submitting": "Autenticando...",
+    "timeRemaining": "Tempo restante: {time}",
+    "errors": {
+      "required": "Senha é obrigatória",
+      "rateLimited": "Muitas tentativas falhas. Por favor, tente novamente em {time}.",
+      "incorrect": "A senha está incorreta ou não corresponde a este diagnóstico. Se o problema persistir, entre em contato com nossa equipe.",
+      "generic": "Ocorreu um erro durante a autenticação. Por favor, tente novamente mais tarde.",
+      "network": "Não foi possível conectar ao servidor. Por favor, verifique sua conexão e tente novamente."
+    },
+    "time": {
+      "minutesSeconds": "{minutes} minuto(s) {seconds} segundo(s)",
+      "secondsOnly": "{seconds} segundo(s)"
+    }
   }
 }
