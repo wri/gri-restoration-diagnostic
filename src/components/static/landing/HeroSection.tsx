@@ -5,7 +5,7 @@ import { Button } from '@worldresources/wri-design-systems'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from '@/i18n/useTranslations'
 import { externalLinks } from '@/constants/external-links'
-import { use, useState } from 'react'
+import { useState } from 'react'
 
 const ExternalLinkIcon = () => (
   <svg
