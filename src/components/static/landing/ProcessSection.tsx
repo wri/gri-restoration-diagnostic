@@ -17,10 +17,10 @@ const DownloadIcon = () => (
 )
 
 const STEPS = [
-  { key: 'before' as const, isNumbered: false },
-  { key: 'step1' as const, isNumbered: true },
-  { key: 'step2' as const, isNumbered: true },
-  { key: 'step3' as const, isNumbered: true },
+  { key: 'before' as const },
+  { key: 'step1' as const },
+  { key: 'step2' as const },
+  { key: 'step3' as const },
 ]
 
 export const ProcessSection = () => {
