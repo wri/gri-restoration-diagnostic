@@ -74,7 +74,6 @@ export const HeroSection = () => {
           width={1290}
           height={840}
           className="w-full h-auto"
-          priority
         />
       </div>
     </section>

@@ -2,6 +2,7 @@
 
 import { useTranslations } from '@/i18n/useTranslations'
 import { Button } from '@worldresources/wri-design-systems'
+import { useState } from 'react'
 
 const DownloadIcon = () => (
   <svg
@@ -25,6 +26,12 @@ const STEPS = [
 
 export const ProcessSection = () => {
   const t = useTranslations()
+  const [isDownloadGuideClicked, setIsDownloadGuideClicked] = useState(false);
+
+  const downloadGuideClickHandler = () => {
+    setIsDownloadGuideClicked(true);
+    console.log('Download guide (coming soon)')
+  }
 
   return (
     <section className="bg-primary-100 py-16 lg:py-24">
@@ -47,7 +54,7 @@ export const ProcessSection = () => {
             return (
             <div
               key={key}
-              className="bg-white rounded-lg flex flex-col border border-1 border-neutrals-400 radius-lg"
+              className="bg-white rounded-lg flex flex-col border border-neutral-400 radius-lg overflow-hidden"
             >
               <div className={`text-xs font-semibold p-2 ${headerColor}`}>
                 {t(`home.process.${key}.label`)}
@@ -65,6 +72,9 @@ export const ProcessSection = () => {
                       aria-label="Download guide (coming soon)"
                       leftIcon={<DownloadIcon />}
                       size="small"
+                      loading={isDownloadGuideClicked}
+                      onClick={downloadGuideClickHandler}
+                      disabled
                       variant="secondary">
                         {t('home.process.before.downloadGuide')}
                     </Button>
