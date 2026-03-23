@@ -122,9 +122,9 @@ jest.mock('@chakra-ui/react', () => ({
   Text: ({ children, ...props }: ChakraBoxProps) => <span {...props}>{children}</span>,
 }))
 
-// Mock useTranslations hook
-jest.mock('@/i18n/useTranslations', () => ({
-  useTranslations: () => {
+// Mock createTranslator from i18n/utils
+jest.mock('@/i18n/utils', () => ({
+  createTranslator: () => {
     // Simple mock that returns English translations
     const translations: Record<string, string> = {
       'passwordPrompt.title': 'Enter password to access the diagnostic',
