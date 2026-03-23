@@ -1099,8 +1099,10 @@
       "network": "Não foi possível conectar ao servidor. Por favor, verifique sua conexão e tente novamente."
     },
     "time": {
-      "minutesSeconds": "{minutes} minuto(s) {seconds} segundo(s)",
-      "secondsOnly": "{seconds} segundo(s)"
+      "minuteSingular": "{count} minuto",
+      "minutePlural": "{count} minutos",
+      "secondSingular": "{count} segundo",
+      "secondPlural": "{count} segundos"
     }
   }
 }

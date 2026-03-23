@@ -1099,8 +1099,10 @@
       "network": "Unable to connect to the server. Please check your connection and try again."
     },
     "time": {
-      "minutesSeconds": "{minutes} minute(s) {seconds} second(s)",
-      "secondsOnly": "{seconds} second(s)"
+      "minuteSingular": "{count} minute",
+      "minutePlural": "{count} minutes",
+      "secondSingular": "{count} second",
+      "secondPlural": "{count} seconds"
     }
   }
 }

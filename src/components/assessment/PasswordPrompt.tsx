@@ -52,12 +52,15 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
     const remainingSeconds = seconds % 60
 
     if (minutes > 0) {
-      return t('passwordPrompt.time.minutesSeconds', { 
-        minutes: String(minutes), 
-        seconds: String(remainingSeconds) 
-      })
+      const minuteKey = minutes === 1 ? 'passwordPrompt.time.minuteSingular' : 'passwordPrompt.time.minutePlural'
+      const secondKey = remainingSeconds === 1 ? 'passwordPrompt.time.secondSingular' : 'passwordPrompt.time.secondPlural'
+      const minuteText = t(minuteKey, { count: String(minutes) })
+      const secondText = t(secondKey, { count: String(remainingSeconds) })
+      return `${minuteText} ${secondText}`
     }
-    return t('passwordPrompt.time.secondsOnly', { seconds: String(seconds) })
+    
+    const secondKey = seconds === 1 ? 'passwordPrompt.time.secondSingular' : 'passwordPrompt.time.secondPlural'
+    return t(secondKey, { count: String(seconds) })
   }, [t])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

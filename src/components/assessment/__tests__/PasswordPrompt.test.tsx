@@ -138,15 +138,17 @@ jest.mock('@/i18n/useTranslations', () => ({
       'passwordPrompt.errors.incorrect': 'The password is incorrect or does not match this diagnostic. If the issue persists, please contact our team.',
       'passwordPrompt.errors.generic': 'An error occurred while authenticating. Please try again later.',
       'passwordPrompt.errors.network': 'Unable to connect to the server. Please check your connection and try again.',
-      'passwordPrompt.time.minutesSeconds': '{minutes} minute(s) {seconds} second(s)',
-      'passwordPrompt.time.secondsOnly': '{seconds} second(s)',
+      'passwordPrompt.time.minuteSingular': '{count} minute',
+      'passwordPrompt.time.minutePlural': '{count} minutes',
+      'passwordPrompt.time.secondSingular': '{count} second',
+      'passwordPrompt.time.secondPlural': '{count} seconds',
     }
     
     return (key: string, values?: Record<string, string>) => {
       let result = translations[key] || key
       if (values) {
         Object.entries(values).forEach(([k, v]) => {
-          result = result.replace(`{${k}}`, v)
+          result = result.replaceAll(`{${k}}`, v)
         })
       }
       return result
@@ -458,8 +460,8 @@ describe('PasswordPrompt Component', () => {
 
       // The time should be displayed somewhere
       const timeDisplay = screen.getByText(/Time remaining:/).parentElement
-      expect(timeDisplay?.textContent).toMatch(/1 minute\(s\)/)
-      expect(timeDisplay?.textContent).toMatch(/5 second\(s\)/)
+      expect(timeDisplay?.textContent).toMatch(/1 minute/)
+      expect(timeDisplay?.textContent).toMatch(/5 seconds/)
     })
 
     it('should disable form when rate limited', async () => {
@@ -578,7 +580,7 @@ describe('PasswordPrompt Component', () => {
 
       await waitFor(() => {
         const timeDisplay = screen.getByText(/Time remaining:/).parentElement
-        expect(timeDisplay?.textContent).toMatch(/2 minute\(s\) 5 second\(s\)/)
+        expect(timeDisplay?.textContent).toMatch(/2 minutes 5 seconds/)
       })
     })
 
@@ -598,7 +600,7 @@ describe('PasswordPrompt Component', () => {
 
       await waitFor(() => {
         const timeDisplay = screen.getByText(/Time remaining:/).parentElement
-        expect(timeDisplay?.textContent).toMatch(/45 second\(s\)/)
+        expect(timeDisplay?.textContent).toMatch(/45 seconds/)
         expect(timeDisplay?.textContent).not.toMatch(/minute/)
       })
     })
