@@ -57,8 +57,6 @@ interface ThemePageLayoutProps {
   initialContributorsByAnswer: Array<[string, string[]]>
 }
 
-const NAVBAR_RENDERED_HEIGHT = 47
-
 export function ThemePageLayout({
   assessmentId,
   theme,
