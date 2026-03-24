@@ -24,7 +24,7 @@ const translations: Record<string, Record<string, QuestionTranslation>> = {
 export function applyQuestionTranslations<
   T extends {
     questionCode: string
-    followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | null
+    followUpQuestions: { 'if yes'?: string[]; 'if no'?: string[] } | string | null
   },
 >(questions: T[], language: string): T[] {
   const dict = translations[language] ?? translations.en
@@ -35,10 +35,16 @@ export function applyQuestionTranslations<
 
     let followUpQuestions = q.followUpQuestions
     if (t.followUpQuestions) {
-      try {
-        followUpQuestions = JSON.parse(t.followUpQuestions)
-      } catch {
-        // keep original parsed value
+      if (typeof q.followUpQuestions === 'string') {
+        // QuestionWithAnswer: followUpQuestions is a raw JSON string — keep as string
+        followUpQuestions = t.followUpQuestions as typeof followUpQuestions
+      } else {
+        // PlainQuestion: followUpQuestions is a parsed object — parse the translation string
+        try {
+          followUpQuestions = JSON.parse(t.followUpQuestions) as typeof followUpQuestions
+        } catch {
+          // keep original parsed value
+        }
       }
     }
 
