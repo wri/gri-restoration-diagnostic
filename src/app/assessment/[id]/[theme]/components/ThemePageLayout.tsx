@@ -75,7 +75,6 @@ export function ThemePageLayout({
 }: ThemePageLayoutProps) {
   const { language } = useLanguage()
   const [saveStatus, setSaveStatus] = useState<AutoSaveStatus>('idle')
-  const [isScrolled, setIsScrolled] = useState(false)
   const [localizedQuestions, setLocalizedQuestions] = useState(questions)
   const [answers, setAnswers] = useState(initialAnswers)
   const [currentFocusCode, setCurrentFocusCode] = useState(focusQuestionCode)
@@ -134,33 +133,18 @@ export function ThemePageLayout({
     return () => controller.abort()
   }, [assessmentId, language, theme])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > NAVBAR_RENDERED_HEIGHT)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   return (
     <div
-      className={`min-h-screen flex flex-col bg-background-light gradient-bg duration-100 transition-[padding] ${isScrolled ? '' : 'pt-[47px]'} `}
+      className="min-h-screen flex flex-col bg-background-light gradient-bg duration-100 pt-12"
     >
       {/* Sub-navbar - Custom */}
-      <header
-        className={`border-b border-slate-200 sticky bg-white z-40 transition-all duration-100 transition-[top] ${isScrolled ? 'top-0' : 'top-[47px]'}`}
-      >
-        <SubNavbar
-          saveStatus={saveStatus}
-          assessmentId={assessmentId}
-          questions={localizedQuestions}
-          focusQuestionCode={currentFocusCode}
-        />
-      </header>
-
+      <SubNavbar
+        saveStatus={saveStatus}
+        assessmentId={assessmentId}
+        questions={localizedQuestions}
+        focusQuestionCode={currentFocusCode}
+      />
       {/* Main content with gradient background */}
       <div className='flex mx-auto w-full relative flex-1'>
         <QuestionView
