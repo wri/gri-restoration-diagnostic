@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { SubNavbar } from './SubNavbar'
 import { QuestionView } from './QuestionView'
 import type { AnswerValue } from '@/db/entities/Answer.entity'
@@ -8,6 +8,7 @@ import type { Theme } from '@/db/entities/Question.entity'
 import { AnswerStatus, PlainContributor } from '@/types/answer.types'
 import type { AutoSaveStatus } from '@/hooks/useAutoSave'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { applyQuestionTranslations } from '@/i18n/question-translations'
 
 // Plain object interfaces for data passed from server
 export interface PlainQuestion {
@@ -73,7 +74,10 @@ export function ThemePageLayout({
 }: ThemePageLayoutProps) {
   const { language } = useLanguage()
   const [saveStatus, setSaveStatus] = useState<AutoSaveStatus>('idle')
-  const [localizedQuestions, setLocalizedQuestions] = useState(questions)
+  const localizedQuestions = useMemo(
+    () => applyQuestionTranslations(questions, language),
+    [questions, language],
+  )
   const [answers, setAnswers] = useState(initialAnswers)
   const [currentFocusCode, setCurrentFocusCode] = useState(focusQuestionCode)
 
@@ -87,7 +91,7 @@ export function ThemePageLayout({
     const fetchLocalizedQuestions = async () => {
       try {
         const response = await fetch(
-          `/api/assessments/${assessmentId}/questions?language=${language}`,
+          `/api/assessments/${assessmentId}/questions`,
           { signal: controller.signal },
         )
 
@@ -96,10 +100,6 @@ export function ThemePageLayout({
         }
 
         const data = await response.json()
-        const filteredQuestions = (data.questions || []).filter(
-          (q: PlainQuestion) => q.theme === theme,
-        )
-
         const normalizedAnswers: Array<[string, PlainAnswer]> = []
         ;(data.answers || []).forEach(
           (answer: PlainAnswer & { questionId: string }) => {
@@ -107,19 +107,7 @@ export function ThemePageLayout({
           },
         )
 
-        setLocalizedQuestions(filteredQuestions)
         setAnswers(normalizedAnswers)
-        setCurrentFocusCode((prev) => {
-          if (
-            filteredQuestions.some(
-              (q: { questionCode: string }) => q.questionCode === prev,
-            )
-          ) {
-            return prev
-          }
-
-          return filteredQuestions[0]?.questionCode || prev
-        })
       } catch (error) {
         if ((error as Error).name === 'AbortError') return
         console.error('Failed to refresh questions on language change:', error)
@@ -129,7 +117,7 @@ export function ThemePageLayout({
     fetchLocalizedQuestions()
 
     return () => controller.abort()
-  }, [assessmentId, language, theme])
+  }, [assessmentId, theme])
 
 
   return (
