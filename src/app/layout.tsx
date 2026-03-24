@@ -35,8 +35,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const gtmId = 'GTM-PWXZMLPL';
-
 
   return (
     <html lang='en'>
