@@ -1,9 +1,11 @@
 'use client'
 
+import { useMemo } from 'react'
 import { RichTextEditor, Control } from '@/components/ui/rich-text-editor'
 import { useRichTextEditor } from '@/hooks/useRichTextEditor'
 import { Box } from '@chakra-ui/react'
 import { useTranslations } from '@/i18n/useTranslations'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface ChakraRichTextEditorProps {
   value: string
@@ -30,6 +32,7 @@ export function ChakraRichTextEditor({
   placeholder,
 }: ChakraRichTextEditorProps) {
   const t = useTranslations()
+  const { language } = useLanguage()
   const editor = useRichTextEditor({
     content: value,
     placeholder:
@@ -37,7 +40,7 @@ export function ChakraRichTextEditor({
     onUpdate: onChange,
   })
 
-  const labels = {
+  const labels = useMemo(() => ({
     toolbar: {
       'Bold': t('richTextEditor.toolbar.Bold'),
       'Italic': t('richTextEditor.toolbar.Italic'),
@@ -90,7 +93,7 @@ export function ChakraRichTextEditor({
     prompts: {
       enterUrl: t('richTextEditor.prompts.enterUrl'),
     },
-  }
+  }), [language]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!editor) {
     return null
