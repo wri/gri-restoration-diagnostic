@@ -19,7 +19,7 @@ const Guidance = ({
   if (!activeStepData) return null
 
   return (
-    <div className='border border-l-neutral-300 bg-white h-[calc(100%-56px)]'>
+    <div className='border border-l-neutral-300 bg-white min-h-[100%]'>
       <div className='px-4 py-3 text-neutral-900 border-b border-neutral-300 flex items-center gap-2'>
         <InfoIcon className='h-4 w-4' />
         {t('scoping.sidebar.guidance.title')}
