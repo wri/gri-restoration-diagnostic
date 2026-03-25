@@ -61,8 +61,8 @@ graph TB
 │   │   │   └── assessments/           # Assessment REST API
 │   │   │       ├── route.ts           #   POST create assessment
 │   │   │       └── [id]/
-│   │   │           ├── answers/       #   CRUD answers
-│   │   │           ├── contributors/  #   GET/POST contributors
+│   │   │           ├── answers/       #   GET/POST answers
+│   │   │           ├── contributors/  #   GET/POST/DELETE contributors
 │   │   │           ├── export-responses/ # XLSX export
 │   │   │           ├── login/         #   Password authentication
 │   │   │           ├── preparation/   #   Preparation workflow
@@ -132,7 +132,7 @@ graph TB
 └── package.json
 ```
 
-## �️ Database Schema
+## 🗄️ Database Schema
 
 ```mermaid
 erDiagram
@@ -213,11 +213,9 @@ erDiagram
 | `GET` | `/api/assessments/[id]/questions` | Get questions by language |
 | `GET` | `/api/assessments/[id]/answers` | List all answers |
 | `POST` | `/api/assessments/[id]/answers` | Create answers |
-| `PATCH` | `/api/assessments/[id]/answers` | Update answer fields |
-| `PUT` | `/api/assessments/[id]/answers/[answerId]` | Update specific answer |
-| `DELETE` | `/api/assessments/[id]/answers/[answerId]` | Delete answer |
 | `GET` | `/api/assessments/[id]/contributors` | List contributors |
 | `POST` | `/api/assessments/[id]/contributors` | Add contributor |
+| `DELETE` | `/api/assessments/[id]/contributors` | Remove contributor |
 | `POST` | `/api/assessments/[id]/login` | Verify password & create session |
 | `GET` | `/api/assessments/[id]/preparation` | Get preparation status |
 | `POST` | `/api/assessments/[id]/preparation` | Save preparation data |
@@ -238,16 +236,17 @@ Translation files are in `src/i18n/translations/`. Management scripts:
 
 ```bash
 npm run i18n:import-csv          # Import questions from CSV
-npm run i18n:sync-translations   # Sync translations (export/import)
+npm run i18n:export-questions     # Export questions to JSON
+npm run i18n:import-questions     # Import questions from JSON
 npm run i18n:validate            # Validate translation completeness
 npm run i18n:cleanup             # Remove duplicate questions
 ```
 
-## �🚀 Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 22.x (see `.nvmrc`)
+- [Node.js](https://nodejs.org/) 20.x (see `.nvmrc`)
 - [Docker](https://www.docker.com/)
 - [Terraform](https://www.terraform.io/) 1.0+ (for AWS deployment)
 - [AWS CLI](https://aws.amazon.com/cli/) configured with appropriate credentials
@@ -540,7 +539,7 @@ chmod +x teardown.sh
 
 ## 🔐 Security Features
 
-- VPC with public subnet isolation
+- VPC with public subnets; exposure limited via security groups and ALB
 - ECS Fargate tasks with ephemeral public IPs (no NAT Gateway)
 - Security groups limiting traffic
 - S3 bucket versioning and encryption for Terraform state
