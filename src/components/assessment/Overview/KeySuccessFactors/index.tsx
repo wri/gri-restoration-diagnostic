@@ -1,6 +1,6 @@
 'use client'
 
-// import SectionTitle from '../SectionTitle'
+import SectionTitle from '../SectionTitle'
 import { QuestionWithAnswer } from '@/types/questions.types'
 import { Theme } from '@/db/entities'
 import KeySuccessFactorsSection from './KeySuccessFactorsSection'
@@ -40,10 +40,10 @@ const KeySuccessFactors = ({
 
   return (
     <div>
-      {/* <SectionTitle
+      <SectionTitle
         index={2}
         title={t('overview.keySuccessFactors.sectionTitle')}
-      /> */}
+      />
 
       {keyFactorsData.map((item) => (
         <KeySuccessFactorsSection
