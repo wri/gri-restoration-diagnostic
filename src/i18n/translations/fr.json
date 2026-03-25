@@ -137,6 +137,10 @@
         },
         "buttons": {
           "download": "Télécharger le fichier"
+        },
+        "errors": {
+          "unableToConnect": "Impossible de se connecter. Veuillez vérifier votre connexion et réessayer.",
+          "defaultError": "Une erreur s'est produite. Veuillez réessayer."
         }
       }
     }

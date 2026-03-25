@@ -49,30 +49,46 @@ export const OfflineDownloadModal = ({
   }
 
   const onSubmit = async (data: OfflineDownloadFormData) => {
-    setIsSubmitting(true)
-    setSubmitError(null)
+  setIsSubmitting(true)
+  setSubmitError(null)
 
-    try {
-      const response = await fetch('/api/assessments/offline', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, language }),
-      })
+  try {
+    const response = await fetch('/api/assessments/offline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, language }),
+    })
 
-      if (response.ok) {
-        window.open(externalLinks.offlineDiagnosticExcel, '_blank', 'noopener,noreferrer')
-        reset()
-        onClose()
-      } else {
-        const result = await response.json()
-        setSubmitError(result.message || 'An error occurred. Please try again.')
+    if (response.ok) {
+      window.open(externalLinks.offlineDiagnosticExcel, '_blank', 'noopener,noreferrer')
+      reset()
+      onClose()
+    } else {
+      let message = t('home.cta.offlineModal.errors.defaultError')
+      try {
+        const contentType = response.headers.get('content-type') || ''
+        if (contentType.includes('application/json')) {
+          const result = await response.json()
+          if (result && typeof result.message === 'string' && result.message.trim()) {
+            message = result.message
+          }
+        } else {
+          const text = await response.text()
+          if (text && text.trim()) {
+            message = text
+          }
+        }
+      } catch {
+        // Ignore parsing errors and fall back to the default message
       }
-    } catch {
-      setSubmitError('Unable to connect. Please check your connection and try again.')
-    } finally {
-      setIsSubmitting(false)
+      setSubmitError(message)
     }
+  } catch {
+    setSubmitError(t('home.cta.offlineModal.errors.unableToConnect'))
+  } finally {
+    setIsSubmitting(false)
   }
+}  
 
   const hasErrors = Object.keys(errors).length > 0
 

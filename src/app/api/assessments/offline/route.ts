@@ -5,12 +5,10 @@ import type { OfflineDownloadFormData } from '@/types/offline-download.types'
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase()
 }
-
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
 }
-
 export async function POST(request: NextRequest) {
   try {
     const { AppDataSource } = await import('@/db/data-source')
