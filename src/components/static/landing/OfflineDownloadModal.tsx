@@ -15,7 +15,6 @@ import {
   useOfflineDownloadForm,
   getOfflineDownloadFormRules,
 } from '@/hooks/useOfflineDownloadForm'
-import { externalLinks } from '@/constants/external-links'
 import type { OfflineDownloadFormData } from '@/types/offline-download.types'
 
 interface OfflineDownloadModalProps {
