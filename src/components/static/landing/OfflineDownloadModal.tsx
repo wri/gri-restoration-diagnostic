@@ -16,6 +16,7 @@ import {
   getOfflineDownloadFormRules,
 } from '@/hooks/useOfflineDownloadForm'
 import type { OfflineDownloadFormData } from '@/types/offline-download.types'
+import { externalLinks } from '@/constants/external-links'
 
 interface OfflineDownloadModalProps {
   open: boolean
@@ -60,7 +61,7 @@ export const OfflineDownloadModal = ({
 
       if (response.ok) {
         const link = document.createElement('a')
-        link.href = '/offline-version/Restoration_Diagnostic_v2-ENG.xlsx'
+        link.href = externalLinks.offlineDiagnosticExcel
         link.download = 'Restoration_Diagnostic_v2-ENG.xlsx'
         document.body.appendChild(link)
         link.click()
