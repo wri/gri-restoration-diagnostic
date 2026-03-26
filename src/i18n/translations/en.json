@@ -828,7 +828,7 @@
       "button": "Export strategies",
       "headers": {
         "id": "ID",
-        "strategyTitle": "Strategy Title",
+        "strategyTitle": "Title Strategy",
         "keyFactor": "Key Success Factor",
         "priority": "Priority",
         "scale": "Scale",

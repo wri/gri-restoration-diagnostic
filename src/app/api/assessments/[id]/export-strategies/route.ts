@@ -228,7 +228,7 @@ export async function GET(
     })
 
     // Generate Excel file
-    const workbook = createWorkbookBuffer(labels.headers, rows, 'Strategies')
+    const workbook = createWorkbookBuffer(labels.headers, rows)
     const filename = `${sanitizeFilenamePart(assessment.title)}-strategies.xlsx`
 
     return new NextResponse(workbook, {

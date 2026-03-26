@@ -859,8 +859,8 @@
       "response": {
         "yes": "Sim",
         "partly": "Parcialmente",
-        "no": "Não",
-        "na": "Não se aplica",
+        "no": "No",
+        "na": "Not applicable",
         "empty": ""
       }
     },
