@@ -32,7 +32,7 @@ graph TB
 | Layer | Technology |
 |-------|-----------|
 | Framework | Next.js 15 (App Router), React 19 |
-| UI | Chakra UI v3, Tailwind CSS, TipTap Rich Text Editor |
+| UI | [WRI Design System](https://github.com/wri/wri-design-systems), Chakra UI v3, Tailwind CSS, TipTap Rich Text Editor |
 | Forms | React Hook Form |
 | Database | PostgreSQL 17, TypeORM 0.3 |
 | Auth | Bcrypt password hashing, session tokens (Web Crypto API) |
