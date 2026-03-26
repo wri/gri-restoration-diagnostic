@@ -1,5 +1,7 @@
 'use client'
 
+import { ReactNode } from "react"
+
 const SectionTitle = ({
   index,
   title,
@@ -7,7 +9,7 @@ const SectionTitle = ({
 }: {
   index: number
   title: string
-  actionButton?: React.ReactNode
+  actionButton?: ReactNode
 }) => {
 
   return (
