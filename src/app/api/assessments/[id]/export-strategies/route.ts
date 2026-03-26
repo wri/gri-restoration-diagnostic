@@ -202,7 +202,7 @@ export async function GET(
     }
 
     const questions = await getLocalizedQuestionsWithAnswers(id, language)
-    const labels = exportLabels[language]
+    const labels = exportLabels[language] || exportLabels['en']
 
     // Extract strategies and map to rows for file
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
