@@ -253,6 +253,10 @@ const TargetGeography = () => {
         optionalLabel: t('scoping.ecosystems.checkboxListI18nLabels.optionalLabel'),
         requiredLabel: t('scoping.ecosystems.checkboxListI18nLabels.requiredLabel'),
         requiredSymbolLabel: t('scoping.ecosystems.checkboxListI18nLabels.requiredSymbolLabel')
+      },
+      TextInput: {
+        optionalSuffix: t('common.optional'),
+        requiredSymbolLabel: t('common.required'), 
       }
     }}>
       <form
