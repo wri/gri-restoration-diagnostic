@@ -566,6 +566,14 @@
           "mangroves": "Manglares y sistemas costeros",
           "deepSeaFloors": "Fondos marinos profundos"
         }
+      },
+      "checkboxListI18nLabels": {
+        "errorPrefix": "Error",
+        "expandLabel": "Mostrar",
+        "hideLabel": "Ocultar",
+        "optionalLabel": "Opcional",
+        "requiredLabel": "Obligatorio.",
+        "requiredSymbolLabel": "obligatorio"
       }
     },
     "guidance": {
