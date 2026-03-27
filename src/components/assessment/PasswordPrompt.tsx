@@ -243,7 +243,7 @@ export function PasswordPrompt({ assessmentId }: PasswordPromptProps) {
 
                 <Button
                   type='submit'
-                  label={isLoading ? t('passwordPrompt.submitting') : t('passwordPrompt.passwordI18nLabels.submitButton')}
+                  label={isLoading ? t('passwordPrompt.submitting') : t('passwordPrompt.submitButton')}
                   disabled={isLoading || !password || isRateLimited}
                   className='w-full'
                 />
