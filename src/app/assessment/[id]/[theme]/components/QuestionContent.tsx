@@ -120,7 +120,6 @@ export function QuestionContent({
           strategies={strategies}
           onStrategysChange={onStrategysChange}
           allContributors={allContributors}
-          assessmentId={assessmentId}
           onContributorCreate={onContributorCreate}
         />
       )}
