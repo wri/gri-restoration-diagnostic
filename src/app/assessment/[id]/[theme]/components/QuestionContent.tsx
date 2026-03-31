@@ -121,6 +121,7 @@ export function QuestionContent({
           onStrategysChange={onStrategysChange}
           allContributors={allContributors}
           assessmentId={assessmentId}
+          onContributorCreate={onContributorCreate}
         />
       )}
 
