@@ -43,7 +43,6 @@ export function QuestionContent({
   allContributors,
   onContributorsChange,
   onContributorCreate,
-  assessmentId,
 }: QuestionContentProps) {
   const t = useTranslations()
   const hideRationale = selectedAnswer === 'na'
