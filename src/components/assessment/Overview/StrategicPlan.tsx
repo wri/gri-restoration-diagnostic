@@ -117,7 +117,6 @@ const StrategicPlan = ({
                 const selectedContributors = allContributors.filter((c) =>
                   responsibilities.includes(c.id),
                 )
-                console.log("🚀 ~ StrategicPlan ~ selectedContributors:", selectedContributors)
 
                 return (
                   <TableRow key={row.id}>
