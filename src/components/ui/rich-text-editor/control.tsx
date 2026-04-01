@@ -480,7 +480,9 @@ export const Link = createBooleanControl({
     const url = window.prompt(labels?.prompts?.enterUrl ?? "Enter URL")
     if (url) {
       const trimmed = url.trim()
-      const href = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+      if (!trimmed) return
+      // Only prepend https:// when no URI scheme is present (preserves mailto:, tel:, etc.)
+      const href = /^[a-z][a-z0-9+.-]*:/i.test(trimmed) ? trimmed : `https://${trimmed}`
       editor
         .chain()
         .focus()
