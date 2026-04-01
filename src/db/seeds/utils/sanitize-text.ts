@@ -171,7 +171,10 @@ export function sanitizeListText(text: string | null | undefined): string | null
     .split('\n')
     .map(line => line.trim())
     .filter(line => line.length > 0)
+    // Ensure bullet prefix, then strip any stray hyphen/dash marker after it
+    // e.g. "• - Grants" or "• – item" → "• Grants" / "• item"
     .map(line => line.startsWith('•') ? line : `• ${line}`)
+    .map(line => line.replace(/^•\s*[-–—]\s+/, '• '))
     .join('\n')
     .trim() || null
 }

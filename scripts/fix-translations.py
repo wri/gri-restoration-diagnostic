@@ -100,6 +100,8 @@ def sanitize_list_text(text):
             continue
         if not line.startswith('\u2022'):
             line = '\u2022 ' + line
+        # Strip stray hyphen/dash markers after the bullet: "• - item" → "• item"
+        line = re.sub(r'^\u2022\s*[-\u2013\u2014]\s+', '\u2022 ', line)
         result.append(line)
     return '\n'.join(result) if result else None
 
