@@ -478,13 +478,16 @@ export const Link = createBooleanControl({
   icon: LuLink,
   command: (editor, labels) => {
     const url = window.prompt(labels?.prompts?.enterUrl ?? "Enter URL")
-    if (url)
+    if (url) {
+      const trimmed = url.trim()
+      const href = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
       editor
         .chain()
         .focus()
         .extendMarkRange("link")
-        .setLink({ href: url })
+        .setLink({ href })
         .run()
+    }
   },
   getVariant: (editor) => (editor.isActive("link") ? "subtle" : "ghost"),
 })
