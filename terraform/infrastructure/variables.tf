@@ -102,7 +102,6 @@ variable "max_capacity" {
 variable "image_tag" {
   description = "ECR image tag to deploy to ECS task definition"
   type        = string
-  default     = "latest"
 }
 
 variable "health_check_path" {

@@ -79,9 +79,38 @@ jobs:
 
       - name: Set image tag
         id: image_tag
-        run: echo "value=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+        run: echo "value=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Check if image tag already exists
+        id: image_exists
+        run: |
+          set +e
+          DESCRIBE_OUTPUT=$(
+            aws ecr describe-images \
+              --repository-name "${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}" \
+              --image-ids imageTag="${{ steps.image_tag.outputs.value }}" \
+              2>&1
+          )
+          STATUS=$?
+          set -e
+
+          if [ "$STATUS" -eq 0 ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Image tag '${{ steps.image_tag.outputs.value }}' already exists in ECR. Skipping push."
+            exit 0
+          fi
+
+          if echo "$DESCRIBE_OUTPUT" | grep -q "ImageNotFoundException"; then
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Image tag '${{ steps.image_tag.outputs.value }}' not found. Building and pushing."
+            exit 0
+          fi
+
+          echo "$DESCRIBE_OUTPUT"
+          exit 1
 
       - name: Build and push Docker image
+        if: steps.image_exists.outputs.exists != 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -91,6 +120,10 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             NEXT_PUBLIC_ENVIRONMENT=${{ env.ENVIRONMENT }}
+
+      - name: Reuse existing image tag
+        if: steps.image_exists.outputs.exists == 'true'
+        run: echo "Reusing existing immutable image tag '${{ steps.image_tag.outputs.value }}'."
 
   # ==========================================================================
   # Deploy Infrastructure with Terraform

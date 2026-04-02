@@ -43,6 +43,19 @@ resource "aws_ecr_lifecycle_policy" "app" {
       },
       {
         rulePriority = 2
+        description  = "Keep last 50 SHA-tagged images"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["sha-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 50
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 3
         description  = "Remove untagged images after 7 days"
         selection = {
           tagStatus   = "untagged"
