@@ -115,7 +115,6 @@ export function Responsibility({
         multiple
         closeOnSelect
         openOnClick
-        autoHighlight
         inputValue={inputValue}
         value={selectedContributorIds}
         collection={collection}
@@ -164,7 +163,7 @@ export function Responsibility({
               }}
             >
               {inputValue.trim() !== '' && filteredContributors.length === 0 && (
-                <p css={{ padding: '8px 12px', fontSize: '14px', color: 'slate.500' }}>
+                <p style={{ padding: '8px 12px', fontSize: '14px', color: 'slate.500' }}>
                   {t('assessment.contributors.noMatches')}
                 </p>
               )}

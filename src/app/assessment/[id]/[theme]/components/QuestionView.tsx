@@ -583,7 +583,7 @@ export function QuestionView({
         // Contributors are loaded from state, no need to update here
       }
     },
-    [questions, answersCache, assessmentId, theme, router],
+    [questions, answersCache, assessmentId, theme, router, onFocusChange],
   )
 
   const handleQuestionSelect = useCallback(
