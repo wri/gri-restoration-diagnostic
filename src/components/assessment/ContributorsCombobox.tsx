@@ -117,8 +117,7 @@ export function ContributorsCombobox({
       <Combobox.Root
         multiple
         closeOnSelect={true}
-        openOnClick
-         
+        openOnClick         
         inputValue={inputValue}
         value={selectedContributorIds}
         collection={collection}
