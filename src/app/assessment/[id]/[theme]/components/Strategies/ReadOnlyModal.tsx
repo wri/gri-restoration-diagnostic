@@ -93,7 +93,7 @@ const StrategiesReadOnlyModal = ({
 
           <div className='mb-6'>
             <p className='font-bold mb-1'>
-              {t('assessment.strategies.fields.deadline.label')}
+              {t('assessment.strategies.fields.estimatedStartDate.label')}
             </p>
             <p>
               {formatDeadline(strategy.deadline) ||

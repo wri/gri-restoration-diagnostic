@@ -787,7 +787,7 @@
           "scale": "Scale"
         },
         "noTitle": "No title",
-        "deadline": "Deadline {value}",
+        "estimatedStartDate": "Estimated start {value}",
         "ownedBy": "Owned by",
         "priorities": {
           "low": "Low",
@@ -840,7 +840,7 @@
         "keyFactor": "Key Success Factor",
         "priority": "Priority",
         "scale": "Scale",
-        "deadline": "Estimated start date",
+        "estimatedStartDate": "Estimated start date",
         "responsibility": "Responsibility",
         "status": "Status",
         "description": "Description"
@@ -1013,7 +1013,7 @@
             "transboundary": "Transboundary (two or more countries)"
           }
         },
-        "deadline": {
+        "estimatedStartDate": {
           "label": "Estimated start date",
           "placeholder": "Select date"
         },
@@ -1048,7 +1048,7 @@
           "status": "Status"
         },
         "noTitle": "No title",
-        "due": "Due {value}",
+        "estimatedStartDate": "Estimated start {value}",
         "ownedBy": "Owned by"
       },
       "modal": {
