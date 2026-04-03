@@ -222,16 +222,6 @@ const Strategies = ({
                     }
                   />
                 </div>
-                <div className='col-span-2'>
-                  <TextInput
-                    label={`${t('assessment.strategies.fields.status.label')} ${t('common.optional')}`}
-                    placeholder={t('assessment.strategies.fields.status.placeholder')}
-                    value={strategy.status ?? ''}
-                    onChange={(e) =>
-                      updateStrategy(strategy.id, 'status', e.target.value)
-                    }
-                  />
-                </div>
                 <div>
                   <Responsibility
                     selectedContributorIds={
@@ -261,6 +251,16 @@ const Strategies = ({
                       updateStrategy(strategy.id, 'priority', vals[0] || '')
                     }
                     defaultValue={strategy.priority ? [strategy.priority] : []}
+                  />
+                </div>
+                <div>
+                  <TextInput
+                    label={`${t('assessment.strategies.fields.status.label')}`}
+                    placeholder={t('assessment.strategies.fields.status.placeholder')}
+                    value={strategy.status ?? ''}
+                    onChange={(e) =>
+                      updateStrategy(strategy.id, 'status', e.target.value)
+                    }
                   />
                 </div>
               </div>
