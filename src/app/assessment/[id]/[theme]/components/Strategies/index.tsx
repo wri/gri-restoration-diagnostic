@@ -261,6 +261,10 @@ const Strategies = ({
                     onChange={(e) =>
                       updateStrategy(strategy.id, 'status', e.target.value)
                     }
+                    labels={{
+                      optionalSuffix: t('common.optional'),
+                      requiredSymbolLabel: t('common.required'),
+                    }}
                   />
                 </div>
               </div>
