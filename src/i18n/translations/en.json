@@ -1014,7 +1014,7 @@
           }
         },
         "deadline": {
-          "label": "Deadline",
+          "label": "Estimated start date",
           "placeholder": "Select date"
         },
         "responsibility": {
@@ -1029,6 +1029,10 @@
             "medium": "Medium",
             "low": "Low"
           }
+        },
+        "status": {
+          "label": "Status",
+          "placeholder": "Enter current status"
         }
       },
       "actions": {
@@ -1040,7 +1044,8 @@
         "headers": {
           "strategy": "Strategy",
           "priority": "Priority",
-          "scale": "Scale"
+          "scale": "Scale",
+          "status": "Status"
         },
         "noTitle": "No title",
         "due": "Due {value}",

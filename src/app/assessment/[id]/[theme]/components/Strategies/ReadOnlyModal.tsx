@@ -111,6 +111,15 @@ const StrategiesReadOnlyModal = ({
                 : t('assessment.strategies.modal.na')}
             </p>
           </div>
+
+          {strategy.status && (
+            <div className='mb-6'>
+              <p className='font-bold mb-1'>
+                {t('assessment.strategies.fields.status.label')}
+              </p>
+              <p>{strategy.status}</p>
+            </div>
+          )}
         </div>
       }
     />

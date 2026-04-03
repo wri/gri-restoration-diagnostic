@@ -1014,7 +1014,7 @@
           }
         },
         "deadline": {
-          "label": "Plazo",
+          "label": "Fecha estimada de inicio",
           "placeholder": "Seleccionar fecha"
         },
         "responsibility": {
@@ -1029,6 +1029,10 @@
             "medium": "Media",
             "low": "Baja"
           }
+        },
+        "status": {
+          "label": "Estado",
+          "placeholder": "Ingrese el estado actual"
         }
       },
       "actions": {
@@ -1040,7 +1044,8 @@
         "headers": {
           "strategy": "Estrategia",
           "priority": "Prioridad",
-          "scale": "Escala"
+          "scale": "Escala",
+          "status": "Estado"
         },
         "noTitle": "Sin título",
         "due": "Vence {value}",

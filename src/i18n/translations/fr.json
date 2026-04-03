@@ -1014,7 +1014,7 @@
           }
         },
         "deadline": {
-          "label": "Échéance",
+          "label": "Date de début estimée",
           "placeholder": "Sélectionner la date"
         },
         "responsibility": {
@@ -1029,6 +1029,10 @@
             "medium": "Moyenne",
             "low": "Faible"
           }
+        },
+        "status": {
+          "label": "Statut",
+          "placeholder": "Entrez le statut actuel"
         }
       },
       "actions": {
@@ -1040,7 +1044,8 @@
         "headers": {
           "strategy": "Stratégie",
           "priority": "Priorité",
-          "scale": "Échelle"
+          "scale": "Échelle",
+          "status": "Statut"
         },
         "noTitle": "Sans titre",
         "due": "Échéance {value}",

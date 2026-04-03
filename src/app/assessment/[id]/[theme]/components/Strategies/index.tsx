@@ -222,6 +222,16 @@ const Strategies = ({
                     }
                   />
                 </div>
+                <div className='col-span-2'>
+                  <TextInput
+                    label={`${t('assessment.strategies.fields.status.label')} ${t('common.optional')}`}
+                    placeholder={t('assessment.strategies.fields.status.placeholder')}
+                    value={strategy.status ?? ''}
+                    onChange={(e) =>
+                      updateStrategy(strategy.id, 'status', e.target.value)
+                    }
+                  />
+                </div>
                 <div>
                   <Responsibility
                     selectedContributorIds={
