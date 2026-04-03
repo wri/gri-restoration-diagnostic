@@ -115,6 +115,7 @@ export function Responsibility({
         multiple
         closeOnSelect
         openOnClick
+        autoHighlight
         inputValue={inputValue}
         value={selectedContributorIds}
         collection={collection}
@@ -162,6 +163,11 @@ export function Responsibility({
                 zIndex: 50,
               }}
             >
+              {inputValue.trim() !== '' && filteredContributors.length === 0 && (
+                <p css={{ padding: '8px 12px', fontSize: '14px', color: 'slate.500' }}>
+                  {t('assessment.contributors.noMatches')}
+                </p>
+              )}
               <Combobox.ItemGroup>
                 {collectionItems.map((item) => {
                   const isCreateItem = item.value === 'CREATE_NEW'
@@ -193,17 +199,6 @@ export function Responsibility({
                   )
                 })}
               </Combobox.ItemGroup>
-              {inputValue.trim() !== '' && (
-                <Combobox.Empty
-                  css={{
-                    padding: '8px 12px',
-                    fontSize: '14px',
-                    color: 'slate.500',
-                  }}
-                >
-                  {t('assessment.contributors.empty')}
-                </Combobox.Empty>
-              )}
             </Combobox.Content>
           </Combobox.Positioner>
         </Portal>
