@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Combobox, Portal, createListCollection } from '@chakra-ui/react'
+import { Combobox, Portal, createListCollection, Box } from '@chakra-ui/react'
 import { Tag, getThemedColor } from '@worldresources/wri-design-systems'
 import { PlainContributor } from '@/types/answer.types'
 import { useTranslations } from '@/i18n/useTranslations'
@@ -117,7 +117,7 @@ export function ContributorsCombobox({
       <Combobox.Root
         multiple
         closeOnSelect={true}
-        openOnClick         
+        openOnClick
         inputValue={inputValue}
         value={selectedContributorIds}
         collection={collection}
@@ -161,9 +161,14 @@ export function ContributorsCombobox({
               }}
             >
               {inputValue.trim() !== '' && filteredContributors.length === 0 && (
-                <p style={{ padding: '8px 12px', fontSize: '14px', color: 'slate.500' }}>
+                <Box
+                  role='option'
+                  aria-disabled='true'
+                  aria-selected='false'
+                  css={{ padding: '8px 12px', fontSize: '14px', color: 'neutral.500' }}
+                >
                   {t('assessment.contributors.noMatches')}
-                </p>
+                </Box>
               )}
               <Combobox.ItemGroup>
                 {collectionItems.map((item) => {
