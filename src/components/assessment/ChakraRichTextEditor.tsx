@@ -109,7 +109,16 @@ export function ChakraRichTextEditor({
         overflow: 'auto',
       }}
     >
-      <RichTextEditor.Root editor={editor} labels={labels}>
+      <RichTextEditor.Root
+        editor={editor}
+        labels={labels}
+        css={{
+          flex: 1,
+          '& .ProseMirror': {
+            flex: 1,
+          },
+        }}
+      >
         <RichTextEditor.Toolbar>
           <RichTextEditor.ControlGroup>
             <Control.TextStyle />

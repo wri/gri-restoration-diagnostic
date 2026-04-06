@@ -82,7 +82,7 @@ export function GuidanceSidebar({
           </Collapsible>
         </div>
       ) : (
-        <div className='flex flex-col flex-1 p-4 overflow-hidden'>
+        <div className='flex flex-col flex-1 overflow-hidden'>
           <ChakraRichTextEditor
             value={notes}
             onChange={onNotesChange}
