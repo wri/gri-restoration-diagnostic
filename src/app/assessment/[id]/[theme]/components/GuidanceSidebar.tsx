@@ -87,6 +87,7 @@ export function GuidanceSidebar({
             value={notes}
             onChange={onNotesChange}
             placeholder={t('assessment.content.placeholders.notes')}
+            borderless
           />
         </div>
       )}

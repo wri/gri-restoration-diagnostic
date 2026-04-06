@@ -11,6 +11,7 @@ interface ChakraRichTextEditorProps {
   value: string
   onChange: (html: string) => void
   placeholder?: string
+  borderless?: boolean
 }
 
 /**
@@ -30,6 +31,7 @@ export function ChakraRichTextEditor({
   value,
   onChange,
   placeholder,
+  borderless,
 }: ChakraRichTextEditorProps) {
   const t = useTranslations()
   const { language } = useLanguage()
@@ -114,6 +116,7 @@ export function ChakraRichTextEditor({
         labels={labels}
         css={{
           flex: 1,
+          ...(borderless && { borderWidth: 0 }),
           '& .ProseMirror': {
             flex: 1,
           },
