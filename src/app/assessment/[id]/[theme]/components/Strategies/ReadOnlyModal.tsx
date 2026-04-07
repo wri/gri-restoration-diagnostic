@@ -2,7 +2,7 @@
 
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import { Modal } from '@worldresources/wri-design-systems'
-import { formatDeadline } from './utils'
+import { formatDeadline, isKnownStatus } from './utils'
 import RichText from '@/components/ui/RichText'
 import { useTranslations } from '@/i18n/useTranslations'
 
@@ -118,7 +118,9 @@ const StrategiesReadOnlyModal = ({
             </p>
             <p>
               {strategy?.status
-                ? t(`assessment.strategies.fields.status.options.${strategy.status}`)
+                ? isKnownStatus(strategy.status)
+                  ? t(`assessment.strategies.fields.status.options.${strategy.status}`)
+                  : strategy.status
                 : t('assessment.strategies.modal.na')}
             </p>
           </div>

@@ -8,7 +8,7 @@ import {
   Tag,
 } from '@worldresources/wri-design-systems'
 import { useState } from 'react'
-import { formatDeadline, sortStrategies } from './utils'
+import { formatDeadline, isKnownStatus, sortStrategies } from './utils'
 import StrategiesReadOnlyModal from './ReadOnlyModal'
 import { useTranslations } from '@/i18n/useTranslations'
 
@@ -128,7 +128,9 @@ const StrategiesReadOnly = ({
                 </TableCell>
                 <TableCell className='w-40'>
                   {row.status
-                    ? t(`assessment.strategies.fields.status.options.${row.status}`)
+                    ? isKnownStatus(row.status)
+                      ? t(`assessment.strategies.fields.status.options.${row.status}`)
+                      : row.status
                     : '--'}
                 </TableCell>
               </TableRow>

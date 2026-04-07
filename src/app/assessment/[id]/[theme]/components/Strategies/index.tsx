@@ -11,6 +11,7 @@ import clsx from 'clsx'
 import StrategiesAboutModal from './AboutModal'
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import { Responsibility } from './Responsibility'
+import { isKnownStatus } from './utils'
 import { useTranslations } from '@/i18n/useTranslations'
 
 const Strategies = ({
@@ -275,7 +276,11 @@ const Strategies = ({
                   <Select
                     label={`${t('assessment.strategies.fields.status.label')} ${t('common.optional')}`}
                     placeholder={t('assessment.strategies.fields.status.placeholder')}
-                    items={statusOptions}
+                    items={
+                      strategy.status && !isKnownStatus(strategy.status)
+                        ? [...statusOptions, { value: strategy.status, label: strategy.status }]
+                        : statusOptions
+                    }
                     onChange={(vals) =>
                       updateStrategy(strategy.id, 'status', vals[0] || '')
                     }

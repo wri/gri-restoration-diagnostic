@@ -12,6 +12,7 @@ import {
 import { PlainContributor, Strategy } from '@/types/answer.types'
 import {
   formatDeadline,
+  isKnownStatus,
   sortStrategies,
 } from '@/app/assessment/[id]/[theme]/components/Strategies/utils'
 import { useState } from 'react'
@@ -194,7 +195,9 @@ const StrategicPlan = ({
                     </TableCell>
                     <TableCell className='w-40'>
                       {row.status
-                        ? t(`assessment.strategies.fields.status.options.${row.status}`)
+                        ? isKnownStatus(row.status)
+                          ? t(`assessment.strategies.fields.status.options.${row.status}`)
+                          : row.status
                         : '--'}
                     </TableCell>
                   </TableRow>
