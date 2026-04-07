@@ -65,6 +65,24 @@ const Strategies = ({
       label: t('assessment.strategies.fields.priority.options.low'),
     },
   ]
+  const statusOptions = [
+    {
+      value: 'idea',
+      label: t('assessment.strategies.fields.status.options.idea'),
+    },
+    {
+      value: 'underConstruction',
+      label: t('assessment.strategies.fields.status.options.underConstruction'),
+    },
+    {
+      value: 'agreed',
+      label: t('assessment.strategies.fields.status.options.agreed'),
+    },
+    {
+      value: 'notMovingForward',
+      label: t('assessment.strategies.fields.status.options.notMovingForward'),
+    },
+  ]
 
   const handleAddStrategy = () => {
     const next = [
@@ -254,17 +272,14 @@ const Strategies = ({
                   />
                 </div>
                 <div>
-                  <TextInput
-                    label={`${t('assessment.strategies.fields.status.label')}`}
+                  <Select
+                    label={`${t('assessment.strategies.fields.status.label')} ${t('common.optional')}`}
                     placeholder={t('assessment.strategies.fields.status.placeholder')}
-                    value={strategy.status ?? ''}
-                    onChange={(e) =>
-                      updateStrategy(strategy.id, 'status', e.target.value)
+                    items={statusOptions}
+                    onChange={(vals) =>
+                      updateStrategy(strategy.id, 'status', vals[0] || '')
                     }
-                    labels={{
-                      optionalSuffix: t('common.optional'),
-                      requiredSymbolLabel: t('common.required'),
-                    }}
+                    defaultValue={strategy.status ? [strategy.status] : []}
                   />
                 </div>
               </div>

@@ -52,6 +52,11 @@ const StrategiesReadOnly = ({
               label: t('assessment.strategies.readOnly.headers.scale'),
               sortable: true,
             },
+            {
+              key: 'status',
+              label: t('assessment.strategies.readOnly.headers.status'),
+              sortable: true,
+            },
           ]}
           data={strategiesData}
           renderRow={(row: Strategy) => {
@@ -119,6 +124,11 @@ const StrategiesReadOnly = ({
                     ? t(
                         `assessment.strategies.fields.scale.options.${row.scale}`,
                       )
+                    : '--'}
+                </TableCell>
+                <TableCell className='w-40'>
+                  {row.status
+                    ? t(`assessment.strategies.fields.status.options.${row.status}`)
                     : '--'}
                 </TableCell>
               </TableRow>

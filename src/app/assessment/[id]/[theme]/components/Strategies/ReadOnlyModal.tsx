@@ -116,7 +116,11 @@ const StrategiesReadOnlyModal = ({
             <p className='font-bold mb-1'>
               {t('assessment.strategies.fields.status.label')}
             </p>
-            <p>{strategy?.status ?? ''}</p>
+            <p>
+              {strategy?.status
+                ? t(`assessment.strategies.fields.status.options.${strategy.status}`)
+                : t('assessment.strategies.modal.na')}
+            </p>
           </div>
 
         </div>
