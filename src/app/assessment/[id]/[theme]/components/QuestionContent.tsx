@@ -3,7 +3,7 @@
 import { AnswerOptions } from '@/components/assessment/AnswerOptions'
 import { FollowUpQuestions } from '@/components/assessment/FollowUpQuestions'
 import { ChakraRichTextEditor } from '@/components/assessment/ChakraRichTextEditor'
-import type { AnswerValue } from '@/db/entities/Answer.entity'
+import { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion } from './ThemePageLayout'
 import { ContributorsCombobox } from '@/components/assessment/ContributorsCombobox'
 import AnswerOptionsResponse from '@/components/assessment/AnswerOptionsResponse'
@@ -45,7 +45,7 @@ export function QuestionContent({
   onContributorCreate,
 }: QuestionContentProps) {
   const t = useTranslations()
-  const hideRationale = selectedAnswer === 'na'
+  const isNA = selectedAnswer === AnswerValue.NA
 
   return (
     <section className='space-y-8'>
@@ -77,8 +77,8 @@ export function QuestionContent({
         <AnswerOptions value={selectedAnswer} onChange={onAnswerChange} />
       )}
 
-      {/* Rationale editor - hidden for N/A */}
-      {!hideRationale && !isVisuallyMarkedAsComplete && (
+      {/* Rationale editor */}
+      {!isVisuallyMarkedAsComplete && (
         <div className='space-y-4 mt-4'>
           <div>
             <h3 className='text-xl font-bold text-slate-900 mb-2'>
@@ -101,7 +101,7 @@ export function QuestionContent({
       )}
 
       {/* Contributors - Edit mode */}
-      {!hideRationale && !isVisuallyMarkedAsComplete && (
+      {!isVisuallyMarkedAsComplete && (
         <div className='mt-8'>
           <ContributorsCombobox
             selectedContributorIds={contributors}
@@ -113,7 +113,7 @@ export function QuestionContent({
       )}
 
       {/* Strategies - Edit mode */}
-      {!hideRationale && !isVisuallyMarkedAsComplete && (
+      {!isNA && !isVisuallyMarkedAsComplete && (
         <Strategies
           question={question}
           strategies={strategies}
