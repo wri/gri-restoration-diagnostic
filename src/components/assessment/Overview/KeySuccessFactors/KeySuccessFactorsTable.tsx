@@ -13,9 +13,13 @@ import Link from 'next/link'
 import AnswerOptionsResponse from '../../AnswerOptionsResponse'
 import { AnswerStatus } from '@/types/answer.types'
 import { useTranslations } from '@/i18n/useTranslations'
+import { AnswerValue } from '@/db/entities/Answer.entity'
 
 function sentenceCase(enableContidion: string) {
-  return enableContidion.charAt(0).toUpperCase() + enableContidion.slice(1).toLowerCase();
+  return (
+    enableContidion.charAt(0).toUpperCase() +
+    enableContidion.slice(1).toLowerCase()
+  )
 }
 
 interface KeySuccessFactorsTableProps {
@@ -116,16 +120,14 @@ const KeySuccessFactorsTable = ({
                       <AnswerOptionsResponse value={q.answer.value} />
                     </div>
                     <div className='w-full max-w-[130px] h-6 flex items-center'>
-                      {q.answer.value?.toLowerCase() === 'na' ? (
-                        t('overview.keySuccessFactors.table.na')
-                      ) : hasRichTextContent(q.answer.rationale) ? (
+                      {hasRichTextContent(q.answer.rationale) ? (
                         <PopulatedCheckIcon className='h-6 w-6' />
                       ) : (
                         <div className='bg-neutral-600 h-[3px] w-6' />
                       )}
                     </div>
                     <div className='w-full max-w-[130px] h-6 flex items-center'>
-                      {q.answer.value?.toLowerCase() === 'na' ? (
+                      {q.answer.value?.toLowerCase() === AnswerValue.NA ? (
                         t('overview.keySuccessFactors.table.na')
                       ) : strategies.length > 0 ? (
                         t('overview.keySuccessFactors.table.added', {
