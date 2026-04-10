@@ -43,14 +43,15 @@
   "home": {
     "hero": {
       "title": "Outil de diagnostic de restauration",
-      "description": "Un outil d'évaluation rapide développé dans le cadre de ROAM pour évaluer la préparation de votre paysage ou géographie à la restauration et concevoir des actions stratégiques pour assurer un succès à long terme.",
+      "description": "Un outil d'évaluation rapide développé dans le cadre de ROAM pour évaluer l'état de préparation de votre paysage ou zone géographique à la restauration et concevoir des actions stratégiques afin de garantir un succès à long terme.",
       "ctaButton": "Démarrer le diagnostic",
       "roamButton": "Méthodologie ROAM"
     },
     "keyFactors": {
       "title": "Évaluez les facteurs clés du succès de la restauration",
-      "description1": "Le Diagnostic de restauration vous aide à évaluer votre géographie ou projet selon 31 facteurs clés de succès, regroupés en trois thèmes : motiver, favoriser et mettre en œuvre.",
-      "description2": "En évaluant ces domaines, vous pouvez identifier les lacunes et prioriser les actions pour renforcer les conditions d'une restauration réussie.",
+      "description1": "Le Diagnostic de Restauration vous aide à déterminer si les conditions clés pour la restauration des écosystèmes sont réunies, et ce qui pourrait manquer.",
+      "description2": "Il met en évidence les opportunités, les lacunes et les défis à travers 31 facteurs culturels, financiers, institutionnels, politiques et écologiques.",
+      "description3": "Cela vous permet de passer d'une planification globale à des stratégies ciblées et efficaces qui peuvent réussir à long terme.",
       "categories": {
         "cultural": "Culturel",
         "political": "Politique",
@@ -58,8 +59,7 @@
         "financial": "Financier",
         "institutional": "Institutionnel",
         "social": "Social"
-      },
-      "description3": "Cela vous permet de passer d'une planification de haut niveau à des stratégies ciblées et efficaces qui peuvent réussir à long terme."
+      }
     },
     "targetAudience": {
       "title": "Cet outil est-il fait pour vous ?",

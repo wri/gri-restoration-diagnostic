@@ -49,8 +49,9 @@
     },
     "keyFactors": {
       "title": "Evalúe los factores clave para el éxito de la restauración",
-      "description1": "El Diagnóstico de Restauración le ayuda a evaluar su geografía o proyecto en 31 factores clave de éxito, agrupados en tres temas: motivar, habilitar e implementar.",
-      "description2": "Al evaluar estas áreas, puede identificar brechas y priorizar acciones para fortalecer las condiciones para una restauración exitosa.",
+      "description1": "El Diagnóstico de Restauración le ayuda a determinar si las condiciones clave para la restauración de ecosistemas están dadas y qué podría faltar.",
+      "description2": "Destaca oportunidades, brechas y desafíos a través de 31 factores culturales, financieros, institucionales, políticos y ecológicos.",
+      "description3": "Esto le permite pasar de una planificación general a estrategias enfocadas y efectivas que pueden tener éxito a largo plazo.",
       "categories": {
         "cultural": "Cultural",
         "political": "Político",
@@ -58,8 +59,7 @@
         "financial": "Financiero",
         "institutional": "Institucional",
         "social": "Social"
-      },
-      "description3": "Esto le permite pasar de una planificación de alto nivel a estrategias enfocadas y efectivas que pueden tener éxito a largo plazo."
+      }
     },
     "targetAudience": {
       "title": "¿Es esta herramienta para usted?",

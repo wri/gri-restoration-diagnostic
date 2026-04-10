@@ -49,8 +49,9 @@
     },
     "keyFactors": {
       "title": "Avalie os fatores-chave para o sucesso da restauração",
-      "description1": "O Diagnóstico de Restauração ajuda você a avaliar sua geografia ou projeto em 31 fatores-chave de sucesso, agrupados em três temas: motivar, habilitar e implementar.",
-      "description2": "Ao avaliar essas áreas, você pode identificar lacunas e priorizar ações para fortalecer as condições para uma restauração bem-sucedida.",
+      "description1": "O Diagnóstico de Restauração ajuda a determinar se as condições essenciais para a restauração de ecossistemas estão presentes — e o que pode estar faltando.",
+      "description2": "Ele destaca oportunidades, lacunas e desafios em 31 fatores culturais, financeiros, institucionais, políticos e ecológicos.",
+      "description3": "Isso permite que você passe de um planejamento de alto nível para estratégias focadas e eficazes que podem ter sucesso a longo prazo.",
       "categories": {
         "cultural": "Cultural",
         "political": "Político",
@@ -58,8 +59,7 @@
         "financial": "Financeiro",
         "institutional": "Institucional",
         "social": "Social"
-      },
-      "description3": "Isso permite que você passe de um planejamento de alto nível para estratégias focadas e eficazes que podem ter sucesso a longo prazo."
+      }
     },
     "targetAudience": {
       "title": "Esta ferramenta é para você?",
