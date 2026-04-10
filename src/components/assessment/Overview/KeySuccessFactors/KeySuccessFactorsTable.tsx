@@ -14,10 +14,10 @@ import AnswerOptionsResponse from '../../AnswerOptionsResponse'
 import { AnswerStatus, AnswerValue } from '@/types/answer.types'
 import { useTranslations } from '@/i18n/useTranslations'
 
-function sentenceCase(enableContidion: string) {
+function sentenceCase(enableCondition: string) {
   return (
-    enableContidion.charAt(0).toUpperCase() +
-    enableContidion.slice(1).toLowerCase()
+    enableCondition.charAt(0).toUpperCase() +
+    enableCondition.slice(1).toLowerCase()
   )
 }
 

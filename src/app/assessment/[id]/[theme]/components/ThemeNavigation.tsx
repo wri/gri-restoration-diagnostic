@@ -31,12 +31,18 @@ interface ThemeNavigationProps {
   canGoNext: boolean
 }
 
-function sentenceCase(enableContidion: string) { 
-  return enableContidion.charAt(0).toUpperCase() + enableContidion.slice(1).toLowerCase();
+function sentenceCase(enableCondition: string) {
+  return (
+    enableCondition.charAt(0).toUpperCase() +
+    enableCondition.slice(1).toLowerCase()
+  )
 }
 
 // Helper to group questions by enabling condition
-function groupByEnablingCondition(questions: PlainQuestion[], fallbackLabel: string) {
+function groupByEnablingCondition(
+  questions: PlainQuestion[],
+  fallbackLabel: string,
+) {
   const grouped: Record<string, PlainQuestion[]> = {}
   questions.forEach((q) => {
     const condition = q.enablingCondition || fallbackLabel

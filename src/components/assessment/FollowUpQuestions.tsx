@@ -9,12 +9,11 @@ interface FollowUpQuestionsProps {
 }
 
 export function FollowUpQuestions({
-  followUpQuestions,
+  followUpQuestions = { 'if yes': [], 'if no': [] },
   selectedAnswer,
 }: FollowUpQuestionsProps) {
   const t = useTranslations()
-  // Don't show for N/A or no answer
-  if (!selectedAnswer || !followUpQuestions) {
+  if (!selectedAnswer) {
     return null
   }
 
@@ -23,14 +22,14 @@ export function FollowUpQuestions({
 
   // Show based on answer value
   if (selectedAnswer === AnswerValue.YES) {
-    questions = followUpQuestions['if yes'] || []
+    questions = followUpQuestions?.['if yes'] || []
   } else if (selectedAnswer === AnswerValue.NO) {
-    questions = followUpQuestions['if no'] || []
+    questions = followUpQuestions?.['if no'] || []
   } else if (selectedAnswer === AnswerValue.PARTLY) {
     // Show ALL questions for partly
     questions = [
-      ...(followUpQuestions['if yes'] || []),
-      ...(followUpQuestions['if no'] || []),
+      ...(followUpQuestions?.['if yes'] || []),
+      ...(followUpQuestions?.['if no'] || []),
     ]
   } else if (selectedAnswer === AnswerValue.NA) {
     questions = [
