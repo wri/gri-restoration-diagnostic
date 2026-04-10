@@ -58,22 +58,28 @@
         "financial": "Financeiro",
         "institutional": "Institucional",
         "social": "Social"
-      }
+      },
+      "description3": "Isso permite que você passe de um planejamento de alto nível para estratégias focadas e eficazes que podem ter sucesso a longo prazo."
     },
     "targetAudience": {
       "title": "Esta ferramenta é para você?",
-      "description": "Esta ferramenta foi projetada para líderes e organizações que planejam ou coordenam a restauração em escala, incluindo:",
-      "government": {
-        "label": "Governo:",
-        "description": "Responsáveis por políticas nacionais ou subnacionais responsáveis pelo planejamento da restauração."
+      "description1": "Esta ferramenta foi projetada para pessoas e organizações envolvidas no planejamento, gestão ou dimensionamento da restauração de ecossistemas. É usada principalmente por equipes técnicas e tomadores de decisão para avaliar as condições atuais e identificar o que precisa ser fortalecido para permitir a implementação efetiva da restauração.",
+      "description2": "Pode ser especialmente útil para:",
+      "audience1": {
+        "label": "Agências governamentais:",
+        "description": "Formuladores de políticas nacionais e subnacionais que moldam estratégias e programas de restauração."
       },
-      "coordination": {
-        "label": "Plataformas de coordenação:",
-        "description": "Gestores de programas que coordenam a restauração entre setores e partes interessadas."
+      "audience2": {
+        "label": "ONGs e parceiros de desenvolvimento:",
+        "description": "Organizações que fornecem assistência técnica, capacitação e financiamento para iniciativas em campo."
       },
-      "support": {
-        "label": "Organizações de apoio:",
-        "description": "ONGs, instituições de pesquisa e parceiros da sociedade civil que apoiam iniciativas de restauração."
+      "audience3": {
+        "label": "Setor privado e financiadores:",
+        "description": "Empresas que investem ou contribuem para os esforços de restauração."
+      },
+      "audience4": {
+        "label": "Parcerias no nível da paisagem:",
+        "description": "Plataformas de múltiplas partes interessadas coordenando a restauração em todos os setores."
       }
     },
     "process": {

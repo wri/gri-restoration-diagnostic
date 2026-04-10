@@ -58,22 +58,28 @@
         "financial": "Financiero",
         "institutional": "Institucional",
         "social": "Social"
-      }
+      },
+      "description3": "Esto le permite pasar de una planificación de alto nivel a estrategias enfocadas y efectivas que pueden tener éxito a largo plazo."
     },
     "targetAudience": {
       "title": "¿Es esta herramienta para usted?",
-      "description": "Esta herramienta está diseñada para líderes y organizaciones que planifican o coordinan la restauración a escala, incluyendo:",
-      "government": {
-        "label": "Gobierno:",
-        "description": "Responsables de políticas nacionales o subnacionales responsables de la planificación de la restauración."
+      "description1": "Esta herramienta está diseñada para personas y organizaciones involucradas en la planificación, gestión o escalamiento de la restauración de ecosistemas. Es utilizada principalmente por equipos técnicos y tomadores de decisiones para evaluar las condiciones actuales e identificar qué debe fortalecerse para permitir una implementación efectiva de la restauración.",
+      "description2": "Puede ser especialmente útil para:",
+      "audience1": {
+        "label": "Agencias gubernamentales:",
+        "description": "Tomadores de decisiones nacionales y subnacionales que dan forma a estrategias y programas de restauración."
       },
-      "coordination": {
-        "label": "Plataformas de coordinación:",
-        "description": "Gerentes de programas que coordinan la restauración en sectores y partes interesadas."
+      "audience2": {
+        "label": "ONG y socios de desarrollo:",
+        "description": "Organizaciones que brindan asistencia técnica, desarrollo de capacidades y financiamiento para iniciativas en el terreno."
       },
-      "support": {
-        "label": "Organizaciones de apoyo:",
-        "description": "ONG, instituciones de investigación y socios de la sociedad civil que apoyan las iniciativas de restauración."
+      "audience3": {
+        "label": "Sector privado y financiadores:",
+        "description": "Empresas que invierten o contribuyen a los esfuerzos de restauración."
+      },
+      "audience4": {
+        "label": "Asociaciones a nivel de paisaje:",
+        "description": "Plataformas de múltiples partes interesadas que coordinan la restauración en varios sectores."
       }
     },
     "process": {
