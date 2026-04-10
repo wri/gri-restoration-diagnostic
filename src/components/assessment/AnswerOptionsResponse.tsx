@@ -5,8 +5,8 @@ import {
   PartlyAnswerIcon,
   NoAnswerIcon,
 } from '@/components/icons'
-import { AnswerValue } from '@/db/entities/Answer.entity'
 import { useTranslations } from '@/i18n/useTranslations'
+import { AnswerValue } from '@/types/answer.types'
 
 const AnswerOptionsResponse = ({ value = '' }: { value: string }) => {
   const t = useTranslations()

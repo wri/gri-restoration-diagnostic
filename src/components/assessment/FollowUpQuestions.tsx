@@ -1,6 +1,6 @@
 'use client'
 
-import { AnswerValue } from '@/db/entities/Answer.entity'
+import { AnswerValue } from '@/types/answer.types'
 import { useTranslations } from '@/i18n/useTranslations'
 
 interface FollowUpQuestionsProps {

@@ -11,9 +11,8 @@ import { hasRichTextContent } from '@/utils/validation'
 import { Tag } from '@worldresources/wri-design-systems'
 import Link from 'next/link'
 import AnswerOptionsResponse from '../../AnswerOptionsResponse'
-import { AnswerStatus } from '@/types/answer.types'
+import { AnswerStatus, AnswerValue } from '@/types/answer.types'
 import { useTranslations } from '@/i18n/useTranslations'
-import { AnswerValue } from '@/db/entities/Answer.entity'
 
 function sentenceCase(enableContidion: string) {
   return (

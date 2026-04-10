@@ -16,7 +16,6 @@ import {
   EditIcon,
 } from '@/components/icons'
 import { ProgressNotSavedModal } from '@/components/assessment/ProgressNotSavedModal'
-import { AnswerValue } from '@/db/entities/Answer.entity'
 import type { PlainQuestion, PlainAnswer } from './ThemePageLayout'
 import {
   Button,
@@ -26,7 +25,11 @@ import {
 } from '@worldresources/wri-design-systems'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { FactorPaginationContainer } from '@/components/assessment/FactorPaginationContainer'
-import { AnswerStatus, PlainContributor } from '@/types/answer.types'
+import {
+  AnswerStatus,
+  AnswerValue,
+  PlainContributor,
+} from '@/types/answer.types'
 import { hasRichTextContent } from '@/utils/validation'
 import { useTranslations } from '@/i18n/useTranslations'
 
