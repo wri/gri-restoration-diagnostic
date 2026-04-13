@@ -336,9 +336,10 @@
   "scoping": {
     "intro": {
       "heading": "Se préparer au diagnostic",
-      "description1": "Au cours de cette phase, vous aurez l'occasion de définir la portée, de choisir les méthodes d'engagement des parties prenantes, de rassembler la documentation nécessaire, de définir la géographie ou l'échelle cible, et d'esquisser vos objectifs et votre calendrier de restauration.",
+      "description1": "Au cours de cette phase, vous aurez l'occasion de définir la portée, de désigner un responsable du processus, de définir votre plan de consultation, de rassembler la documentation nécessaire, de définir la géographie ou l'échelle cible et d'esquisser vos objectifs de restauration et le calendrier des efforts.",
       "description2": "Prendre le temps de se préparer garantit que le diagnostic est ciblé, bien étayé et aligné sur votre contexte de restauration.",
-      "description3": "Cette étape comporte 2 parties :",
+      "inlineMessage": "L'outil peut être adapté au contexte, aux besoins et aux demandes de l'utilisateur.",
+      "subtitle": "Cette étape comporte 2 parties :",
       "parts": {
         "scope": {
           "title": "Définir la portée",

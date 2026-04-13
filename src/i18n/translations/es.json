@@ -336,9 +336,10 @@
   "scoping": {
     "intro": {
       "heading": "Prepárese para el diagnóstico",
-      "description1": "En esta fase, tendrá la oportunidad de establecer el alcance, elegir métodos de participación de las partes interesadas, reunir la documentación necesaria, definir la geografía o escala objetivo y esbozar sus objetivos y cronograma de restauración.",
+      "description1": "En esta fase, tendrá la oportunidad de establecer el alcance, designar un líder para el proceso, definir su plan de consulta, reunir la documentación necesaria, definir la geografía o escala objetivo y esbozar sus objetivos de restauración y el cronograma de los esfuerzos.",
       "description2": "Tomarse el tiempo para prepararse garantiza que el diagnóstico esté enfocado, bien respaldado y alineado con su contexto de restauración.",
-      "description3": "Hay 2 partes en este paso:",
+      "inlineMessage": "La herramienta puede adaptarse al contexto, las necesidades y las demandas del usuario.",
+      "subtitle": "Hay 2 partes en este paso:",
       "parts": {
         "scope": {
           "title": "Establecer el alcance",

@@ -336,9 +336,10 @@
   "scoping": {
     "intro": {
       "heading": "Prepare-se para o diagnóstico",
-      "description1": "Nesta fase, você terá a oportunidade de definir o escopo, escolher os métodos de engajamento das partes interessadas, reunir a documentação necessária, definir a geografia ou escala alvo e delinear seus objetivos e cronograma de restauração.",
+      "description1": "Nesta fase, você terá a oportunidade de definir o escopo, designar um líder para o processo, definir seu plano de consulta, reunir a documentação necessária, definir a geografia ou escala alvo e delinear seus objetivos de restauração e o cronograma dos esforços.",
       "description2": "Reservar um tempo para se preparar garante que o diagnóstico seja focado, bem fundamentado e alinhado com o seu contexto de restauração.",
-      "description3": "Existem 2 partes nesta etapa:",
+      "inlineMessage": "A ferramenta pode ser adaptada ao contexto, necessidades e demandas do usuário.",
+      "subtitle": "Existem 2 partes nesta etapa:",
       "parts": {
         "scope": {
           "title": "Definir o escopo",

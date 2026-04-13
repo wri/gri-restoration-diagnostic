@@ -336,9 +336,10 @@
   "scoping": {
     "intro": {
       "heading": "Prepare for the diagnostic",
-      "description1": "In this phase, you will have the opportunity to set the scope, choose stakeholder engagement methods, gather the necessary documentation, define the target geography or scale, and outline your restoration goals and timeline.",
+      "description1": "In this phase, you will have the opportunity to set the scope, designate a lead for the process, define your consultation plan, gather the necessary documentation, define the target geography or scale, and outline your restoration goals and the timeline for the efforts.",
       "description2": "Taking time to prepare ensures the diagnostic is focused, well-supported, and aligned with your restoration context.",
-      "description3": "There are 2 parts to this step:",
+      "inlineMessage": "The tool can be adapted for the user’s context, needs, and demands.",
+      "subtitle": "There are 2 parts to this step:",
       "parts": {
         "scope": {
           "title": "Set the scope",
