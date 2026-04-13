@@ -55,7 +55,6 @@ export default function SetupAssessmentPage() {
     { label: t('forms.setup.genderOptions.woman'), value: 'woman' },
     { label: t('forms.setup.genderOptions.man'), value: 'man' },
     { label: t('forms.setup.genderOptions.nonBinary'), value: 'non_binary' },
-    { label: t('forms.setup.genderOptions.transgender'), value: 'transgender' },
     { label: t('forms.setup.genderOptions.intersex'), value: 'intersex' },
     {
       label: t('forms.setup.genderOptions.preferNotToSay'),
