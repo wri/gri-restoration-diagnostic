@@ -270,8 +270,9 @@
       },
       "identityOptions": {
         "indigenousPeoples": "Povos Indígenas",
-        "localCommunities": "Comunidades locais",
-        "both": "Tanto Povos Indígenas quanto comunidades locais",
+        "localCommunities": "Comunidades locais ou tradicionais",
+        "ethnicMinority": "Grupo minoritário étnico, racial ou cultural",
+        "other": "Outro grupo subrepresentado",
         "preferNotToSay": "Prefiro não dizer",
         "none": "Nenhum dos anteriores"
       },

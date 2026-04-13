@@ -207,7 +207,7 @@
         "role": "Job role",
         "gender": "Gender (optional)",
         "ageRange": "Age range (optional)",
-        "identity": "Does the diagnostic lead identify as part of any of the following groups? (optional)",
+        "identity": "Does the diagnostic lead identify as a member of any of the following groups? (optional)",
         "country": "Country",
         "subRegion": "Sub-region / Province",
         "geographyType": "Geography Type",
@@ -270,8 +270,9 @@
       },
       "identityOptions": {
         "indigenousPeoples": "Indigenous Peoples",
-        "localCommunities": "Local communities",
-        "both": "Both Indigenous Peoples and Local communities",
+        "localCommunities": "Local or traditional communities",
+        "ethnicMinority": "Ethnic, racial, or cultural minority group",
+        "other": "Other underrepresented group",
         "preferNotToSay": "Prefer not to say",
         "none": "None of the above"
       },

@@ -85,7 +85,8 @@ const Scope = ({ data, assessmentId }: ScopeProps) => {
   const identityLabelMap: Record<string, string> = {
     indigenous_peoples: t('forms.setup.identityOptions.indigenousPeoples'),
     local_communities: t('forms.setup.identityOptions.localCommunities'),
-    both: t('forms.setup.identityOptions.both'),
+    ethnic_minority: t('forms.setup.identityOptions.ethnicMinority'),
+    other: t('forms.setup.identityOptions.other'),
     prefer_not_to_say: t('forms.setup.identityOptions.preferNotToSay'),
     none: t('forms.setup.identityOptions.none'),
   }

@@ -86,7 +86,14 @@ export default function SetupAssessmentPage() {
       value: 'local_communities',
       children: t('forms.setup.identityOptions.localCommunities'),
     },
-    { value: 'both', children: t('forms.setup.identityOptions.both') },
+    {
+      value: 'ethnic_minority',
+      children: t('forms.setup.identityOptions.ethnicMinority'),
+    },
+    {
+      value: 'other',
+      children: t('forms.setup.identityOptions.other'),
+    },
     {
       value: 'prefer_not_to_say',
       children: t('forms.setup.identityOptions.preferNotToSay'),

@@ -269,9 +269,10 @@
         "preferNotToSay": "Je préfère ne pas le dire"
       },
       "identityOptions": {
-        "indigenousPeoples": "Peuples autochtones",
-        "localCommunities": "Communautés locales",
-        "both": "À la fois peuples autochtones et communautés locales",
+        "indigenousPeoples": "Indigenous Peoples",
+        "localCommunities": "Communautés locales ou traditionnelles",
+        "ethnicMinority": "Groupe minoritaire ethnique, racial ou culturel",
+        "other": "Autre groupe sous-représenté",
         "preferNotToSay": "Je préfère ne pas le dire",
         "none": "Aucun de ces groupes"
       },
