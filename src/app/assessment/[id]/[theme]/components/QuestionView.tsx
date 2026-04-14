@@ -480,12 +480,9 @@ export function QuestionView({
   }, [])
 
   const shouldTriggerCompleteGuard =
-    (!isVisuallyMarkedAsComplete &&
-      selectedAnswer !== null &&
-      selectedAnswer === AnswerValue.NA) ||
-    (!isVisuallyMarkedAsComplete &&
-      selectedAnswer !== null &&
-      hasRichTextContent(rationale))
+    !isVisuallyMarkedAsComplete &&
+    selectedAnswer !== null &&
+    (selectedAnswer === AnswerValue.NA || hasRichTextContent(rationale))
 
   const navigateWithCompleteGuard = useCallback(
     (navigateFn: () => void) => {
