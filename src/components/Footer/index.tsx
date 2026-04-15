@@ -10,12 +10,10 @@ import { externalLinks } from '@/constants/external-links'
 import { useTranslations } from '@/i18n/useTranslations'
 import { Box } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useLanguage } from '@/contexts/LanguageContext'
 
 export const Footer = () => {
   const [isClient, setIsClient] = useState(false)
   const t = useTranslations()
-  const { language } = useLanguage()
 
   // Ensure translations are consistent
   const privacyPolicy = t('common.footer.privacyPolicy')
