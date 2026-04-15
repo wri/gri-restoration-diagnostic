@@ -13,7 +13,10 @@ export async function GET(
 
   try {
     const assessment = await getAssessmentById(id)
-    return NextResponse.json({ success: true, assessment })
+    return NextResponse.json({
+      success: true,
+      assessmentTitle: assessment?.title || '',
+    })
   } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch assessment' },

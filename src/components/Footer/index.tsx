@@ -46,7 +46,6 @@ export const Footer = () => {
             alt='Assessment Partner'
             width={32}
             height={32}
-            priority // Preload the image
           />,
           <div key='partners' className='flex items-center'>
             <div className='h-8 w-px bg-neutral-300 ml-1.5 mr-4' />
@@ -59,7 +58,6 @@ export const Footer = () => {
                 alt='ERIP, GEF and Conservation International logo'
                 width={86}
                 height={42}
-                priority
               />
               <div className='h-8 w-px bg-neutral-300 mx-0.5' />
               <Image
@@ -67,7 +65,6 @@ export const Footer = () => {
                 alt='Conservation International logo'
                 width={42}
                 height={24}
-                priority
               />
               <div className='h-8 w-px bg-neutral-300 mx-0.5' />
               <Image
@@ -75,7 +72,6 @@ export const Footer = () => {
                 alt='GEF logo'
                 width={42}
                 height={24}
-                priority
               />
             </div>
           </div>,

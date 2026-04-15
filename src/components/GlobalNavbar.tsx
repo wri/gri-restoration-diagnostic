@@ -42,8 +42,7 @@ export default function GlobalNavbar() {
 
       const dataJson = await fetch(`/api/assessments/${id}`)
       const data = await dataJson.json()
-      const assessment = data?.assessment
-      setAssessmentTitle(assessment?.title)
+      setAssessmentTitle(data?.assessmentTitle || '')
     }
 
     getAssessmentName()
