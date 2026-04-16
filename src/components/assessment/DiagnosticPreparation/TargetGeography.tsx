@@ -118,7 +118,6 @@ const TargetGeography = () => {
       countries = [assessmentData.countries]
     }
   }
-  console.log(11, assessmentData.countries, countries)
 
   const {
     register,
