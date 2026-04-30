@@ -29,9 +29,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# A non-root nextjs user is created here for portability (e.g. running this
-# image outside Fargate, or local `docker run`), but on Fargate the container
-# runs as root — see the explanatory comment further down for the rationale.
+# A non-root nextjs user is created here for possible future use, but this
+# image does not switch to that user by default. Unless an orchestrator
+# overrides the runtime user, the container runs as root — see the
+# explanatory comment further down for the rationale.
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 

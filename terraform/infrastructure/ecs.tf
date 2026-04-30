@@ -165,6 +165,14 @@ resource "aws_ecs_task_definition" "app" {
       name  = "${var.project_name}-${var.environment}"
       image = "${aws_ecr_repository.app.repository_url}:${var.image_tag}"
 
+      # Pin the runtime user to root explicitly. The Dockerfile currently
+      # doesn't set USER, so this is the effective default — but pinning it
+      # here means a future `USER nextjs` in the Dockerfile won't silently
+      # break Fargate writes to the root-owned ephemeral mounts (/tmp and
+      # /app/.next/cache). See the security hardening comment below for why
+      # running as root is acceptable on Fargate.
+      user = "0"
+
       # Security hardening:
       # - readonlyRootFilesystem prevents attackers from dropping payloads
       #   onto disk; the only writable paths are the explicit mountPoints.
