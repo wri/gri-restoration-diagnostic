@@ -7,7 +7,7 @@ resource "aws_ecs_cluster" "main" {
 
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = "disabled"
   }
 
   tags = {
@@ -148,10 +148,48 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
 
+  # Ephemeral writable volume mounted at /tmp inside the container.
+  # Required because the rest of the root filesystem is read-only.
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "${var.project_name}-${var.environment}"
       image = "${aws_ecr_repository.app.repository_url}:${var.image_tag}"
+
+      # Security hardening:
+      # - readonlyRootFilesystem prevents attackers from dropping payloads onto disk.
+      # - linuxParameters drops all Linux capabilities; the Node process needs none.
+      # - ulimits cap process count to slow fork-bomb / miner-spawn behaviour.
+      # - mountPoints provides a small writable tmpfs for /tmp (Next.js standalone
+      #   writes a few cache files there; without this the app fails to boot).
+      readonlyRootFilesystem = true
+      privileged             = false
+
+      linuxParameters = {
+        capabilities = {
+          drop = ["ALL"]
+        }
+        initProcessEnabled = true
+      }
+
+      ulimits = [
+        {
+          name      = "nproc"
+          softLimit = 1024
+          hardLimit = 2048
+        }
+      ]
+
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
+        }
+      ]
 
       portMappings = [
         {
