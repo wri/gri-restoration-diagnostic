@@ -148,10 +148,16 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
 
-  # Ephemeral writable volume mounted at /tmp inside the container.
-  # Required because the rest of the root filesystem is read-only.
+  # Ephemeral writable volumes (Fargate ephemeral storage, not tmpfs).
+  # Required because the rest of the container's root filesystem is read-only:
+  #   - /tmp                 general scratch space used by Node and Next.js standalone
+  #   - /app/.next/cache     next/image optimized-image cache (the app uses next/image)
   volume {
     name = "tmp"
+  }
+
+  volume {
+    name = "next-cache"
   }
 
   container_definitions = jsonencode([
@@ -163,8 +169,9 @@ resource "aws_ecs_task_definition" "app" {
       # - readonlyRootFilesystem prevents attackers from dropping payloads onto disk.
       # - linuxParameters drops all Linux capabilities; the Node process needs none.
       # - ulimits cap process count to slow fork-bomb / miner-spawn behaviour.
-      # - mountPoints provides a small writable tmpfs for /tmp (Next.js standalone
-      #   writes a few cache files there; without this the app fails to boot).
+      # - mountPoints expose only the specific writable paths the app needs
+      #   (/tmp and /app/.next/cache). Without these the app fails to boot or
+      #   serves 500s for next/image optimized requests.
       readonlyRootFilesystem = true
       privileged             = false
 
@@ -187,6 +194,11 @@ resource "aws_ecs_task_definition" "app" {
         {
           sourceVolume  = "tmp"
           containerPath = "/tmp"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "next-cache"
+          containerPath = "/app/.next/cache"
           readOnly      = false
         }
       ]
