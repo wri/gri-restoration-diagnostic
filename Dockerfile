@@ -29,7 +29,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Create non-root user for security
+# A non-root nextjs user is created here for portability (e.g. running this
+# image outside Fargate, or local `docker run`), but on Fargate the container
+# runs as root — see the explanatory comment further down for the rationale.
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -51,6 +53,11 @@ COPY --from=builder /app/.next/static ./.next/static
 
 # Copy package.json for potential runtime dependencies
 COPY --from=builder /app/package.json ./package.json
+
+# Pre-create the mount target for the ECS ephemeral volume. With
+# readonlyRootFilesystem=true the kernel cannot create the mount point at
+# runtime, so the directory must exist in the image.
+RUN mkdir -p /app/.next/cache
 
 # We intentionally run as root inside the container. On Fargate, capability
 # additions are not allowed (only drops), so the chown-then-drop-privileges
