@@ -33,15 +33,15 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Download AWS RDS root CA bundle for SSL database connections
-# HTTP repos + --no-check-certificate: allows builds behind TLS-inspecting proxies (e.g. Zscaler)
+# Download AWS RDS root CA bundle for SSL database connections.
+# HTTP repos + --no-check-certificate: allows builds behind TLS-inspecting proxies (e.g. Zscaler).
+# wget:    used by the HEALTHCHECK and the ECS task health check at runtime.
 # su-exec: tiny tool used by the entrypoint to drop privileges to the nextjs user.
 RUN sed -i 's/https/http/' /etc/apk/repositories && \
     apk add --no-cache wget ca-certificates su-exec && \
     wget --no-check-certificate -q \
       https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
-      -O /app/global-bundle.pem && \
-    apk del wget
+      -O /app/global-bundle.pem
 
 ENV NODE_EXTRA_CA_CERTS=/app/global-bundle.pem
 
