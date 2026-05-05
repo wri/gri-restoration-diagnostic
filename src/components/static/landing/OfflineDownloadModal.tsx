@@ -60,9 +60,15 @@ export const OfflineDownloadModal = ({
       })
 
       if (response.ok) {
-        const fileName = `Restoration_Diagnostic_v2_${language.toUpperCase()} Abr062026.xlsx`
+        const files = {
+          en: 'Restoration_Diagnostic_v2 Abr062026.xlsx',
+          es: 'Restoration_Diagnostic_v2_ESP Abr062026.xlsx',
+          fr: 'Restoration_Diagnostic_v2_FRA Abr082026.xlsx',
+          pt: 'Restoration_Diagnostic_v2_PORT Abr062026.xlsx',
+        }
+        const fileName = files[language as keyof typeof files] || files.en
         const link = document.createElement('a')
-        link.href = `/offline-version/${fileName}`
+        link.href = `/offline-version/${encodeURIComponent(fileName)}`
         link.download = fileName
         document.body.appendChild(link)
         link.click()
