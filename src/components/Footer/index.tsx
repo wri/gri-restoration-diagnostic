@@ -9,20 +9,19 @@ import {
 import { externalLinks } from '@/constants/external-links'
 import { useTranslations } from '@/i18n/useTranslations'
 import { Box } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 
 export const Footer = () => {
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
   const t = useTranslations()
 
   // Ensure translations are consistent
   const privacyPolicy = t('common.footer.privacyPolicy')
   const termsOfService = t('common.footer.termsOfService')
-
-  // Prevent hydration mismatch - Navbar has responsive logic that checks window dimensions
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   if (!isClient) return <div className='h-12' />
 

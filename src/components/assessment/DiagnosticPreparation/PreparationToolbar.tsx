@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSearchParams, useParams } from 'next/navigation'
 import { getPreparationSteps } from './utils'
 import { SaveIcon } from '@/components/icons'
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { usePreparationSubmit } from './PreparationSubmitContext'
 import { useTranslations } from '@/i18n/useTranslations'
 
@@ -15,7 +15,11 @@ const PreparationToolbar = () => {
   const searchParams = useSearchParams()
   const { submitHandler } = usePreparationSubmit()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isClient, setIsClient] = useState(false)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
   const isEditMode = searchParams.get('isEditMode')
   const isEditing = isEditMode === 'true'
 
@@ -48,10 +52,6 @@ const PreparationToolbar = () => {
       setIsSubmitting(false)
     }
   }
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   if (!isClient) return <div className='h-11' />
 

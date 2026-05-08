@@ -1,16 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useTranslations } from '@/i18n/useTranslations'
 import ExportResponses from './ExportResponses'
 
 const OverviewBar = ({ assessmentId }: { assessmentId: string }) => {
   const t = useTranslations()
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
 
   if (!isClient) {
     return <div className='h-12' />
