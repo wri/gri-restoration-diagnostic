@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useState } from 'react'
+import { useIsClient } from '@/hooks/useIsClient'
 import Link from 'next/link'
 import { Navbar, Menu } from '@worldresources/wri-design-systems'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -12,11 +13,7 @@ import { HostedByWri } from '@/components/HostedByWri'
 export default function GlobalNavbar() {
   const { language, setLanguage } = useLanguage()
   const pathname = usePathname()
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  )
+  const mounted = useIsClient()
   const t = useTranslations()
   const router = useRouter()
   const [isPasswordPromptShown, setIsPasswordPromptShown] = useState(false)

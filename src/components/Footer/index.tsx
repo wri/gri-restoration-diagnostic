@@ -9,14 +9,10 @@ import {
 import { externalLinks } from '@/constants/external-links'
 import { useTranslations } from '@/i18n/useTranslations'
 import { Box } from '@chakra-ui/react'
-import { useSyncExternalStore } from 'react'
+import { useIsClient } from '@/hooks/useIsClient'
 
 export const Footer = () => {
-  const isClient = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  )
+  const isClient = useIsClient()
   const t = useTranslations()
 
   // Ensure translations are consistent

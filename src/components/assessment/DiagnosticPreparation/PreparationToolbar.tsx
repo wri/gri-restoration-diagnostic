@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useSearchParams, useParams } from 'next/navigation'
 import { getPreparationSteps } from './utils'
 import { SaveIcon } from '@/components/icons'
-import { useState, useSyncExternalStore } from 'react'
+import { useState } from 'react'
+import { useIsClient } from '@/hooks/useIsClient'
 import { usePreparationSubmit } from './PreparationSubmitContext'
 import { useTranslations } from '@/i18n/useTranslations'
 
@@ -15,11 +16,7 @@ const PreparationToolbar = () => {
   const searchParams = useSearchParams()
   const { submitHandler } = usePreparationSubmit()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const isClient = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  )
+  const isClient = useIsClient()
   const isEditMode = searchParams.get('isEditMode')
   const isEditing = isEditMode === 'true'
 

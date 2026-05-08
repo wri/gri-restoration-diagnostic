@@ -619,7 +619,7 @@ export function QuestionView({
     [currentQuestion?.id, selectedAnswer, rationale, strategies, save, setNotes],
   )
 
-  const handleStrategysChange = useCallback(
+  const handleStrategiesChange = useCallback(
     // eslint-disable-next-line react-hooks/preserve-manual-memoization
     (value: string) => {
       setStrategies(value)
@@ -912,7 +912,7 @@ export function QuestionView({
             onAnswerChange={handleAnswerChange}
             onRationaleChange={handleRationaleChange}
             strategies={strategies}
-            onStrategysChange={handleStrategysChange}
+            onStrategiesChange={handleStrategiesChange}
             isVisuallyMarkedAsComplete={isVisuallyMarkedAsComplete}
             contributors={currentContributorIds}
             allContributors={allContributors}
