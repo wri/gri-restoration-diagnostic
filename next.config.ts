@@ -5,12 +5,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   output: 'standalone',
   serverExternalPackages: ['typeorm', 'reflect-metadata', 'pg'],
-  experimental: {
-    // Disable server-side minification to preserve TypeORM entity class names.
-    // TypeORM uses constructor.name for entity metadata resolution, which breaks
-    // when class names are mangled (e.g., Assessment -> a).
-    serverMinification: false,
-  },
+  experimental: {},
   // Belt-and-suspenders: explicitly configure the server-side minimizer to keep
   // class and function names. TypeORM resolves entity metadata by constructor.name
   // at runtime, so mangling those names causes "Entity metadata for X was not found".
