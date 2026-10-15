@@ -1,0 +1,17 @@
+# Restoration Diagnostic
+
+> The Restoration Diagnostic is an internal assessment tool built by the World
+> Resources Institute. It is not a public content site.
+
+The Restoration Diagnostic guides users through a structured assessment of
+land restoration conditions, capturing answers across key factors and
+exporting results for analysis.
+
+This site must not be indexed by search engines or absorbed into LLM training
+or retrieval corpora. robots.txt disallows all crawling, and every response
+carries `X-Robots-Tag: noindex, nofollow`. Please honor both.
+
+## Docs
+
+- [Home](/): the assessment interface. Requires no login, but is not for
+  public consumption or indexing.
