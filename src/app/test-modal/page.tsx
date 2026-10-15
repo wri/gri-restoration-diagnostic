@@ -157,7 +157,7 @@ export default function TestModalPage() {
         blocking={isBlocking}
         draggable={isDraggable}
         content={
-          <div className="p-6 space-y-4">
+          <div className="p-3 space-y-4">
             <p className="text-gray-700">
               This is the modal content area. Test the following features:
             </p>

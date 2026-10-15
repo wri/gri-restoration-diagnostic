@@ -144,7 +144,7 @@ export function AccessDetailsModal({
       }
       blocking={true}
       content={
-        <div className="space-y-4">
+        <div className="space-y-4 p-3">
           <p className="text-gray-700 leading-relaxed">
             {t('forms.setup.accessModal.description')}
           </p>

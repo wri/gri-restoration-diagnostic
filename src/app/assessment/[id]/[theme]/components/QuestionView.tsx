@@ -1000,7 +1000,11 @@ export function QuestionView({
             {t('assessment.actions.modal.markComplete.header')}
           </p>
         }
-        content={t('assessment.actions.modal.markComplete.content')}
+        content={
+          <p className='text-neutral-700 text-base p-3'>
+            {t('assessment.actions.modal.markComplete.content')}
+          </p>
+        }
         footer={
           <>
             <Button
@@ -1027,7 +1031,7 @@ export function QuestionView({
           </p>
         }
         content={
-          <p className='text-neutral-700 text-base'>
+          <p className='text-neutral-700 text-base p-3'>
             {t('assessment.modals.emptyStrategies.description')}
           </p>
         }
@@ -1055,7 +1059,7 @@ export function QuestionView({
           </p>
         }
         content={
-          <div className='flex flex-col items-center gap-4'>
+          <div className='flex flex-col items-center gap-4 p-3'>
             <CheckCircleFilledIcon className='w-11 h-11 text-success-500' />
             <p className='text-neutral-700 text-base'>
               {t('assessment.modals.allComplete.description')}

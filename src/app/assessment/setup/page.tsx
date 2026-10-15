@@ -167,12 +167,14 @@ export default function SetupAssessmentPage() {
   const hasErrors = Object.keys(errors).length > 0
 
   return (
-    <DesignSystemLocaleProvider labels={{
-      TextInput: {
-        optionalSuffix: t('common.optional'),
-        requiredSymbolLabel: t('common.required'),
-      }
-    }}>
+    <DesignSystemLocaleProvider
+      labels={{
+        TextInput: {
+          optionalSuffix: t('common.optional'),
+          requiredSymbolLabel: t('common.required'),
+        },
+      }}
+    >
       {error && (
         <Modal
           open={true}
@@ -180,7 +182,7 @@ export default function SetupAssessmentPage() {
           size='large'
           header={t('forms.setup.errors.genericError')}
           content={
-            <div className='space-y-4'>
+            <div className='space-y-4 p-3'>
               <p className='text-gray-700 leading-relaxed'>{error.message}</p>
 
               {isDev && error.error && (
@@ -316,7 +318,7 @@ export default function SetupAssessmentPage() {
                     size='full-width'
                   />
 
-                  <div className='space-y-6'>
+                  <div className='space-y-6 mt-5'>
                     <div className='grid grid-cols-1 gap-4'>
                       <TextInput
                         label={t('forms.setup.labels.fullName')}
@@ -538,7 +540,7 @@ export default function SetupAssessmentPage() {
             </Text>
           }
           content={
-            <div className='space-y-4'>
+            <div className='space-y-4 p-3'>
               <p className='text-neutral-700 leading-relaxed'>
                 {t('forms.setup.sections.demographicInfoModal.description1')}
               </p>
