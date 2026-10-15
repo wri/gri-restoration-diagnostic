@@ -38,7 +38,7 @@ const FromPreparationModal = ({
         </div>
       }
       content={
-        <div className='text-base'>
+        <div className='text-base p-3'>
           <p className='text-neutral-700 mb-2'>
             {t('scoping.success.description')}
           </p>

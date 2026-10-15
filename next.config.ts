@@ -6,6 +6,24 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   serverExternalPackages: ['typeorm', 'reflect-metadata', 'pg'],
   experimental: {},
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          // Keep every crawler and AI/LLM indexer out. This header covers
+          // fetchers that ignore robots.txt (the /robots.txt route handles
+          // the well-behaved ones); `noai, noimageai` are the proposed
+          // directives for blocking AI training use of content.
+          {
+            key: 'X-Robots-Tag',
+            value:
+              'noindex, nofollow, noarchive, noimageindex, nosnippet, noai, noimageai',
+          },
+        ],
+      },
+    ]
+  },
   // Disable server-side minification so TypeORM entity class names are preserved.
   // TypeORM resolves entity metadata by constructor.name at runtime — if class
   // names are mangled (e.g. Assessment -> c, Contributor -> l) the lookup fails

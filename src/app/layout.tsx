@@ -29,6 +29,22 @@ const acuminPro = localFont({
 export const metadata: Metadata = {
   title: 'Restoration Diagnostic',
   description: 'WRI Restoration Diagnostic',
+  // Site-wide crawler exclusion. Belt to the X-Robots-Tag header in
+  // next.config.ts and the /robots.txt route; covers clients that render the
+  // page but ignore response headers. Individual pages may only narrow this.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      'max-snippet': -1,
+      'max-image-preview': 'none',
+      'max-video-preview': -1,
+    },
+  },
 }
 
 export default async function RootLayout({

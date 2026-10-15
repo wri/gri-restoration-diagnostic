@@ -25,7 +25,7 @@ export function ProgressNotSavedModal({
         </p>
       }
       content={
-        <div className='text-neutral-700 space-y-4'>
+        <div className='text-neutral-700 space-y-4 p-3'>
           <p>{t('assessment.modals.progressNotSaved.description1')}</p>
           <p>{t('assessment.modals.progressNotSaved.description2')}</p>
           <p>{t('assessment.modals.progressNotSaved.description3')}</p>
