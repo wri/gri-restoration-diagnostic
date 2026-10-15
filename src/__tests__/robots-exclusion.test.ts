@@ -84,7 +84,7 @@ describe('crawler and AI-indexer exclusion controls', () => {
       expect(header.value).toContain('nofollow')
     })
 
-    it('stays alongside the existing security headers', async () => {
+    it('includes X-Robots-Tag among the response headers for every path', async () => {
       const entry = (await nextConfig.headers()).find(
         (e: { source: string }) => e.source === '/:path*',
       )
