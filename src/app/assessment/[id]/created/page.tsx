@@ -71,7 +71,7 @@ export default function AssessmentCreatedPage() {
         header="Session expired"
         blocking={true}
         content={
-          <div className="space-y-6">
+          <div className="space-y-6 p-3">
             <p className="text-gray-700 leading-relaxed">
               The access credentials for this diagnostic are no longer available. 
               Please create a new diagnostic or use your saved link and password to access an existing one.

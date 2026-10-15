@@ -23,7 +23,7 @@ const StrategiesAboutModal = ({
         </p>
       }
       content={
-        <div className='text-neutral-800'>
+        <div className='text-neutral-800 p-3'>
           <div className='mb-3'>
             <p className='font-bold mb-1'>
               {t('assessment.strategies.about.sections.why.title')}

@@ -116,7 +116,7 @@ export const OfflineDownloadModal = ({
       onClose={handleClose}
       size="medium"
       header={
-        <p className="font-bold text-lg text-neutral-900">
+        <p className="font-bold text-lg text-neutral-900 px-1">
           {t('home.cta.offlineModal.title')}
         </p>
       }
@@ -125,7 +125,7 @@ export const OfflineDownloadModal = ({
           id="offline-download-form"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
-          className="space-y-4"
+          className="space-y-4 p-3"
         >
           <p className="text-neutral-700 text-sm leading-relaxed">
             {t('home.cta.offlineModal.description')}
