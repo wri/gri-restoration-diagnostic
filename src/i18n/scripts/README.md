@@ -339,7 +339,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: '24'
       - run: npm ci
       - run: npm run i18n:validate -- --ci
 ```
