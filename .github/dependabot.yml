@@ -11,6 +11,13 @@ updates:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-major"
+      # Pinned wri-design-systems version so newer releases do not break UI.
+      # Keep this package frozen; do not open update PRs for it.
+      - dependency-name: "@worldresources/wri-design-systems"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
       npm-minor-patch:
         update-types:
